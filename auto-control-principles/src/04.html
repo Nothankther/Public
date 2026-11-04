@@ -1,0 +1,267 @@
+<section class="chapter" id="c4" data-num="4" data-title="第四章 线性系统的根轨迹法" data-short="④ 根轨迹法">
+  <div class="wrap">
+    <div class="ch-head">
+      <div class="ch-no"><b>04</b> CHAPTER FOUR</div>
+      <h2>线性系统的根轨迹法<span class="en">Root locus method</span></h2>
+      <p class="ch-desc">根轨迹回答一个时域方法答不了的问题：当增益 $K$ 从 0 连续增大时，闭环极点怎么走？掌握八条规则，就能不求解高次方程而画出极点的运动轨迹。</p>
+    </div>
+
+    <details class="prereq" open>
+      <summary>预备知识 · 辐角的速算操作<span class="who">八条法则的每一步都在“数角度”，先把操作练熟</span></summary>
+      <div class="bd">
+        <p>根轨迹的相角条件 $\sum\angle(s-z_j)-\sum\angle(s-p_i)=(2k+1)\pi$ 在操作上就是：<b>从每个零点、极点向测试点 $s$ 画箭头，数角度，带正负号相加。</b>画图题快慢取决于这一步的熟练度。</p>
+        <h5>① 实轴上的测试点：不用三角函数</h5>
+        <p>测试点 $s$ 在实轴上时，实轴上的零极点到 $s$ 的箭头沿实轴：</p>
+        <ul>
+          <li>零点 / 极点在 $s$ <b>右侧</b>：箭头指向负实轴方向，$\angle=180\deg$；</li>
+          <li>零点 / 极点在 $s$ <b>左侧</b>：箭头指向正实轴方向，$\angle=0\deg$。</li>
+        </ul>
+        <p>这就是“实轴上某段属于根轨迹 $\iff$ 其右侧开环实零点与实极点总数为奇数”的证明来源（4.2 规则二）。</p>
+        <h5>② 共轭对的角度自动配平</h5>
+        <p>一对共轭极点 $p,\bar p$ 对<b>实轴上</b>的测试点贡献的角度之和恒为 $360\deg$（两个箭头关于实轴对称）——等效于 $0\deg$。所以实轴段的判断只需数<b>实</b>零极点，复数对根本不用管。</p>
+        <h5>③ 一般测试点的角度：直角三角形</h5>
+        <p>从 $p$ 到 $s$ 的箭头分量是 $(\Delta x,\Delta y)$，则 $\angle(s-p)=\arctan(\Delta y/\Delta x)$，象限按 $\Delta x,\Delta y$ 的符号定（同第二章预备知识）。求渐近线夹角、出射角 $\theta$ 时都是这类小三角形；出射角公式 $\theta_{p_x}=180\deg+\sum\angle(\text{其他零点}\to p_x)-\sum\angle(\text{其他极点}\to p_x)$ 里的每一项都这么算。</p>
+        <div class="box tip">
+          <div class="t">三个常用结论</div>
+          <p>① 乘积辐角 = 辐角之和，商的辐角 = 分子辐角 − 分母辐角；② 根轨迹关于实轴对称（共轭成对）；③ 角度可以统一用 $+180\deg$ 或 $-180\deg$ 表示，最终结果一致，答卷里声明一种即可。</p>
+        </div>
+      </div>
+    </details>
+
+    <h3>4.1 根轨迹与两个基本条件</h3>
+    <div class="box def">
+      <div class="t">定义</div>
+      <p>当开环传递函数的某一参数（通常是根轨迹增益 $K^*$）从 $0$ 连续变化到 $+\infty$ 时，<b>闭环特征方程的根</b>在 s 平面上移动形成的轨迹，称为根轨迹。</p>
+    </div>
+    <p>闭环特征方程为 $1+G(s)H(s)=0$，即 $G(s)H(s)=-1$。写成幅值与相角两个条件：</p>
+    <div class="formula">
+      <p>$$\text{幅值条件：}\ |G(s)H(s)|=1\qquad\text{相角条件：}\ \angle G(s)H(s)=\pm(2k+1)180°,\ k=0,1,2,\cdots$$</p>
+      <div class="cap">相角条件是<b>根本</b>：它只与开环零极点的位置有关，决定轨迹的形状；幅值条件用来确定轨迹上某点对应的增益 $K^*$。</div>
+    </div>
+    <div class="box key">
+      <div class="t">使用要点</div>
+      <p>① 判断某点是否在根轨迹上 → <b>只代相角条件</b>；<br>
+      ② 求该点对应的增益 → 代幅值条件 $K^*=\dfrac{\prod|s-p_i|}{\prod|s-z_j|}$；<br>
+      ③ 根轨迹上的点一定是闭环极点，但<b>不一定稳定</b>——只有位于左半平面的那段才对应稳定系统。</p>
+    </div>
+
+    <h3>4.2 绘制根轨迹的八条规则</h3>
+    <p>设开环 $G(s)H(s)=\dfrac{K^*\prod_{j=1}^{m}(s-z_j)}{\prod_{i=1}^{n}(s-p_i)}$，$n\geq m$。</p>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th style="width:16%">规则</th><th style="width:44%">内容</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>1 起点与终点</td><td>$K^*=0$ 时起于开环极点 $p_i$；$K^*\to\infty$ 时终于开环零点 $z_j$</td><td>共 $n$ 条分支，其中 $n-m$ 条终于无穷远</td></tr>
+          <tr><td>2 分支数与对称性</td><td>分支数 $=n$；关于实轴对称且连续</td><td>特征根为实根或共轭复根</td></tr>
+          <tr><td>3 实轴上的轨迹</td><td>实轴上某区段<b>右侧</b>的开环实极点与实零点总数为<b>奇数</b>时，该段是根轨迹</td><td>“奇数为轨迹”，只看实轴上的零极点</td></tr>
+          <tr><td>4 渐近线</td><td>$n-m$ 条，交点 $\sigma_a=\dfrac{\sum p_i-\sum z_j}{n-m}$，倾角 $\varphi_a=\dfrac{(2k+1)180°}{n-m}$</td><td>渐近线关于实轴对称</td></tr>
+          <tr><td>5 分离/会合点</td><td>满足 $\dfrac{\dd K^*}{\dd s}=0$，或 $\sum\dfrac{1}{d-p_i}=\sum\dfrac{1}{d-z_j}$</td><td>解出的 $d$ 必须<b>落在根轨迹上</b>才有效</td></tr>
+          <tr><td>6 出射角/入射角</td><td>$\theta_{p}=\pm180°+\sum\angle(p_i-z_j)-\sum\angle(p_i-p_k)$</td><td>用于复数极点出射角；入射角公式符号相反</td></tr>
+          <tr><td>7 与虚轴交点</td><td>令 $s=\mathrm{j}\omega$ 代入特征方程，实部、虚部分别为零；或用劳斯判据求临界增益</td><td>该点给出临界稳定增益与振荡频率</td></tr>
+          <tr><td>8 根之和</td><td>$n-m\geq2$ 时，$\sum s_i=\sum p_i=$ 常数（与 $K^*$ 无关）</td><td>可用来校核或求第三个根</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box tip">
+      <div class="t">画图顺序（考场版）</div>
+      <p>标极点零点 → 判实轴段 → 算渐近线 → 求分离点 → 求虚轴交点 → 补出射角 → 连线。前五步能解决 90% 的考题，画出大致形状即可得分。</p>
+    </div>
+
+    <h3>4.3 广义根轨迹</h3>
+    <div class="grid g2">
+      <div class="card">
+        <div class="h">参数根轨迹</div>
+        <p>当变化的不是 $K^*$ 而是某个参数 $a$ 时，先把特征方程整理成
+        $$1+a\frac{P(s)}{Q(s)}=0$$
+        的形式，把 $a\frac{P}{Q}$ 当作<b>等效开环传递函数</b>，再按八条规则绘制。注意：等效开环的零极点<b>不是</b>原系统的零极点。</p>
+      </div>
+      <div class="card">
+        <div class="h">零度根轨迹</div>
+        <p>正反馈系统（或等效为正反馈）的特征方程为 $1-G(s)H(s)=0$，相角条件变为
+        $$\angle G(s)H(s)=\pm2k\cdot180°$$
+        实轴规则改为“右侧零极点总数为<b>偶数</b>”，渐近线倾角改为 $\dfrac{2k\cdot180°}{n-m}$。</p>
+      </div>
+    </div>
+
+    <h3>4.4 根轨迹能读出什么</h3>
+    <ul>
+      <li><b>稳定性</b>：轨迹是否进入右半平面，交点处的 $K^*$ 即临界增益。</li>
+      <li><b>动态性能</b>：由闭环极点的 $\zeta,\omega_n$ 读超调与快速性——等阻尼线 $\beta=\arccos\zeta$ 与轨迹的交点给出满足超调要求的增益范围。</li>
+      <li><b>稳态性能</b>：根轨迹增益 $K^*$ 与开环增益 $K$ 之间有固定换算关系，可据此算稳态误差。</li>
+      <li><b>参数影响</b>：增加开环零点一般使轨迹左移（改善稳定性），增加开环极点使轨迹右移（恶化稳定性）。</li>
+    </ul>
+
+    <div class="box warn">
+      <div class="t">$K^*$ 与 $K$ 不是一回事</div>
+      <p>根轨迹增益 $K^*$ 是开环传递函数写成“零极点形式”时的系数；开环增益 $K$ 是写成“时间常数形式”时 $s^\nu$ 项的系数（即各因式的常数项已化为 1）。例如
+      $$G(s)=\frac{K^*}{s(s+1)(s+2)}=\frac{K^*}{2\,s(s+1)(0.5s+1)}=\frac{K}{s(s+1)(0.5s+1)}$$
+      故 $K=\dfrac{K^*}{2}$，即 $K^*=2K$。求稳态误差时必须用 $K$，不能直接代 $K^*$——这是本章最容易丢分的一步。</p>
+    </div>
+
+    <div class="figx">
+      <div class="figx-head">
+        <span class="figx-badge">可交互</span>
+        <span class="figx-title">根轨迹探索器：K* 一变，极点走到哪、响应长什么样</span>
+        <span class="figx-hint">拖动滑块，或点下面的关键增益</span>
+      </div>
+      <div class="figx-body">
+        <div class="figx-pane">
+          <span class="pane-tag">根轨迹</span>
+          <svg id="rlSvg" viewBox="0 0 440 430" role="img" aria-label="根轨迹与闭环极点"></svg>
+        </div>
+        <div class="figx-pane">
+          <span class="pane-tag">闭环单位阶跃响应</span>
+          <svg id="rlResp" viewBox="0 0 440 430" role="img" aria-label="闭环阶跃响应"></svg>
+        </div>
+      </div>
+      <div class="figx-ctl">
+        <label>K*
+          <input type="range" id="rlK" min="0.2" max="20" step="0.02" value="4">
+          <output id="rlKOut">4.00</output>
+        </label>
+        <button type="button" class="figx-pill" data-rlk="0.385">分离点 0.385</button>
+        <button type="button" class="figx-pill" data-rlk="1.2">K*=1.2</button>
+        <button type="button" class="figx-pill" data-rlk="6">临界 6</button>
+        <button type="button" class="figx-pill" data-rlk="12">K*=12</button>
+      </div>
+      <div class="figx-read" id="rlRead"></div>
+      <div class="figx-verdict" id="rlVerdict"></div>
+      <div class="figx-note" id="rlNote"></div>
+    </div>
+
+    <h3>4.5 复域设计：用根轨迹配置主导极点</h3>
+    <p>根轨迹不光能“分析”，还能“设计”（教材 4-5 节）。思路很直接：先按指标把<b>期望主导极点</b>钉在 s 平面上，再看它是否落在根轨迹上；若不在，就加零点把轨迹“拉”过去。</p>
+    <ol class="steps">
+      <li><b>定期望极点。</b>由 $\sigma\%$ 定 $\zeta$、由 $t_s$ 定 $\zeta\omega_n$，得 $s_d=-\zeta\omega_n\pm\mathrm{j}\omega_n\sqrt{1-\zeta^2}$。</li>
+      <li><b>查相角。</b>只代相角条件判断 $s_d$ 是否在轨迹上：若 $\angle G(s_d)=\pm180°$ 则已在，直接进入第 4 步。</li>
+      <li><b>补相角。</b>需要校正装置提供的超前角为 $\varphi_c=-180°-\angle G(s_d)$（取 $0<\varphi_c<90°$ 的解），据此确定零点位置。</li>
+      <li><b>定增益。</b>由幅值条件 $K=\dfrac{\prod|s_d-p_i|}{\prod|s_d-z_j|}$。</li>
+    </ol>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 4-4</span><span class="ex-title">用超前零点把主导极点配置到指定位置</span><span class="lv">教材习题 4-17 类型</span></div>
+      <div class="q">
+        <p>系统 $G_0(s)=\dfrac{K}{s(s+1)}$，要求闭环主导极点满足 $\zeta=0.5$、$\omega_n=4\ \mathrm{rad/s}$。设计串联校正装置 $G_c(s)=K_c(s+z)$，并求 $K_c$。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <ol class="steps">
+            <li><b>期望极点。</b>
+            $$s_d=-2+\mathrm{j}4\times\frac{\sqrt3}{2}=-2+\mathrm{j}3.464$$</li>
+            <li><b>未校正相角。</b>
+            $$\angle s_d=180°-\arctan\frac{3.464}{2}=120°,\qquad \angle(s_d+1)=180°-\arctan\frac{3.464}{1}=106.1°$$
+            $$\angle G_0(s_d)=-(120°+106.1°)=-226.1°\equiv133.9°$$
+            不是 $\pm180°$，故 $s_d$ 不在原轨迹上；需补
+            $$\varphi_c=-180°-133.9°=-313.9°\equiv46.1°$$</li>
+            <li><b>定零点。</b>设零点为 $-z$，则 $\angle(s_d+z)=46.1°$：
+            $$\arctan\frac{3.464}{z-2}=46.1°\Rightarrow z-2=\frac{3.464}{\tan46.1°}=3.33\Rightarrow z=5.33$$
+            即 $G_c$ 的零点取 $-5.33$。</li>
+            <li><b>定增益。</b>
+            $$K_c=\frac{|s_d|\cdot|s_d+1|}{|s_d+5.33|}=\frac{4\times3.606}{4.806}=3.00$$</li>
+            <li><b>校验。</b>闭环特征方程
+            $$s(s+1)+3(s+5.33)=s^2+4s+16=0\Rightarrow s=-2\pm\mathrm{j}3.464\ ✓$$
+            与期望极点完全一致（$\omega_n=4,\zeta=0.5$）。</li>
+          </ol>
+          <div class="box tip" style="margin-bottom:0">
+            <div class="t">零点位置怎么选</div>
+            <p>零点越靠近虚轴，所需增益越小、但闭环零点对超调的影响越大；零点越远，增益越大、校正越“费力”。工程上常把零点放在期望极点的左侧 2～5 倍实部处，再微调。</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <h3>4.6 典型例题</h3>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 4-1</span><span class="ex-title">完整绘制根轨迹并求临界增益</span><span class="lv">教材习题 4-? 类型 · 必考</span></div>
+      <div class="q">
+        <p>单位负反馈系统开环传递函数 $G(s)=\dfrac{K^*}{s(s+1)(s+2)}$。绘制 $K^*:0\to\infty$ 的根轨迹，求分离点坐标、分离点处增益、与虚轴交点及临界增益。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <ol class="steps">
+            <li><b>起点终点。</b>开环极点 $0,-1,-2$，无开环零点。三条分支起于这三个极点，终于无穷远（$n-m=3$）。</li>
+            <li><b>实轴段。</b>$[-1,0]$：右侧有 1 个极点（0），奇数 → 是轨迹；$(-\infty,-2]$：右侧有 3 个极点，奇数 → 是轨迹。$(-2,-1)$ 段右侧有 2 个极点，偶数 → 不是轨迹。</li>
+            <li><b>渐近线。</b>
+            $$\sigma_a=\frac{0+(-1)+(-2)}{3}=-1,\qquad \varphi_a=\frac{(2k+1)180°}{3}=60°,\ 180°,\ 300°$$
+            即一条沿负实轴，两条与负实轴成 $\pm60°$，交于 $(-1,\mathrm{j}0)$。</li>
+            <li><b>分离点。</b>由 $\dfrac{1}{d}+\dfrac{1}{d+1}+\dfrac{1}{d+2}=0$ 得 $3d^2+6d+2=0$，解得
+            $$d_1=-0.422,\qquad d_2=-1.577$$
+            $d_1\in[-1,0]$ 在轨迹上，有效；$d_2\in(-2,-1)$ 不在轨迹上，舍去。</li>
+            <li><b>分离点增益。</b>由幅值条件
+            $$K^*=|d_1|\cdot|d_1+1|\cdot|d_1+2|=0.422\times0.578\times1.578\approx0.385$$</li>
+            <li><b>与虚轴交点。</b>特征方程 $s^3+3s^2+2s+K^*=0$，劳斯表第一列第三行为 $\dfrac{6-K^*}{3}$，令其为零得 $K^*=6$；代回辅助方程 $3s^2+6=0$ 得 $s=\pm\mathrm{j}\sqrt2$。故交点为 $\pm\mathrm{j}1.414$，临界增益 $K^*=6$。</li>
+          </ol>
+          <p><b>结论：</b>$0<K^*<6$ 时闭环稳定；$K^*=6$ 时临界稳定，等幅振荡频率 $\sqrt2\ \mathrm{rad/s}$；$K^*>6$ 时有两个根进入右半平面，系统不稳定。</p>
+          <figure style="margin-top:16px">
+            <!--FIG:rootlocus-->
+            <figcaption><b>图 4-1</b>　$G(s)=\dfrac{K^*}{s(s+1)(s+2)}$ 的根轨迹。三条分支分别起于 $0,-1,-2$，在 $-0.422$ 处分离，沿 $\pm60°$ 渐近线趋向无穷，并在 $\pm\mathrm{j}\sqrt2$ 处穿越虚轴。</figcaption>
+          </figure>
+        </div>
+      </details>
+    </div>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 4-2</span><span class="ex-title">参数根轨迹</span><span class="lv">教材习题 4-? 类型</span></div>
+      <div class="q">
+        <p>某系统闭环特征方程为 $s(s+1)(s+3)+a(s+2)=0$，其中 $a\geq0$ 为可变参数。绘制以 $a$ 为参变量的根轨迹，并说明 $a$ 对稳定性的影响。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <ol class="steps">
+            <li><b>化为标准形式。</b>两边除以 $s(s+1)(s+3)$：
+            $$1+a\cdot\frac{s+2}{s(s+1)(s+3)}=0$$
+            等效开环 $G^*(s)=\dfrac{a(s+2)}{s(s+1)(s+3)}$，极点 $0,-1,-3$，零点 $-2$。</li>
+            <li><b>实轴段。</b>$[-1,0]$（右侧 1 个）、$[-3,-2]$（右侧 3 个）是轨迹；$(-2,-1)$ 与 $(-\infty,-3]$ 不是。</li>
+            <li><b>渐近线。</b>$n-m=2$ 条：
+            $$\sigma_a=\frac{(0-1-3)-(-2)}{2}=-1,\qquad\varphi_a=\pm90°$$
+            即一条过 $(-1,\mathrm{j}0)$ 的垂直线。</li>
+            <li><b>分离点。</b>由 $\dfrac{1}{d}+\dfrac{1}{d+1}+\dfrac{1}{d+3}=\dfrac{1}{d+2}$，两边通分整理得
+            $$d^3+5d^2+8d+3=0$$
+            其实数解 $d\approx-0.535$（另两根为复根，无意义），且落在 $[-1,0]$ 段上，有效。</li>
+            <li><b>趋势。</b>$0$ 与 $-1$ 出发的两条分支相向运动，在 $-0.535$ 处相遇后分离为共轭复根，实部由 $-0.535$ 逐渐趋近渐近线 $\sigma=-1$，虚部趋于无穷；$-3$ 出发的分支沿实轴右行，趋于零点 $-2$。</li>
+          </ol>
+          <p><b>结论：</b>无论 $a$ 取多大，复根分支的实部始终为负（在 $-1$ 与 $-0.535$ 之间），系统<b>对任意 $a>0$ 都稳定</b>；$a$ 增大主要使振荡频率升高，衰减速度趋于定值（$t_s\to$ 常数）。这是“开环零点把轨迹拉向左半平面”的典型例子。</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 4-3</span><span class="ex-title">由超调量要求确定增益范围</span><span class="lv">综合应用题</span></div>
+      <div class="q">
+        <p>续例 4-1，要求系统单位阶跃响应的超调量 $\sigma\%\leq16.3\%$，求 $K^*$ 的最大值（用主导极点近似）。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p>$\sigma\%\leq16.3\%$ 对应 $\zeta\geq0.5$，即闭环主导极点须位于 $\beta=\arccos0.5=60°$ 的等阻尼线上或其内侧（靠近负实轴一侧）。</p>
+          <p>设一对共轭主导极点为 $s=\omega_n\mathrm{e}^{\pm\mathrm{j}120°}$，即 $s=-\dfrac{\omega_n}{2}\pm\mathrm{j}\dfrac{\sqrt3}{2}\omega_n$，代入特征方程 $s^3+3s^2+2s+K^*=0$，分离实部与虚部：</p>
+          <p>$$\text{虚部：}\ -\frac{3\sqrt3}{2}\omega_n^2+\frac{\sqrt3}{2}\omega_n=0\Rightarrow\omega_n=\frac{2}{3}$$</p>
+          <p>$$\text{实部：}\ \omega_n^3-\frac{3}{2}\omega_n^2-\omega_n+K^*=0\Rightarrow K^*=\frac{8}{27}-\frac{2}{3}+\frac{2}{3}\approx 1.04$$</p>
+          <p><b>结论：</b>$K^*\leq1.04$ 时超调量满足要求。此时第三个闭环极点为 $s_3=-3-2\left(-\frac{1}{2}\cdot\frac{2}{3}\right)=-2.33$，其实部是主导极实部（$-0.333$）的 7 倍，主导极点近似成立。</p>
+          <div class="box tip" style="margin-bottom:0">
+            <div class="t">这类题的通用套路</div>
+            <p>① 由 $\sigma\%$ 定 $\zeta$，得阻尼角 $\beta$；② 令 $s=\omega_n(-\cos\beta+\mathrm{j}\sin\beta)$ 代入特征方程；③ 虚部方程解 $\omega_n$，实部方程解 $K^*$；④ 用“第三极点实部 ≥ 5 倍”校验主导极点假设。</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <h3>4.7 本章易错清单</h3>
+    <div class="box warn">
+      <div class="t">考前自检</div>
+      <p>① 实轴规则记成“左侧”或忘记只看实轴上的零极点；<br>
+      ② 渐近线倾角公式写成 $\dfrac{2k\cdot180°}{n-m}$（那是零度根轨迹）；<br>
+      ③ 分离点解出两个值不校验是否在轨迹上，全部保留；<br>
+      ④ 用 $K^*$ 代替开环增益 $K$ 去算稳态误差；<br>
+      ⑤ 认为根轨迹上的点都稳定（只有左半平面段稳定）；<br>
+      ⑥ 参数根轨迹直接把原开环当作等效开环；<br>
+      ⑦ 正反馈系统仍用 $180°$ 相角条件。</p>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,140 @@
+<section class="chapter" id="appD" data-num="D" data-title="附录 D　综合训练 6 题" data-short="附录 D · 综合训练">
+  <div class="wrap">
+    <div class="ch-head">
+      <div class="ch-no"><b>D</b> APPENDIX · MOCK EXAM</div>
+      <h2>综合训练 6 题<span class="en">Comprehensive practice</span></h2>
+      <p class="ch-desc">六道题覆盖建模、时域、劳斯、根轨迹、频域、校正六个必考模块，均为新编数据，可与正文例题交叉验证方法。</p>
+    </div>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">综 1</span><span class="ex-title">结构图、稳定性与扰动误差</span><span class="lv">20 分</span></div>
+      <div class="q">
+        <p>单位负反馈系统：误差信号经增益 $K_1=2$ 后进入 $G_2(s)=\dfrac{1}{s(s+2)}$；扰动 $N(s)$ 在 $G_2$ 之前加入。求 $\Phi(s)=C(s)/R(s)$，判断稳定性，并求 $r(t)=t$ 与 $n(t)=1(t)$ 分别作用下的稳态误差。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p><b>① 闭环传递函数。</b>前向通道 $G=\dfrac{2}{s(s+2)}$，</p>
+          <p>$$\Phi(s)=\frac{G}{1+G}=\frac{2}{s(s+2)+2}=\frac{2}{s^2+2s+2}$$</p>
+          <p><b>② 稳定性。</b>特征方程 $s^2+2s+2=0$，各项系数为正；$\zeta=0.707>0$，故稳定（也可由 $\omega_n=\sqrt2$、$2\zeta\omega_n=2$ 判断）。</p>
+          <p><b>③ 斜坡输入。</b>开环 $G=\dfrac{2}{s(s+2)}$ 为 I 型，$K_v=\lim_{s\to0}sG(s)=\dfrac{2}{2}=1$，故</p>
+          <p>$$e_{ssr}=\frac{1}{K_v}=1$$</p>
+          <p><b>④ 扰动误差。</b>令 $R=0$，$E=-C$。扰动到输出的传递函数</p>
+          <p>$$\frac{C}{N}=\frac{G_2}{1+K_1G_2}=\frac{\frac{1}{s(s+2)}}{1+\frac{2}{s(s+2)}}=\frac{1}{s^2+2s+2}$$</p>
+          <p>$$e_{ssn}=-\lim_{s\to0}s\cdot\frac{1}{s}\cdot\frac{1}{s^2+2s+2}=-\frac{1}{2}$$</p>
+          <p>负号表示扰动使输出高于给定值；大小为 $0.5$，可通过提高扰动点之前的增益 $K_1$ 减小。</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">综 2</span><span class="ex-title">由指标确定增益范围</span><span class="lv">15 分</span></div>
+      <div class="q">
+        <p>单位负反馈系统 $G(s)=\dfrac{K}{s(0.2s+1)}$，要求 $\sigma\%\leq16.3\%$、$t_s\leq2\ \mathrm{s}$（$\pm5\%$），求 $K$ 的范围。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p>闭环特征方程：$0.2s^2+s+K=0$，即 $s^2+5s+5K=0$。</p>
+          <p>$$\omega_n=\sqrt{5K},\qquad 2\zeta\omega_n=5\Rightarrow\zeta\omega_n=2.5$$</p>
+          <p><b>① 调节时间。</b>$t_s=\dfrac{3.5}{\zeta\omega_n}=\dfrac{3.5}{2.5}=1.4\ \mathrm{s}<2\ \mathrm{s}$，<b>恒满足</b>，与 $K$ 无关。</p>
+          <p><b>② 超调量。</b>$\sigma\%\leq16.3\%\Rightarrow\zeta\geq0.5$：</p>
+          <p>$$\zeta=\frac{2.5}{\omega_n}=\frac{2.5}{\sqrt{5K}}\geq0.5\Rightarrow\sqrt{5K}\leq5\Rightarrow K\leq5$$</p>
+          <p><b>③ 稳定性。</b>二阶系统要求 $K>0$。</p>
+          <p><b>结论：</b>$0<K\leq5$。</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">综 3</span><span class="ex-title">劳斯判据求参数范围</span><span class="lv">15 分</span></div>
+      <div class="q">
+        <p>系统特征方程为 $s^3+(1+a)s^2+(a+2)s+10=0$，求使系统稳定的 $a$ 范围。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p>劳斯表：</p>
+          <p>$$\begin{array}{c|cc} s^3 & 1 & a+2\\ s^2 & 1+a & 10\\ s^1 & \dfrac{(1+a)(a+2)-10}{1+a} & 0\\ s^0 & 10 & \end{array}$$</p>
+          <p>稳定要求第一列全正：</p>
+          <p>$$1+a>0\Rightarrow a>-1$$</p>
+          <p>$$(1+a)(a+2)-10>0\Rightarrow a^2+3a-8>0$$</p>
+          <p>解 $a^2+3a-8=0$ 得 $a=\dfrac{-3\pm\sqrt{41}}{2}$，即 $a_1\approx-4.70$、$a_2\approx1.70$。不等式取 $a<-4.70$ 或 $a>1.70$，与 $a>-1$ 取交集：</p>
+          <p>$$a>1.70$$</p>
+          <p><b>校验：</b>取 $a=2$，特征方程 $s^3+3s^2+4s+10=0$，劳斯第三行 $(3\times4-10)/3=0.667>0$，稳定 ✓。</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">综 4</span><span class="ex-title">含零点的根轨迹</span><span class="lv">20 分</span></div>
+      <div class="q">
+        <p>单位负反馈系统 $G(s)=\dfrac{K(s+2)}{s(s+1)}$。绘制根轨迹，求分离点、会合点及对应增益，并说明 $K$ 增大时闭环极点的走向。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p><b>① 基本要素。</b>极点 $0,-1$；零点 $-2$；$n-m=1$，一条渐近线沿 $180°$。</p>
+          <p><b>② 实轴段。</b>$[-1,0]$（右侧 1 个极点，奇数）；$(-\infty,-2]$（右侧 3 个，奇数）。$(-2,-1)$ 不是轨迹。</p>
+          <p><b>③ 分离/会合点。</b>由 $K=-\dfrac{s(s+1)}{s+2}$ 求导：</p>
+          <p>$$\frac{\dd K}{\dd s}=-\frac{(2s+1)(s+2)-(s^2+s)}{(s+2)^2}=-\frac{s^2+4s+2}{(s+2)^2}=0$$</p>
+          <p>$$s=-2\pm\sqrt2\quad\Rightarrow\quad d_1=-0.586,\ d_2=-3.414$$</p>
+          <p>两点均在轨迹上，$d_1$ 为分离点，$d_2$ 为会合点。</p>
+          <p><b>④ 对应增益。</b></p>
+          <p>$$K_1=\left|\frac{d_1(d_1+1)}{d_1+2}\right|=\frac{0.586\times0.414}{1.414}=0.172$$</p>
+          <p>$$K_2=\left|\frac{d_2(d_2+1)}{d_2+2}\right|=\frac{3.414\times2.414}{1.414}=5.83$$</p>
+          <p><b>⑤ 走向。</b>$0<K<0.172$：两个负实根，过阻尼；$K=0.172$：二重根 $-0.586$；$0.172<K<5.83$：一对共轭复根，其轨迹是<b>以 $(-2,\mathrm{j}0)$ 为圆心、半径 $\sqrt2$ 的圆弧</b>（可从特征方程 $s^2+(1+K)s+2K=0$ 验证）；$K>5.83$：又变为两个负实根，一个趋于 $-2$（零点），一个趋于 $-\infty$。</p>
+          <p><b>结论：</b>该系统对任意 $K>0$ 都稳定（二阶系统，系数恒正），$K$ 只改变动态形态，不改变稳定性。</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">综 5</span><span class="ex-title">频域法确定增益</span><span class="lv">15 分</span></div>
+      <div class="q">
+        <p>单位负反馈系统 $G(s)=\dfrac{K}{s(s+1)}$，要求相位裕度 $\gamma=45°$，求 $K$，并说明此时的幅值裕度。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p>$$\varphi(\omega)=-90°-\arctan\omega$$</p>
+          <p>令 $\gamma=180°+\varphi(\omega_c)=45°$，得</p>
+          <p>$$180°-90°-\arctan\omega_c=45°\Rightarrow\arctan\omega_c=45°\Rightarrow\omega_c=1\ \mathrm{rad/s}$$</p>
+          <p>由 $|G(\mathrm{j}\omega_c)|=1$：</p>
+          <p>$$\frac{K}{1\times\sqrt{1+1}}=1\Rightarrow K=\sqrt2=1.414$$</p>
+          <p><b>幅值裕度：</b>令 $\varphi=-180°$，得 $\arctan\omega\to90°$，即 $\omega_g\to\infty$，此时 $|G|\to0$，故 $K_g\to\infty$。二阶系统相位最多滞后 $180°$，Nyquist 曲线不会与负实轴相交，因此幅值裕度为无穷大——这也说明<b>二阶系统不存在条件稳定问题</b>。</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">综 6</span><span class="ex-title">超前校正设计</span><span class="lv">20 分</span></div>
+      <div class="q">
+        <p>系统 $G_0(s)=\dfrac{K}{s(s+1)}$，要求 $K_v\geq20$、$\gamma\geq50°$，设计串联超前校正装置并校验。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <ol class="steps">
+            <li><b>定增益。</b>I 型系统 $K_v=K\geq20$，取 $K=20$：$G_0=\dfrac{20}{s(s+1)}$。</li>
+            <li><b>未校正裕度。</b>$\dfrac{20}{\omega\sqrt{1+\omega^2}}=1\Rightarrow\omega_{c0}=4.42\ \mathrm{rad/s}$，
+            $$\gamma_0=90°-\arctan4.42=12.8°$$</li>
+            <li><b>所需超前角。</b>取 $\Delta=5°$：$\varphi_m=50°-12.8°+5°=42.2°$。</li>
+            <li><b>求 $a$。</b>
+            $$a=\frac{1+\sin42.2°}{1-\sin42.2°}=\frac{1.672}{0.328}=5.10$$</li>
+            <li><b>定 $\omega_m$。</b>最大超前角处幅值抬升 $10\lg a$，故需原系统在该点衰减到 $|G_0|=a^{-1/2}=0.443$：
+            $$\frac{20}{\omega\sqrt{1+\omega^2}}=0.443\Rightarrow\omega_m=6.68\ \mathrm{rad/s}$$</li>
+            <li><b>求 $T$。</b>
+            $$T=\frac{1}{\omega_m\sqrt a}=\frac{1}{6.68\times2.259}=0.0662\ \mathrm{s},\qquad aT=0.338$$
+            $$G_c(s)=\frac{0.338s+1}{0.0662s+1}$$</li>
+            <li><b>校验。</b>在 $\omega=6.68$ 处：
+            $$\varphi=-90°-\arctan6.68+\arctan(0.338\times6.68)-\arctan(0.0662\times6.68)$$
+            $$=-90°-81.5°+66.1°-23.9°=-129.3°\Rightarrow\gamma'=50.7°>50°\ ✓$$
+            幅值：$|G_0|=0.443$，$|G_c|=\dfrac{\sqrt{1+2.26^2}}{\sqrt{1+0.442^2}}=2.26$，乘积 $=1.00$ ✓。</li>
+          </ol>
+          <p><b>结论：</b>$G_c(s)=\dfrac{0.338s+1}{0.0662s+1}$，校正后 $\omega_c'=6.68\ \mathrm{rad/s}$，$\gamma=50.7°$，且 $K_v=20$ 满足要求。</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>

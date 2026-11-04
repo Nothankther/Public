@@ -1,0 +1,286 @@
+<section class="chapter" id="c6" data-num="6" data-title="第六章 线性系统的校正方法" data-short="⑥ 校正方法">
+  <div class="wrap">
+    <div class="ch-head">
+      <div class="ch-no"><b>06</b> CHAPTER SIX</div>
+      <h2>线性系统的校正方法<span class="en">Compensation of linear systems</span></h2>
+      <p class="ch-desc">前五章是“分析”，本章是“设计”。题目给了指标，要你反过来改造系统——套路固定、计算量大，是最容易拿满分也最容易算错的一章。</p>
+    </div>
+
+    <details class="prereq" open>
+      <summary>预备知识 · 复数阻抗法与无源 RC 网络<span class="who">6.2 三种校正装置传递函数的物理来源</span></summary>
+      <div class="bd">
+        <p>校正装置公式不必死记——它们都是从两个电阻一个电容的分压电路里推出来的。会推，就永远写不错分子分母。</p>
+        <h5>① s 域阻抗：把电路当“电阻网络”算</h5>
+        <p>在 $s$ 域里，三种元件的“阻抗”是：电阻 $R$、电感 $Ls$、电容 $\dfrac{1}{Cs}$。于是<b>分压公式原样可用</b>：输出电压 = $\dfrac{Z_2}{Z_1+Z_2}\times$ 输入电压，传递函数 $G_c(s)=\dfrac{Z_2}{Z_1+Z_2}$。列 KVL 写微分方程（2.1 节的方法）与阻抗分压（这里的方法）必然给出同一结果，后者快得多。</p>
+        <h5>② 推一遍无源超前网络（对照教材图 6-5）</h5>
+        <p>结构：$Z_1=R_1\parallel\dfrac{1}{Cs}=\dfrac{R_1}{1+R_1Cs}$（$R_1$ 与 $C$ 并联），$Z_2=R_2$。分压：</p>
+        <p>$$G_c(s)=\frac{R_2}{\frac{R_1}{1+R_1Cs}+R_2}=\frac{R_2(1+R_1Cs)}{R_1+R_2+R_1R_2Cs}=\frac{1}{a}\cdot\frac{1+aTs}{1+Ts}$$</p>
+        <p>其中 $a=\dfrac{R_1+R_2}{R_2}>1$（验证：$aT=R_1C$），$T=\dfrac{R_1R_2C}{R_1+R_2}$。<b>注意无源网络自带 $\frac1a$ 前置衰减</b>：它把中频抬高相位的同时压低整体增益。工程上再串一级增益为 $a$ 的放大器把它补回，得到正文所写的 $G_c(s)=\dfrac{1+aTs}{1+Ts}$——考试里如果题目给的是无源网络本身，别忘了 $\frac1a$。</p>
+        <h5>③ 推一遍无源滞后网络（对照教材图 6-12）</h5>
+        <p>结构：$Z_1=R_1$，$Z_2=R_2+\dfrac{1}{Cs}=\dfrac{1+R_2Cs}{Cs}$。分压：</p>
+        <p>$$G_c(s)=\frac{\frac{1+R_2Cs}{Cs}}{R_1+\frac{1+R_2Cs}{Cs}}=\frac{1+R_2Cs}{1+(R_1+R_2)Cs}=\frac{1+Ts}{1+\beta Ts},\qquad T=R_2C,\ \ \beta=\frac{R_1+R_2}{R_2}>1$$</p>
+        <p>低频增益为 1（不影响稳态精度）、高频衰减到 $\frac1\beta$——这正是“压低剪切频率”的物理手段。</p>
+        <h5>④ 负载效应：为什么实际装置多用“有源校正”</h5>
+        <p>第 2 章已见：两个 RC 网络直接级联，后级会吸走前级的电流，$G\neq G_1G_2$。无源网络之间、无源网络与被校正对象之间都存在这个问题；<b>用运算放大器隔离</b>（输入阻抗高、输出阻抗低，近似单向传递）后，环节增益才可直接相乘——这就是教材“有源校正网络”采用 PID 调节器形式的原因。</p>
+      </div>
+    </details>
+
+    <h3>6.1 为什么必须校正</h3>
+    <p>调整开环增益 $K$ 只能在“精度”和“稳定性”之间做零和交换：$K$ 增大使稳态误差减小，却使 $\gamma$ 下降、超调增大。要在<b>不牺牲稳定性</b>的前提下提高精度与快速性，必须在系统中加入<b>校正装置</b>，改变频率特性的形状。</p>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <caption>表 6-1　四种校正方式</caption>
+        <thead><tr><th style="width:16%">方式</th><th style="width:34%">结构</th><th>特点与适用场合</th></tr></thead>
+        <tbody>
+          <tr><td>串联校正</td><td>校正装置串在前向通道中</td><td>结构简单、易于调整，最常用；分超前、滞后、滞后—超前</td></tr>
+          <tr><td>反馈校正</td><td>校正装置接在局部反馈通路上</td><td>可削弱被包围环节的参数变化与非线性影响，抑制扰动，但可能引入不稳定内环</td></tr>
+          <tr><td>前馈校正</td><td>按给定或按扰动引入补偿通道</td><td>开环补偿，不改变闭环稳定性；补偿器须与被补偿通道严格匹配</td></tr>
+          <tr><td>复合校正</td><td>反馈＋前馈</td><td>兼顾精度与稳定性，工程上广泛用于高精度随动系统</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>6.2 三种串联校正装置</h3>
+    <h4>超前校正（PD 型）</h4>
+    <div class="formula">
+      <p>$$G_c(s)=\frac{aTs+1}{Ts+1}\ (a>1),\qquad
+      \varphi_m=\arcsin\frac{a-1}{a+1},\qquad \omega_m=\frac{1}{T\sqrt a},\qquad L(\omega_m)=10\lg a$$</p>
+      <div class="cap">$\varphi_m$ 为最大超前角，出现在几何中点 $\omega_m$；该点幅值抬升 $10\lg a\ \mathrm{dB}$。</div>
+    </div>
+    <ul>
+      <li>作用：在 $\omega_m$ 附近提供正相位，抬高剪切频率，<b>改善快速性与相对稳定性</b>。</li>
+      <li>代价：高频增益被抬高（$20\lg a$），<b>抗高频噪声能力变差</b>。</li>
+      <li>适用：$\gamma$ 不足、但 $\omega_c$ 还有余量（或要求更快的响应）的场合。</li>
+    </ul>
+
+    <h4>滞后校正（PI 型）</h4>
+    <div class="formula">
+      <p>$$G_c(s)=\frac{Ts+1}{\beta Ts+1}\ (\beta>1),\qquad
+      \varphi_m=-\arcsin\frac{\beta-1}{\beta+1},\qquad \omega_m=\frac{1}{T\sqrt\beta},\qquad L(\infty)=-20\lg\beta$$</p>
+      <div class="cap">最大滞后角为负值，出现在 $\omega_m$；高频段衰减 $20\lg\beta$，低频增益不变。</div>
+    </div>
+    <ul>
+      <li>作用：<b>压低中高频增益</b>，使剪切频率左移，从而在较低频率处获得足够相位裕度。</li>
+      <li>代价：带宽变窄，<b>快速性下降</b>；但高频衰减有利于抗噪声。</li>
+      <li>适用：$\gamma$ 不足、而快速性要求不高的场合；或需要保留低频增益（稳态精度）的场合。</li>
+    </ul>
+
+    <h4>滞后—超前校正与 PID</h4>
+    <p>滞后—超前校正 $G_c=\dfrac{T_1s+1}{\beta T_1s+1}\cdot\dfrac{aT_2s+1}{T_2s+1}$ 兼有两者的优点：低频段用滞后提高精度，中频段用超前提高相位裕度。工程上更常用 PID 形式：</p>
+    <p>$$G_{PID}(s)=K_p\left(1+\frac{1}{T_is}+T_ds\right)$$</p>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th style="width:14%">环节</th><th style="width:26%">对性能的影响</th><th>注意事项</th></tr></thead>
+        <tbody>
+          <tr><td>比例 $K_p$</td><td>提高增益，减小稳态误差，加快响应</td><td>过大导致超调、振荡甚至失稳</td></tr>
+          <tr><td>积分 $T_i$</td><td>提高系统型别，消除阶跃/斜坡稳态误差</td><td>引入 $-90°$ 相位滞后，降低稳定性；$T_i$ 过大则积分作用弱</td></tr>
+          <tr><td>微分 $T_d$</td><td>提供超前相位、增大阻尼，抑制超调</td><td>放大高频噪声；不改变常值稳态误差</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="figx">
+      <div class="figx-head">
+        <span class="figx-badge">可交互</span>
+        <span class="figx-title">校正装置试验台：a 与 T 各自改变什么</span>
+        <span class="figx-hint">切换超前 / 滞后，拖动两个参数</span>
+      </div>
+      <div class="figx-ctl" style="padding:9px 16px 4px">
+        <button type="button" class="figx-pill on" data-comp="lead">超前校正</button>
+        <button type="button" class="figx-pill" data-comp="lag">滞后校正</button>
+      </div>
+      <div class="figx-body one">
+        <div class="figx-pane">
+          <svg id="compSvg" viewBox="0 0 760 430" role="img" aria-label="校正装置的 Bode 图"></svg>
+        </div>
+      </div>
+      <div class="figx-ctl">
+        <label><span id="compALabel">a</span>
+          <input type="range" id="compA" min="1.2" max="20" step="0.1" value="4">
+          <output id="compAOut">4.0</output>
+        </label>
+        <label>T
+          <input type="range" id="compT" min="0.05" max="2" step="0.01" value="0.5">
+          <output id="compTOut">0.50</output>
+        </label>
+      </div>
+      <div class="figx-read" id="compRead"></div>
+      <div class="figx-note" id="compNote"></div>
+    </div>
+
+    <h3>6.3 串联超前校正的设计步骤</h3>
+    <ol class="steps">
+      <li><b>由稳态指标定增益。</b>按 $e_{ss}$ 或 $K_v,K_a$ 的要求求出满足精度的开环增益 $K$，并令其为未校正系统的增益。</li>
+      <li><b>算未校正系统的相位裕度 $\gamma_0$。</b>求 $\omega_{c0}$ 与 $\gamma_0=180°+\varphi_0(\omega_{c0})$。</li>
+      <li><b>算所需最大超前角。</b>$\varphi_m=\gamma-\gamma_0+\Delta$，其中 $\Delta=5°\sim10°$ 用于补偿校正后剪切频率右移带来的相位下降。</li>
+      <li><b>求 $a$。</b>由 $a=\dfrac{1+\sin\varphi_m}{1-\sin\varphi_m}$。</li>
+      <li><b>定 $\omega_m$。</b>令校正后 $\omega_c'=\omega_m$，由 $L_0(\omega_m)=-10\lg a$ 反解 $\omega_m$（即未校正幅频等于 $-10\lg a$ 处的频率）。</li>
+      <li><b>求 $T$。</b>$T=\dfrac{1}{\omega_m\sqrt a}$，得 $G_c(s)=\dfrac{aTs+1}{Ts+1}$。</li>
+      <li><b>校验。</b>重算 $\omega_c'$、$\gamma'$，确认满足全部指标；若不满足，加大 $\Delta$ 重来。</li>
+    </ol>
+
+    <div class="box tip">
+      <div class="t">一句话记住超前校正的“锚点”</div>
+      <p>把<b>最大超前角所在频率</b>对准<b>新的剪切频率</b>，并让该点的幅值抬升刚好把 $L_0$ 补到 $0\ \mathrm{dB}$——这两件事由 $L_0(\omega_m)=-10\lg a$ 一个方程同时保证。</p>
+    </div>
+
+    <h3>6.4 串联滞后校正的设计步骤</h3>
+    <ol class="steps">
+      <li><b>由稳态指标定增益 $K$</b>（同超前校正）。</li>
+      <li><b>由相位裕度要求确定新的剪切频率 $\omega_c'$。</b>令 $\varphi_0(\omega_c')=-180°+\gamma+\Delta$（$\Delta=5°\sim10°$ 留给滞后环节的相位滞后），解出 $\omega_c'$。</li>
+      <li><b>求 $\beta$。</b>由 $20\lg\beta=-L_0(\omega_c')$，即 $\beta=|G_0(\mathrm{j}\omega_c')|$。</li>
+      <li><b>定转折频率。</b>取 $\dfrac{1}{T}=(0.1\sim0.2)\omega_c'$（滞后环节的零点远离 $\omega_c'$，以减少其相位滞后的影响），则 $\dfrac{1}{\beta T}=\dfrac{1}{T\beta}$。</li>
+      <li><b>校验。</b>重算 $\gamma'$，并确认 $\omega_c'$ 处幅值恰为 $0\ \mathrm{dB}$。</li>
+    </ol>
+
+    <div class="box warn">
+      <div class="t">超前与滞后的选择</div>
+      <p>看到“<b>提高快速性</b>”或“$\omega_c$ 偏小” → 选超前；看到“<b>只需提高稳定性</b>、对快速性无要求”或“高频干扰大” → 选滞后。若单级超前不够（$\varphi_m>60°$ 时 $a$ 过大、噪声放大严重），改用两级超前或滞后—超前。</p>
+    </div>
+
+    <h3>6.5 反馈校正与前馈校正</h3>
+    <div class="grid g2">
+      <div class="card">
+        <div class="h">反馈校正</div>
+        <p>用局部反馈包围某个环节。当 $|G_2H|\gg1$ 时，被包围部分的等效传递函数近似为 $1/H$，<b>几乎与 $G_2$ 本身无关</b>——这就是它能抑制参数漂移、非线性与扰动的原理。代价是要保证内环稳定。</p>
+      </div>
+      <div class="card">
+        <div class="h">前馈校正（不变性原理）</div>
+        <p>按扰动 $n$ 引入补偿通道 $G_c$，使扰动对输出的两条通路相互抵消：$G_cG_n+1=0$，即 $G_c=-1/G_n$。完全补偿要求 $G_c$ 物理可实现，工程上常做近似补偿。</p>
+      </div>
+    </div>
+
+    <h3>6.6 复合校正</h3>
+    <p>复合校正＝<b>反馈</b>（保证稳定性与抗扰）＋<b>前馈</b>（保证精度）。教材 6-5、6-6 节的两类结构必须分清：前馈信号取自<b>给定</b>还是取自<b>扰动</b>。</p>
+
+    <h4>按扰动补偿（不变性原理）</h4>
+    <p>设扰动 $N(s)$ 经 $G_n(s)$ 作用于对象输入端，另从 $N$ 引出前馈补偿 $G_c(s)$，与 $G_n$ 的输出在对象入口相加。要求 $N$ 对输出无影响，即两条通道在输出端“抵消”：</p>
+    <p>$$G_c(s)G_n(s)+1=0\quad\Longrightarrow\quad G_c(s)=-\frac{1}{G_n(s)}$$</p>
+    <p>这就是<b>完全不变性条件</b>。若 $G_n$ 是惯性环节，则 $G_c$ 含微分，物理上只能近似实现（加惯性滤波），工程上称为“近似不变性”。</p>
+
+    <h4>按给定补偿</h4>
+    <p>设 $R\to G_1\to G_2\to C$、单位负反馈，前馈 $G_f(s)$ 从 $R$ 引出、加到 $G_1$ 与 $G_2$ 之间。此时</p>
+    <p>$$\Phi(s)=\frac{G_1G_2+G_fG_2}{1+G_1G_2}$$</p>
+    <p>要求 $\Phi(s)=1$（误差恒为零），得</p>
+    <p>$$G_f(s)=\frac{1}{G_2(s)}$$</p>
+    <p>例如 $G_2=\dfrac{1}{s+1}$ 时 $G_f=s+1$，分子阶次高于分母，<b>不可物理实现</b>，只能取 $G_f=\dfrac{\tau s+1}{Ts+1}$（$\tau>T$）做近似补偿，或在有限频段内补偿。</p>
+
+    <div class="box key">
+      <div class="t">复合校正最重要的两条性质</div>
+      <p>① <b>前馈不改变闭环特征方程</b>：$G_f$、$G_c$ 只出现在误差传递函数的分子上，因此不影响稳定性——这是它相对串联校正的最大优势；<br>
+      ② <b>前馈只能补偿“可测”的信号</b>：给定可测、扰动须可测（或可观测），否则无从引出补偿信号。</p>
+    </div>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 6-1</span><span class="ex-title">按扰动补偿的完全不变性设计</span><span class="lv">教材习题 6-10 类型</span></div>
+      <div class="q">
+        <p>系统 $R\to G_1=\dfrac{K_1}{s+1}\to(+)\to G_2=\dfrac{1}{s}\to C$，单位负反馈；扰动 $N$ 经 $G_n=\dfrac{1}{0.5s+1}$ 进入相加点。要求输出完全不受 $N$ 影响，求前馈补偿 $G_c(s)$，并说明实现上的问题。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p>令 $R=0$，扰动到输出的两条通道为：$N\to G_n\to G_2\to C$ 与 $N\to G_c\to G_2\to C$。二者在 $G_2$ 入口相加，要使 $C=0$，须</p>
+          <p>$$G_n+G_c=0\Rightarrow G_c=-G_n^{-1}=-(0.5s+1)$$</p>
+          <p><b>实现问题：</b>$G_c$ 含理想微分 $0.5s$，会放大高频噪声且分子阶次（1）不低于分母（0）。工程上取</p>
+          <p>$$G_c(s)=-\frac{0.5s+1}{0.05s+1}$$</p>
+          <p>即给微分加一个惯性滤波，在低频段近似满足不变性条件，高频段不再补偿——这是“近似不变性”的典型做法。</p>
+        </div>
+      </details>
+    </div>
+
+    <h3>6.7 典型例题</h3>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 6-2</span><span class="ex-title">串联超前校正的完整设计</span><span class="lv">必考题型</span></div>
+      <div class="q">
+        <p>单位负反馈系统 $G_0(s)=\dfrac{K}{s(s+1)}$，要求：① 单位斜坡输入下稳态误差 $e_{ss}\leq0.1$；② 相位裕度 $\gamma\geq45°$。设计串联超前校正装置。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <ol class="steps">
+            <li><b>由稳态误差定增益。</b>I 型系统，$K_v=K$，斜坡输入 $r=t$ 时 $e_{ss}=1/K_v=1/K\leq0.1$，故取 $K=10$。未校正系统 $G_0=\dfrac{10}{s(s+1)}$。</li>
+            <li><b>未校正的相位裕度。</b>由 $\dfrac{10}{\omega\sqrt{1+\omega^2}}=1$ 解得 $\omega_{c0}=3.08\ \mathrm{rad/s}$，
+            $$\gamma_0=180°-90°-\arctan3.08=18.0°$$
+            不满足 $45°$ 要求。</li>
+            <li><b>所需超前角。</b>取 $\Delta=5°$：
+            $$\varphi_m=45°-18.0°+5°=32°$$</li>
+            <li><b>求 $a$。</b>
+            $$a=\frac{1+\sin32°}{1-\sin32°}=\frac{1.530}{0.470}=3.25$$</li>
+            <li><b>定 $\omega_m$。</b>需 $L_0(\omega_m)=-10\lg3.25=-5.1\ \mathrm{dB}$，即 $|G_0(\mathrm{j}\omega_m)|=0.555$：
+            $$\frac{10}{\omega\sqrt{1+\omega^2}}=0.555\Rightarrow\omega_m=4.19\ \mathrm{rad/s}$$</li>
+            <li><b>求 $T$。</b>
+            $$T=\frac{1}{\omega_m\sqrt a}=\frac{1}{4.19\times1.803}=0.132$$
+            故 $aT=0.430$，校正装置为
+            $$G_c(s)=\frac{0.430s+1}{0.132s+1}$$</li>
+            <li><b>校验。</b>校正后在 $\omega=4.19$ 处：
+            $$\varphi=-90°-\arctan4.19+\arctan(1.803)-\arctan(0.553)=-166.6°+61.0°-28.9°=-134.5°$$
+            $$\gamma'=180°-134.5°=45.5°>45°\ ✓$$
+            幅值：$|G_0|=0.555$，$|G_c|=\dfrac{\sqrt{1+1.803^2}}{\sqrt{1+0.553^2}}=\dfrac{2.062}{1.143}=1.804$，乘积 $=1.00$ ✓。</li>
+          </ol>
+          <p><b>结论：</b>$G_c(s)=\dfrac{0.43s+1}{0.132s+1}$，校正后 $\omega_c'=4.19\ \mathrm{rad/s}$、$\gamma=45.5°$，且稳态误差满足要求。</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 6-3</span><span class="ex-title">串联滞后校正的关键计算</span><span class="lv">掌握步骤即可</span></div>
+      <div class="q">
+        <p>系统 $G_0(s)=\dfrac{K}{s(s+1)(0.5s+1)}$，要求 $K_v=5$、$\gamma\geq40°$。说明为何必须用滞后校正，并求校正装置参数。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p><b>先判断：</b>$K_v=K=5$。此时特征方程 $0.5s^3+1.5s^2+s+5=0$，劳斯表第一列第三行为 $\dfrac{1.5-2.5}{1.5}<0$，<b>闭环已不稳定</b>，$\gamma_0<0$。仅靠调整增益无法既保证 $K_v=5$ 又稳定，必须引入校正。</p>
+          <ol class="steps">
+            <li><b>确定新的剪切频率。</b>要求 $\gamma=40°$，留 $\Delta=5°$ 给滞后环节：
+            $$\varphi_0(\omega_c')=-180°+40°+5°=-135°$$
+            即 $\arctan\omega+\arctan0.5\omega=45°$，解得 $\omega_c'=0.562\ \mathrm{rad/s}$。</li>
+            <li><b>求 $\beta$。</b>
+            $$|G_0(\mathrm{j}0.562)|=\frac{5}{0.562\times1.147\times1.039}=7.47\Rightarrow\beta=7.47$$</li>
+            <li><b>定转折频率。</b>取 $\dfrac{1}{T}=0.1\omega_c'=0.056$，即 $T=17.8$；$\beta T=133$。于是
+            $$G_c(s)=\frac{17.8s+1}{133s+1}$$</li>
+            <li><b>校验。</b>滞后环节在 $\omega_c'$ 处的相位为
+            $$-\arctan(133\times0.562)+\arctan(17.8\times0.562)=-89.2°+84.3°=-4.9°$$
+            $$\gamma'=180°-135°-4.9°=40.1°\ ✓$$
+            幅值：$|G_c|=\dfrac{\sqrt{1+10^2}}{\sqrt{1+74.8^2}}=0.134$，而 $|G_0|=7.47$，乘积 $=1.00$ ✓。</li>
+          </ol>
+          <div class="box tip" style="margin-bottom:0">
+            <div class="t">滞后校正的代价</div>
+            <p>$\omega_c$ 由未校正时的约 $1.8\ \mathrm{rad/s}$ 降到 $0.56\ \mathrm{rad/s}$，<b>带宽明显变窄，响应变慢</b>。这就是“用快速性换稳定性”。</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 6-4</span><span class="ex-title">PD 校正与阻尼比</span><span class="lv">小计算题</span></div>
+      <div class="q">
+        <p>系统 $G_0(s)=\dfrac{10}{s(s+1)}$，串入 PD 校正 $G_c(s)=1+T_ds$。要求闭环阻尼比 $\zeta=0.707$，求 $T_d$，并说明对稳态误差的影响。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p>闭环特征方程：$s^2+s+10(1+T_ds)=0$，即</p>
+          <p>$$s^2+(1+10T_d)s+10=0$$</p>
+          <p>与标准式对比：$\omega_n=\sqrt{10}=3.162$，$2\zeta\omega_n=1+10T_d$。代入 $\zeta=0.707$：</p>
+          <p>$$2\times0.707\times3.162=4.472=1+10T_d\Rightarrow T_d=0.347$$</p>
+          <p><b>稳态影响：</b>PD 校正不增加积分环节，系统仍为 I 型；开环增益仍为 10，故斜坡输入下的稳态误差不变（$e_{ss}=0.1$）。微分只改变动态阻尼，不改变常值稳态误差——这是 PD 与 PI 的分水岭。</p>
+        </div>
+      </details>
+    </div>
+
+    <h3>6.8 本章易错清单</h3>
+    <div class="box warn">
+      <div class="t">考前自检</div>
+      <p>① 忘记先用稳态指标定增益，直接从 $\gamma$ 开始设计；<br>
+      ② 超前角公式用成 $\arcsin\dfrac{a+1}{a-1}$ 或漏掉 $\Delta$；<br>
+      ③ $\omega_m$ 与 $\omega_c'$ 没有对齐，导致校正后 $|G|=1$ 不成立；<br>
+      ④ 滞后校正把 $\beta$ 当成衰减倍数写成 $1/\beta$（$20\lg\beta$ 才是衰减量）；<br>
+      ⑤ 滞后环节转折频率取得离 $\omega_c'$ 太近，附加相位滞后吃掉裕度；<br>
+      ⑥ 设计完不校验（题目明确要求“校验”却省略，直接丢分）；<br>
+      ⑦ 认为 PD 能消除稳态误差（不能，只有积分可以）。</p>
+    </div>
+  </div>
+</section>

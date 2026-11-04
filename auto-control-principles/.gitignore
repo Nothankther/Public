@@ -1,0 +1,16 @@
+# 调试产物与临时文件
+_*.png
+_*.html
+_*.txt
+_*.mjs
+
+# 加密分发（账号、密钥、密文，绝不入库）
+shop/
+
+# 系统与编辑器
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+.idea/
+.vscode/

@@ -1,0 +1,111 @@
+<section class="chapter" id="appA" data-num="A" data-title="附录 A　公式速查" data-short="附录 A · 公式速查">
+  <div class="wrap">
+    <div class="ch-head">
+      <div class="ch-no"><b>A</b> APPENDIX · QUICK REFERENCE</div>
+      <h2>公式速查表<span class="en">Formula reference</span></h2>
+      <p class="ch-desc">考前一小时只看这一页。所有符号与前文一致，可直接套用。</p>
+    </div>
+
+    <h3>拉普拉斯变换</h3>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th style="width:34%">$f(t)$</th><th style="width:30%">$F(s)$</th><th>$f(t)$</th><th>$F(s)$</th></tr></thead>
+        <tbody>
+          <tr><td>$\delta(t)$</td><td>$1$</td><td>$t\,\mathrm{e}^{-at}$</td><td>$\dfrac{1}{(s+a)^2}$</td></tr>
+          <tr><td>$1(t)$</td><td>$\dfrac{1}{s}$</td><td>$\mathrm{e}^{-at}\sin\omega t$</td><td>$\dfrac{\omega}{(s+a)^2+\omega^2}$</td></tr>
+          <tr><td>$t$</td><td>$\dfrac{1}{s^2}$</td><td>$\mathrm{e}^{-at}\cos\omega t$</td><td>$\dfrac{s+a}{(s+a)^2+\omega^2}$</td></tr>
+          <tr><td>$\dfrac{t^n}{n!}$</td><td>$\dfrac{1}{s^{n+1}}$</td><td>$\sin\omega t$</td><td>$\dfrac{\omega}{s^2+\omega^2}$</td></tr>
+          <tr><td>$\mathrm{e}^{-at}$</td><td>$\dfrac{1}{s+a}$</td><td>$\cos\omega t$</td><td>$\dfrac{s}{s^2+\omega^2}$</td></tr>
+          <tr><td>$1-\mathrm{e}^{-at}$</td><td>$\dfrac{a}{s(s+a)}$</td><td>$t\sin\omega t$</td><td>$\dfrac{2\omega s}{(s^2+\omega^2)^2}$</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><b>性质：</b>$\mathscr{L}[\dot f]=sF(s)-f(0)$；$\mathscr{L}[\ddot f]=s^2F(s)-sf(0)-\dot f(0)$；$\mathscr{L}\left[\int_0^tf\dd\tau\right]=\dfrac{F(s)}{s}$；$\mathscr{L}[f(t-\tau)]=\mathrm{e}^{-\tau s}F(s)$；终值 $\lim_{t\to\infty}f(t)=\lim_{s\to0}sF(s)$。</p>
+
+    <h3>时域指标（二阶欠阻尼系统）</h3>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th style="width:26%">指标</th><th style="width:40%">公式</th><th>备注</th></tr></thead>
+        <tbody>
+          <tr><td>阻尼振荡频率</td><td>$\omega_d=\omega_n\sqrt{1-\zeta^2}$</td><td>$\beta=\arccos\zeta$</td></tr>
+          <tr><td>上升时间</td><td>$t_r=\dfrac{\pi-\beta}{\omega_d}$</td><td>从 0 首次到终值</td></tr>
+          <tr><td>峰值时间</td><td>$t_p=\dfrac{\pi}{\omega_d}$</td><td>半周期</td></tr>
+          <tr><td>超调量</td><td>$\sigma\%=\mathrm{e}^{-\pi\zeta/\sqrt{1-\zeta^2}}\times100\%$</td><td>只与 $\zeta$ 有关</td></tr>
+          <tr><td>调节时间</td><td>$t_s=\dfrac{3.5}{\zeta\omega_n}\ (\pm5\%)$；$\dfrac{4.4}{\zeta\omega_n}\ (\pm2\%)$</td><td>由实部决定</td></tr>
+          <tr><td>一阶系统</td><td>$t_r=2.2T$，$t_s=3T/4T$</td><td>无超调</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>稳定性判据</h3>
+    <div class="grid g2">
+      <div class="card">
+        <div class="h">劳斯判据</div>
+        <p>特征方程各项系数同号且不缺项（必要）；劳斯表<b>第一列全正</b>（充要）。第一列变号次数 = 右半平面根数。<br>
+        首列为 0 → 用 $\varepsilon\to0^+$ 代替；全零行 → 用上一行构造辅助方程并求导。</p>
+      </div>
+      <div class="card">
+        <div class="h">奈奎斯特判据</div>
+        <p>$Z=P-2N$。$P$：开环右半平面极点数；$N$：半闭合曲线对 $(-\infty,-1)$ 段的净穿越次数（上→下为 $+1$，下→上为 $-1$）。稳定 ⇔ $Z=0$。</p>
+      </div>
+      <div class="card">
+        <div class="h">稳定裕度</div>
+        <p>$\gamma=180°+\angle G(\mathrm{j}\omega_c)$；$K_g(\mathrm{dB})=-20\lg|G(\mathrm{j}\omega_g)|$。工程取值 $\gamma=30°\sim60°$，$K_g\geq6\ \mathrm{dB}$。</p>
+      </div>
+      <div class="card">
+        <div class="h">离散系统</div>
+        <p>特征根 $|z_i|<1$；或令 $z=\dfrac{1+w}{1-w}$ 后用劳斯判据。终值定理须 $(z-1)F(z)$ 极点全在单位圆内。</p>
+      </div>
+    </div>
+
+    <h3>稳态误差</h3>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th style="width:14%">型别</th><th style="width:20%">$K_p$</th><th style="width:20%">$K_v$</th><th style="width:20%">$K_a$</th><th>阶跃 / 斜坡 / 加速度</th></tr></thead>
+        <tbody>
+          <tr><td class="c">0</td><td>$K$</td><td>$0$</td><td>$0$</td><td>$\dfrac{R}{1+K}$ / $\infty$ / $\infty$</td></tr>
+          <tr><td class="c">I</td><td>$\infty$</td><td>$K$</td><td>$0$</td><td>$0$ / $\dfrac{R}{K}$ / $\infty$</td></tr>
+          <tr><td class="c">II</td><td>$\infty$</td><td>$\infty$</td><td>$K$</td><td>$0$ / $0$ / $\dfrac{R}{K}$</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>通用式：$e_{ss}=\lim_{s\to0}sE(s)$，$E(s)=R(s)[1-\Phi(s)]$；扰动误差令 $R=0$，$E_n(s)=-\Phi_n(s)N(s)$。</p>
+
+    <h3>校正装置</h3>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th style="width:16%">装置</th><th style="width:26%">传递函数</th><th>关键公式</th></tr></thead>
+        <tbody>
+          <tr><td>超前</td><td>$\dfrac{aTs+1}{Ts+1}\ (a>1)$</td><td>$\varphi_m=\arcsin\dfrac{a-1}{a+1}$，$\omega_m=\dfrac{1}{T\sqrt a}$，$L(\omega_m)=10\lg a$</td></tr>
+          <tr><td>滞后</td><td>$\dfrac{Ts+1}{\beta Ts+1}\ (\beta>1)$</td><td>$\varphi_m=-\arcsin\dfrac{\beta-1}{\beta+1}$，$\omega_m=\dfrac{1}{T\sqrt\beta}$，高频衰减 $20\lg\beta$</td></tr>
+          <tr><td>PD</td><td>$1+T_ds$</td><td>增大阻尼，不改变常值稳态误差</td></tr>
+          <tr><td>PI</td><td>$1+\dfrac{1}{T_is}$</td><td>提高型别，消除稳态误差，引入 $-90°$ 相位</td></tr>
+          <tr><td>PID</td><td>$K_p\left(1+\dfrac{1}{T_is}+T_ds\right)$</td><td>兼顾精度、快速性与阻尼</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>常用数值</h3>
+    <div class="grid g2">
+      <div class="card">
+        <div class="h">$\zeta$ 与 $\sigma\%$</div>
+        <p>$\zeta=0.1\to72.9\%$；$0.2\to52.7\%$；$0.3\to37.2\%$；$0.4\to25.4\%$；<br>
+        $0.5\to16.3\%$；$0.6\to9.5\%$；$0.707\to4.3\%$；$0.8\to1.5\%$；$0.9\to0.15\%$。</p>
+      </div>
+      <div class="card">
+        <div class="h">分贝换算</div>
+        <p>$20\lg2=6.0\ \mathrm{dB}$；$20\lg3=9.5\ \mathrm{dB}$；$20\lg10=20\ \mathrm{dB}$；<br>
+        $20\lg0.707=-3.0\ \mathrm{dB}$；$20\lg0.1=-20\ \mathrm{dB}$；$20\lg0.01=-40\ \mathrm{dB}$。</p>
+      </div>
+      <div class="card">
+        <div class="h">常用三角函数</div>
+        <p>$\arccos0.5=60°$；$\arcsin0.5=30°$；$\tan60°=\sqrt3$；$\sin60°=0.866$；<br>
+        $\pi/6=0.5236$；$\pi/4=0.7854$；$\pi/3=1.0472$。</p>
+      </div>
+      <div class="card">
+        <div class="h">根轨迹</div>
+        <p>$\sigma_a=\dfrac{\sum p-\sum z}{n-m}$；$\varphi_a=\dfrac{(2k+1)180°}{n-m}$；分离点 $\sum\dfrac{1}{d-p_i}=\sum\dfrac{1}{d-z_j}$。</p>
+      </div>
+    </div>
+  </div>
+</section>

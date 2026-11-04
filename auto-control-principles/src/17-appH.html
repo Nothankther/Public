@@ -1,0 +1,82 @@
+<section class="chapter" id="appH" data-num="H" data-title="附录 H　公式推导 12 例" data-short="附录 H · 公式推导">
+  <div class="wrap">
+    <div class="ch-head">
+      <div class="ch-no"><b>H</b> APPENDIX · DERIVATIONS</div>
+      <h2>关键公式的来龙去脉<span class="en">Where the formulas come from</span></h2>
+      <p class="ch-desc">背公式能做题，懂推导才能判断“什么时候不能用”。这 12 个推导覆盖时域指标、稳态误差、根轨迹、频域与离散系统，全部只用教材前面的结论，不引入新工具。</p>
+    </div>
+
+    <h4>H.1　一阶系统的 63.2%、$t_r=2.2T$、$t_s=3T/4T$</h4>
+    <p>单位阶跃下 $c(t)=1-\mathrm{e}^{-t/T}$。令 $t=T$，得 $c=1-\mathrm{e}^{-1}=0.632$。</p>
+    <p>上升时间按 10%→90%：$t_{0.1}=-T\ln0.9=0.105T$，$t_{0.9}=-T\ln0.1=2.303T$，故 $t_r=2.198T\approx2.2T$。调节时间令包络 $\mathrm{e}^{-t/T}=0.05$ 或 $0.02$，得 $t_s=2.996T\approx3T$（5%）或 $3.912T\approx4T$（2%）。</p>
+    <p class="muted">用途：一阶系统只有 $T$ 一个参数，三个数必须能脱口而出；也用于“大极点近似”降阶后的估算。</p>
+
+    <h4>H.2　二阶欠阻尼阶跃响应</h4>
+    <p>$$\Phi(s)=\frac{\omega_n^2}{s^2+2\zeta\omega_ns+\omega_n^2}=\frac{\omega_n^2}{(s+\zeta\omega_n)^2+\omega_d^2},\qquad \omega_d=\omega_n\sqrt{1-\zeta^2}$$</p>
+    <p>部分分式展开后取拉氏反变换，得</p>
+    <p>$$c(t)=1-\frac{\mathrm{e}^{-\zeta\omega_nt}}{\sqrt{1-\zeta^2}}\sin(\omega_dt+\beta),\qquad \beta=\arccos\zeta$$</p>
+    <p>两项的物理含义：$1$ 是稳态项；指数项是衰减包络，衰减速率由实部 $\zeta\omega_n$ 决定；正弦项是振荡，频率由虚部 $\omega_d$ 决定。</p>
+
+    <h4>H.3　峰值时间 $t_p=\pi/\omega_d$</h4>
+    <p>对 H.2 求导并化简：</p>
+    <p>$$\frac{\dd c}{\dd t}=\frac{\omega_n}{\sqrt{1-\zeta^2}}\mathrm{e}^{-\zeta\omega_nt}\sin(\omega_dt)$$</p>
+    <p>令导数为零，首个非零解为 $\omega_dt=\pi$，故 $t_p=\pi/\omega_d$。这也说明：<b>峰值时间只由虚部决定</b>，与实部无关。</p>
+
+    <h4>H.4　超调量 $\sigma\%=\mathrm{e}^{-\pi\zeta/\sqrt{1-\zeta^2}}$</h4>
+    <p>把 $t_p=\pi/\omega_d$ 代回 H.2。此时 $\sin(\pi+\beta)=-\sin\beta=-\sqrt{1-\zeta^2}$，故</p>
+    <p>$$c(t_p)=1+\mathrm{e}^{-\zeta\omega_n\pi/\omega_d}=1+\mathrm{e}^{-\pi\zeta/\sqrt{1-\zeta^2}}$$</p>
+    <p>减去稳态值 1 再除以 1，即得 $\sigma\%$。式中只剩 $\zeta$，所以<b>超调量与 $\omega_n$ 无关</b>。</p>
+
+    <h4>H.5　上升时间 $t_r=(\pi-\beta)/\omega_d$</h4>
+    <p>令 $c(t)=1$，即 $\sin(\omega_dt+\beta)=0$。首次到达取 $\omega_dt+\beta=\pi$，故 $t_r=(\pi-\beta)/\omega_d$。</p>
+    <p>注意：这是“首次到达稳态值”的定义；若按 10%→90% 定义，结果会略小，考试按题目要求选用。</p>
+
+    <h4>H.6　调节时间 $t_s\approx3.5/(\zeta\omega_n)$ 的来源</h4>
+    <p>响应的包络为 $\dfrac{\mathrm{e}^{-\zeta\omega_nt}}{\sqrt{1-\zeta^2}}$。要求它不超过 5%，即</p>
+    <p>$$\frac{\mathrm{e}^{-\zeta\omega_nt}}{\sqrt{1-\zeta^2}}\leq0.05\ \Rightarrow\ t\geq\frac{-\ln(0.05\sqrt{1-\zeta^2})}{\zeta\omega_n}$$</p>
+    <p>在 $\zeta=0.4\sim0.8$ 范围内，分子约在 $3.1\sim3.5$ 之间，工程上统一取 $3.5$（5%）与 $4.4$（2%）。因此它是<b>近似式</b>，$ζ$ 很小或很大时误差会变大。</p>
+
+    <h4>H.7　静态误差系数表</h4>
+    <p>对单位负反馈，$E(s)=\dfrac{R(s)}{1+G(s)}$。三种典型输入分别代入并用终值定理：</p>
+    <p>$$e_{ss}=\lim_{s\to0}\frac{s\cdot(1/s)}{1+G}=\frac{1}{1+K_p}\quad(\text{阶跃})$$</p>
+    <p>$$e_{ss}=\lim_{s\to0}\frac{s\cdot(1/s^2)}{1+G}=\lim_{s\to0}\frac{1}{sG}=\frac{1}{K_v}\quad(\text{斜坡})$$</p>
+    <p>$$e_{ss}=\lim_{s\to0}\frac{1}{s^2G}=\frac{1}{K_a}\quad(\text{加速度})$$</p>
+    <p>其中 $K_p=\lim G$、$K_v=\lim sG$、$K_a=\lim s^2G$。型别 $\nu$ 决定哪个极限为有限值，从而决定“0 / 常数 / ∞”。</p>
+
+    <h4>H.8　分离点方程 $\sum\dfrac{1}{d-p_i}=\sum\dfrac{1}{d-z_j}$</h4>
+    <p>闭环特征方程 $1+K^*\dfrac{P(s)}{Q(s)}=0$，解出</p>
+    <p>$$K^*=-\frac{Q(s)}{P(s)}$$</p>
+    <p>分离点处 $K^*$ 对 $s$ 的变化率为零（两个根在此重合），令 $\dd K^*/\dd s=0$：</p>
+    <p>$$-\frac{Q'P-QP'}{P^2}=0\ \Rightarrow\ \frac{Q'}{Q}=\frac{P'}{P}$$</p>
+    <p>而 $P=\prod(s-z_j)$、$Q=\prod(s-p_i)$，逐项求对数导数即得 $\sum\dfrac{1}{d-p_i}=\sum\dfrac{1}{d-z_j}$。解出的 $d$ 还要检验是否落在根轨迹上。</p>
+
+    <h4>H.9　渐近线的交点与倾角</h4>
+    <p>当 $|s|\to\infty$ 时，$G(s)H(s)\approx\dfrac{K^*}{s^{n-m}}$。相角条件</p>
+    <p>$$-(n-m)\theta=(2k+1)180°\ \Rightarrow\ \theta=\frac{(2k+1)180°}{n-m}$$</p>
+    <p>交点由“闭环极点之和 = 开环极点之和”推出：设 $s=\sigma_a+Re^{\mathrm{j}\theta}$，令 $R\to\infty$，则 $n-m$ 条渐近线的重心为</p>
+    <p>$$\sigma_a=\frac{\sum p_i-\sum z_j}{n-m}$$</p>
+    <p>这就是“重心公式”，也可用来快速检查画出的渐近线是否偏了。</p>
+
+    <h4>H.10　Bode 渐近线斜率为什么是 $-20\ \mathrm{dB/dec}$ 的整数倍</h4>
+    <p>每个积分环节 $1/s$ 的幅值随 $\omega$ 反比下降，频率增 10 倍、幅值降 10 倍，即 $-20\ \mathrm{dB/dec}$。每个惯性环节 $1/(Ts+1)$ 在高频段也近似 $-20\ \mathrm{dB/dec}$；每个一阶微分环节 $(Ts+1)$ 在高频段为 $+20\ \mathrm{dB/dec}$。因此：</p>
+    <p>$$\text{低频斜率}=-20\nu\ \mathrm{dB/dec},\qquad \text{高频斜率}=-20(n-m)\ \mathrm{dB/dec}$$</p>
+    <p>转折频率处斜率改变 $\pm20$（一阶环节）或 $\pm40$（二阶环节）。这也是“由 Bode 图反推传递函数”的全部依据。</p>
+
+    <h4>H.11　z 平面单位圆就是 s 左半平面</h4>
+    <p>采样映射 $z=\mathrm{e}^{sT}$。令 $s=\sigma+\mathrm{j}\omega$，则</p>
+    <p>$$z=\mathrm{e}^{\sigma T}\mathrm{e}^{\mathrm{j}\omega T}\ \Rightarrow\ |z|=\mathrm{e}^{\sigma T},\quad \angle z=\omega T$$</p>
+    <p>于是 $\sigma<0\Leftrightarrow|z|<1$，$\sigma=0\Leftrightarrow|z|=1$，$\sigma>0\Leftrightarrow|z|>1$。所以“s 左半平面稳定”在 z 平面变成“单位圆内稳定”。等阻尼线 $\sigma=-\zeta\omega_n$ 映射为对数螺旋，等 $\omega_d$ 线映射为射线。</p>
+
+    <h4>H.12　理想继电的描述函数 $N(A)=4M/(\pi A)$</h4>
+    <p>输入 $x=A\sin\theta$（$\theta=\omega t$），输出为幅值 $\pm M$ 的方波：正半周为 $M$，负半周为 $-M$。取基波分量</p>
+    <p>$$b_1=\frac{1}{\pi}\int_0^{2\pi}y(\theta)\sin\theta\,\dd\theta=\frac{2}{\pi}\int_0^{\pi}M\sin\theta\,\dd\theta=\frac{4M}{\pi}$$</p>
+    <p>故 $N(A)=b_1/A=\dfrac{4M}{\pi A}$。它随 $A$ 增大而减小，所以 $-1/N(A)$ 落在负实轴上、随 $A$ 从 $-\infty$ 移向 0——这正是描述函数法能读出振幅的原因。</p>
+
+    <div class="box key">
+      <div class="t">推导题的答题规范</div>
+      <p>① 先写<b>用到的前提</b>（零初始、单位反馈、欠阻尼、最小相位等）；<br>
+      ② 关键步骤不能跳：求导、令零、代回、取极限，各写一行；<br>
+      ③ 最后写<b>适用条件</b>，例如 $t_s$ 公式是近似、$\sigma\%$ 只适用于欠阻尼二阶、$N(A)$ 只取基波。</p>
+    </div>
+  </div>
+</section>

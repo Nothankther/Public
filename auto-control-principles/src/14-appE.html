@@ -1,0 +1,91 @@
+<section class="chapter" id="appE" data-num="E" data-title="附录 E　MATLAB 常用命令" data-short="附录 E · MATLAB 速查">
+  <div class="wrap">
+    <div class="ch-head">
+      <div class="ch-no"><b>E</b> APPENDIX · MATLAB</div>
+      <h2>MATLAB 常用命令速查<span class="en">MATLAB quick reference</span></h2>
+      <p class="ch-desc">对应教材附录 B 与 1-5 节。考试允许用计算器/软件时，这些命令可以在几十秒内完成验算；平时也可用来核对作业答案。</p>
+    </div>
+
+    <h3>建模与连接</h3>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th style="width:22%">命令</th><th style="width:30%">作用</th><th>示例</th></tr></thead>
+        <tbody>
+          <tr><td><code>tf(num,den)</code></td><td>由分子、分母系数建传递函数</td><td><code>G=tf(10,[1 3 2])</code></td></tr>
+          <tr><td><code>zpk(z,p,k)</code></td><td>由零极点建传递函数</td><td><code>G=zpk([], [0 -1 -2], 6)</code></td></tr>
+          <tr><td><code>conv(a,b)</code></td><td>多项式相乘（串联）</td><td><code>den=conv([1 0],conv([1 1],[1 2]))</code></td></tr>
+          <tr><td><code>feedback(G,H)</code></td><td>求闭环（默认负反馈）</td><td><code>T=feedback(G,1)</code></td></tr>
+          <tr><td><code>series(G1,G2)</code></td><td>串联连接</td><td><code>G=series(G1,G2)</code></td></tr>
+          <tr><td><code>parallel(G1,G2)</code></td><td>并联连接</td><td><code>G=parallel(G1,G2)</code></td></tr>
+          <tr><td><code>minreal(G)</code></td><td>零极点对消，化为最小实现</td><td><code>G=minreal(G)</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>时域分析</h3>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th style="width:22%">命令</th><th style="width:30%">作用</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td><code>step(T)</code></td><td>单位阶跃响应曲线</td><td>加输出参数可得数据：<code>[y,t]=step(T)</code></td></tr>
+          <tr><td><code>stepinfo(T)</code></td><td>自动给出 $\sigma\%$、$t_r$、$t_s$ 等</td><td>考试验算最快的手段</td></tr>
+          <tr><td><code>impulse(T)</code></td><td>脉冲响应</td><td>即 $\mathscr{L}^{-1}[\Phi(s)]$</td></tr>
+          <tr><td><code>lsim(T,u,t)</code></td><td>任意输入响应</td><td>可验证动态误差系数</td></tr>
+          <tr><td><code>pole(T)</code> / <code>zero(T)</code></td><td>闭环极点 / 零点</td><td>判断稳定性最直接</td></tr>
+          <tr><td><code>roots(den)</code></td><td>求特征根</td><td>等价于解特征方程</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>根轨迹与频域</h3>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th style="width:22%">命令</th><th style="width:34%">作用</th><th>用法要点</th></tr></thead>
+        <tbody>
+          <tr><td><code>rlocus(G)</code></td><td>绘制根轨迹</td><td><code>G</code> 为开环传递函数（不含 $K$）</td></tr>
+          <tr><td><code>rlocfind(G)</code></td><td>鼠标选点求对应增益</td><td>也可返回 <code>[K,poles]</code></td></tr>
+          <tr><td><code>bode(G)</code></td><td>Bode 图</td><td><code>margin(G)</code> 同时标出裕度</td></tr>
+          <tr><td><code>nyquist(G)</code></td><td>Nyquist 图</td><td>配合 <code>axis</code> 放大 $(-1,\mathrm{j}0)$ 附近</td></tr>
+          <tr><td><code>margin(G)</code></td><td>相位裕度、幅值裕度及对应频率</td><td><code>[Gm,Pm,Wcg,Wcp]=margin(G)</code></td></tr>
+          <tr><td><code>nichols(G)</code></td><td>Nichols 图</td><td>工程查图用</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>离散系统与状态空间</h3>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th style="width:22%">命令</th><th style="width:34%">作用</th><th>示例</th></tr></thead>
+        <tbody>
+          <tr><td><code>c2d(G,T,'zoh')</code></td><td>连续系统离散化（零阶保持）</td><td><code>Gd=c2d(G,1,'zoh')</code></td></tr>
+          <tr><td><code>dstep(Gd)</code></td><td>离散系统阶跃响应</td><td>观察采样点之间的纹波</td></tr>
+          <tr><td><code>zgrid</code></td><td>z 平面等阻尼/等自然频率网格</td><td>配合 <code>pzmap</code> 使用</td></tr>
+          <tr><td><code>ss(A,B,C,D)</code></td><td>建立状态空间模型</td><td><code>sys=ss(A,B,C,D)</code></td></tr>
+          <tr><td><code>ctrb(A,B)</code> / <code>obsv(A,C)</code></td><td>可控性 / 可观性矩阵</td><td><code>rank(ctrb(A,B))</code></td></tr>
+          <tr><td><code>place(A,B,P)</code></td><td>极点配置求 $K$</td><td><code>K=place(A,B,[-1 -2])</code></td></tr>
+          <tr><td><code>lyap(A,Q)</code></td><td>解李雅普诺夫方程</td><td><code>P=lyap(A,eye(2))</code></td></tr>
+          <tr><td><code>lqr(A,B,Q,R)</code></td><td>LQR 最优反馈增益</td><td><code>[K,P,E]=lqr(A,B,Q,R)</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>一段完整的验算脚本</h3>
+    <p>以第 5 章例 5-1 的系统 $G(s)=\dfrac{10}{s(0.1s+1)(0.01s+1)}$ 为例：</p>
+    <div class="formula" style="font-family:var(--mono);font-size:13px;line-height:1.9">
+      <p>num = 10;<br>
+      den = conv([1 0], conv([0.1 1], [0.01 1]));<br>
+      G = tf(num, den);<br>
+      T = feedback(G, 1);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;% 闭环<br>
+      stepinfo(T)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;% 超调量、调节时间<br>
+      [Gm,Pm,Wcg,Wcp] = margin(G);&nbsp;% 幅值裕度、相位裕度<br>
+      20*log10(Gm)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;% 换算成 dB<br>
+      rlocus(G)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;% 根轨迹</p>
+    </div>
+    <p>运行结果应与例 5-1 的 $\omega_c\approx7.85$、$\gamma\approx47.4°$、$K_g\approx20.8\ \mathrm{dB}$ 一致。</p>
+
+    <div class="box tip">
+      <div class="t">考场上怎么用</div>
+      <p>先用笔算写出关键步骤（过程分在这里），再用 MATLAB 或计算器验算数值。若两者不一致，<b>优先检查单位与量纲</b>（dB 与倍数、度与弧度、$\omega$ 与 $f$），而不是怀疑公式。</p>
+    </div>
+  </div>
+</section>

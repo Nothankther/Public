@@ -1,0 +1,127 @@
+<section class="chapter" id="c11" data-num="11" data-title="第十一章 综合案例：位置伺服系统" data-short="⑪ 综合案例 · 位置伺服">
+  <div class="wrap">
+    <div class="ch-head">
+      <div class="ch-no"><b>11</b> CHAPTER ELEVEN</div>
+      <h2>综合案例：直流电机位置伺服系统<span class="en">A complete modelling–analysis–design case</span></h2>
+      <p class="ch-desc">前面十章是“零件”，这一章把它们装成一台机器：从电机的物理方程建模，到稳定性与指标核算，再到用超前校正同时解决“超调大、调节慢”两个问题。考前把这一章完整走一遍，综合题就有了固定套路。</p>
+    </div>
+
+    <h3>11.1 系统描述与建模</h3>
+    <p>电枢控制的直流电机拖动一个转动惯量为 $J$ 的负载，减速器速比为 $i$，输出轴角位移 $\theta_L$ 由电位器测出并转换为电压，与给定电压比较后经放大器驱动电机。忽略电枢电感 $L_a$、粘性摩擦与负载转矩，取电枢电压 $u_a$ 为输入、负载角 $\theta_L$ 为输出。</p>
+    <p>电枢回路与机械方程分别为</p>
+    <p>$$u_a=R_a i_a+e_b,\qquad e_b=K_e\omega_m,\qquad T_m=K_t i_a,\qquad J\frac{\dd\omega_m}{\dd t}=T_m$$</p>
+    <p>消去 $i_a$、$T_m$，并注意 $\theta_m=i\theta_L$、$\omega_m=\dd\theta_m/\dd t$，得</p>
+    <p>$$\frac{\Theta_m(s)}{U_a(s)}=\frac{K_m}{s(T_m s+1)},\qquad K_m=\frac{1}{K_e},\quad T_m=\frac{R_aJ}{K_tK_e}$$</p>
+    <p>再计入减速器 $1/i$、传感器 $K_s$ 与放大器 $K_a$，开环传递函数为</p>
+    <p>$$G(s)=\frac{K_aK_sK_m/i}{s(T_m s+1)}=\frac{K}{s(Ts+1)}$$</p>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <caption>表 11-1　某位置伺服系统的参数</caption>
+        <thead><tr><th style="width:30%">参数</th><th style="width:22%">符号</th><th>数值</th></tr></thead>
+        <tbody>
+          <tr><td>电枢电阻</td><td>$R_a$</td><td>$1\ \Omega$</td></tr>
+          <tr><td>转动惯量</td><td>$J$</td><td>$0.01\ \mathrm{kg\cdot m^2}$</td></tr>
+          <tr><td>转矩常数 / 反电动势常数</td><td>$K_t=K_e$</td><td>$0.1\ \mathrm{N\cdot m/A}=0.1\ \mathrm{V\cdot s/rad}$</td></tr>
+          <tr><td>减速比</td><td>$i$</td><td>$10$</td></tr>
+          <tr><td>传感器增益</td><td>$K_s$</td><td>$1\ \mathrm{V/rad}$</td></tr>
+          <tr><td>放大器增益</td><td>$K_a$</td><td>$10$</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>代入得 $T_m=\dfrac{1\times0.01}{0.1\times0.1}=1\ \mathrm{s}$，$K_m=1/0.1=10\ \mathrm{rad/(s\cdot V)}$，于是</p>
+    <p>$$G(s)=\frac{10\times1\times10/10}{s(s+1)}=\frac{10}{s(s+1)}$$</p>
+
+    <div class="box key">
+      <div class="t">建模的三个易错点</div>
+      <p>① 减速比的方向：<b>从电机到负载是除以 $i$</b>，从负载折算到电机是乘以 $i^2$（算转动惯量时）；<br>
+      ② $K_m=1/K_e$ 只在<b>忽略电枢电感</b>时成立，若题目给了 $L_a$ 就不能这样化简；<br>
+      ③ 传感器与放大器都在前向通道，乘进去即可，但<b>反馈系数 $H$ 不在 $G$ 里</b>。</p>
+    </div>
+
+    <h3>11.2 未校正系统的性能</h3>
+    <p>闭环传递函数为</p>
+    <p>$$\Phi_0(s)=\frac{10}{s^2+s+10}$$</p>
+    <p>与标准形式 $s^2+2\zeta\omega_ns+\omega_n^2$ 对照：$\omega_n=\sqrt{10}=3.16\ \mathrm{rad/s}$，$\zeta=\dfrac{1}{2\sqrt{10}}=0.158$。这是一个<b>弱阻尼</b>系统：</p>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th style="width:24%">指标</th><th style="width:30%">计算</th><th>结果</th></tr></thead>
+        <tbody>
+          <tr><td>超调量 $\sigma\%$</td><td>$\mathrm{e}^{-\pi\zeta/\sqrt{1-\zeta^2}}$</td><td>$60.4\%$</td></tr>
+          <tr><td>峰值时间 $t_p$</td><td>$\pi/\omega_d$</td><td>$1.01\ \mathrm{s}$</td></tr>
+          <tr><td>调节时间 $t_s$（5%）</td><td>$3.5/(\zeta\omega_n)$</td><td>$7.0\ \mathrm{s}$</td></tr>
+          <tr><td>斜坡稳态误差</td><td>$1/K_v=1/K$</td><td>$0.1$</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>若指标要求 $\sigma\%\leq20\%$、$t_s\leq1.5\ \mathrm{s}$，未校正系统<b>两项都不满足</b>，必须校正。</p>
+
+    <div class="box warn">
+      <div class="t">为什么不能“把 K 调大”</div>
+      <p>对 $G=K/[s(s+1)]$，闭环特征方程为 $s^2+s+K=0$，故 $\zeta=1/(2\sqrt K)$。<b>K 越大，ζ 越小</b>：把 K 从 10 提到 100，ζ 从 0.158 降到 0.05，超调反而从 60% 涨到 85%，调节时间仍在 7 s 左右。增益只改变 $\omega_n$，不改变“阻尼不足”这个根本矛盾——这正是需要<b>超前校正</b>的原因。</p>
+    </div>
+
+    <h3>11.3 校正方案：用超前网络“造”一个合适的阻尼</h3>
+    <p>采用串联超前校正</p>
+    <p>$$G_c(s)=\frac{aTs+1}{Ts+1}=\frac{s+1}{0.1s+1}\qquad(a=10,\ T=0.1\ \mathrm{s})$$</p>
+    <p>它的零点 $-1$ <b>正好抵消</b>被控对象中拖慢响应的极点 $-1$，极点 $-10$ 则把高频段压下去，使剪切频率提高的同时保住相位裕度。校正后开环为</p>
+    <p>$$G_c(s)G(s)=\frac{s+1}{0.1s+1}\cdot\frac{10}{s(s+1)}=\frac{10}{s(0.1s+1)}$$</p>
+    <p>闭环传递函数</p>
+    <p>$$\Phi(s)=\frac{10}{0.1s^2+s+10}=\frac{100}{s^2+10s+100}$$</p>
+    <p>故 $\omega_n=10\ \mathrm{rad/s}$，$\zeta=\dfrac{10}{2\times10}=0.5$，恰好落在工程推荐的 $0.4\sim0.8$ 区间。</p>
+
+    <h4>校验（考场必须写的一步）</h4>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th style="width:26%">指标</th><th style="width:26%">校正前</th><th style="width:26%">校正后</th><th>是否达标</th></tr></thead>
+        <tbody>
+          <tr><td>$\omega_c$</td><td>$3.08\ \mathrm{rad/s}$</td><td>$7.86\ \mathrm{rad/s}$</td><td>—</td></tr>
+          <tr><td>相位裕度 $\gamma$</td><td>$18.0°$</td><td>$51.8°$</td><td>$\gamma>30°$，达标</td></tr>
+          <tr><td>超调量 $\sigma\%$</td><td>$60.4\%$</td><td>$16.3\%$</td><td>$\leq20\%$，达标</td></tr>
+          <tr><td>调节时间 $t_s$（5%）</td><td>$7.0\ \mathrm{s}$</td><td>$0.7\ \mathrm{s}$</td><td>$\leq1.5\ \mathrm{s}$，达标</td></tr>
+          <tr><td>斜坡稳态误差</td><td>$0.1$</td><td>$0.1$</td><td>不变（型别/K 未变）</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <figure>
+      <!--FIG:case-->
+      <figcaption><b>图 11-1</b>　校正前后的单位阶跃响应。校正前（橙）超调 60.4%、振荡到约 7 s 才进入 $\pm5\%$ 带；校正后（蓝）超调 16.3%、0.7 s 即稳定，且稳态误差没有变差。</figcaption>
+    </figure>
+
+    <h4>相位裕度的手算</h4>
+    <p>校正后 $G_cG=\dfrac{10}{s(0.1s+1)}$。令 $|G_cG(\mathrm{j}\omega_c)|=1$：</p>
+    <p>$$\frac{100}{\omega_c^2(1+0.01\omega_c^2)}=1\ \Rightarrow\ \omega_c=7.86\ \mathrm{rad/s}$$</p>
+    <p>$$\gamma=180°-90°-\arctan(0.1\times7.86)=90°-38.2°=51.8°$$</p>
+    <p>与二阶系统的 $\zeta=0.5$ 互相印证：$\gamma\approx100\zeta$ 的经验关系给出约 $50°$，量级一致。</p>
+
+    <h3>11.4 参数漂移时的鲁棒性</h3>
+    <p>实际放大器增益会随温度漂移，负载惯量也会变化。把 $K$ 与 $T$ 分别扰动，重新算指标：</p>
+    <div class="tbl-wrap">
+      <table class="tbl keep">
+        <thead><tr><th style="width:24%">工况</th><th style="width:22%">$\zeta$</th><th style="width:22%">$\sigma\%$</th><th>$t_s$（5%）</th></tr></thead>
+        <tbody>
+          <tr><td>额定 $K=10,\ T=0.1$</td><td>$0.500$</td><td>$16.3\%$</td><td>$0.70\ \mathrm{s}$</td></tr>
+          <tr><td>增益 $+20\%$：$K=12$</td><td>$0.456$</td><td>$20.8\%$</td><td>$0.77\ \mathrm{s}$</td></tr>
+          <tr><td>惯量加倍：$T=0.2$</td><td>$0.354$</td><td>$30.0\%$</td><td>$1.40\ \mathrm{s}$</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>增益漂移 20% 仍在指标边缘；惯量加倍则超调超标。<b>工程上应把额定 ζ 选得比指标略高</b>（例如 0.55～0.6），留出裕量，而不是卡着 20% 设计。</p>
+
+    <h3>11.5 考场写法（五步）</h3>
+    <ol class="steps">
+      <li><b>建模：</b>写电枢方程与机械方程，消去中间量，化成 $K/[s(Ts+1)]$，并标出 $K$、$T$ 的物理含义。</li>
+      <li><b>算未校正指标：</b>对照标准二阶形式读出 $\zeta,\omega_n$，算 $\sigma\%$、$t_s$、$e_{ss}$，明确“不达标”。</li>
+      <li><b>选方案：</b>增益不能解决阻尼问题 → 选超前；零点抵消慢极点，极点放在 $5\sim10$ 倍处。</li>
+      <li><b>定参数并校验：</b>写出 $G_c$、校正后开环/闭环，重算 $\zeta$、$\sigma\%$、$t_s$、$\gamma$，逐项对照指标。</li>
+      <li><b>说明代价：</b>高频增益抬高 $20\lg a=20\ \mathrm{dB}$，抗噪声变差；若指标还要求抑制高频扰动，应改用滞后或滞后—超前。</li>
+    </ol>
+
+    <div class="box tip">
+      <div class="t">这个案例能迁移到哪里</div>
+      <p>把“电机 + 减速器 + 电位器”换成“炉温 + 热电偶”“液位 + 浮子”“天线 + 自整角机”，建模步骤完全一样：<b>列物理方程 → 消中间变量 → 拉氏变换 → 写成 $K/[s^\nu\prod(T_is+1)]$</b>。区别只在 $K$、$T$ 的表达式，后续的指标核算与校正设计是同一套流程。</p>
+    </div>
+  </div>
+</section>

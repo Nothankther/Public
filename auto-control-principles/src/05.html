@@ -1,0 +1,321 @@
+<section class="chapter" id="c5" data-num="5" data-title="第五章 线性系统的频域分析法" data-short="⑤ 频域分析法">
+  <div class="wrap">
+    <div class="ch-head">
+      <div class="ch-no"><b>05</b> CHAPTER FIVE</div>
+      <h2>线性系统的频域分析法<span class="en">Frequency-domain analysis</span></h2>
+      <p class="ch-desc">频域法的全部信息都藏在两条曲线上：幅频 $L(\omega)$ 与相频 $\varphi(\omega)$。会画、会读、会用奈氏判据与稳定裕度，这一章就通了。</p>
+    </div>
+
+    <details class="prereq" open>
+      <summary>预备知识 · dB、对数与正弦稳态响应<span class="who">Bode 图的纵轴、频率特性的定义、相角计算的前置工具</span></summary>
+      <div class="bd">
+        <h5>① 为什么是 $20\lg$：从功率分贝来的</h5>
+        <p>分贝原定义是功率比的对数：$10\lg(P_2/P_1)$。功率正比于电压（幅值）的<b>平方</b>，所以用幅值比时要写 $10\lg(A_2^2/A_1^2)=20\lg(A_2/A_1)$。记住结论：<b>Bode 图的纵轴 $L(\omega)=20\lg|G(\j\omega)|$ 是幅值（不是功率）的分贝数。</b></p>
+        <p>$$\textbf{dB 速查：}\quad 20\text{dB}=10\text{倍},\quad 6\text{dB}\approx 2\text{倍},\quad 0\text{dB}=1\text{倍},\quad -3\text{dB}\approx 0.707\text{倍（半功率点）},\quad -20\text{dB}=0.1\text{倍}$$</p>
+        <h5>② 对数运算三件事</h5>
+        <ul>
+          <li><b>积化加</b>：$20\lg(AB)=20\lg A+20\lg B$——各环节 Bode 图直接叠加（5.3 节绘图法的根据）；</li>
+          <li><b>幂化乘</b>：$20\lg A^{-1}=-20\lg A$——分母环节图形关于 0 dB 翻转；</li>
+          <li><b>斜率</b>：惯性环节 $\frac{1}{1+\j\omega T}$ 在 $\omega\gg 1/T$ 时 $\approx\frac{1}{\j\omega T}$，$L\approx-20\lg\omega-20\lg T$：每十倍频下降 20 dB，即斜率 $-20\text{ dB/dec}$。因子多一个，斜率多 20 dB/dec。</li>
+        </ul>
+        <p>横轴用 $\lg\omega$（对数刻度），$\omega$ 从 $0.1$ 到 $10$、从 $10$ 到 $1000$ 在纸上是等宽的——“十倍频程 (dec)”由此而来。</p>
+        <h5>③ 正弦稳态响应定理（频率特性定义的来源）</h5>
+        <p><b>稳定</b>的线性定常系统，输入 $r(t)=A\sin\omega t$ 时，输出的稳态分量仍是同频正弦：</p>
+        <p>$$c_{ss}(t)=A\,|G(\j\omega)|\sin\!\big(\omega t+\angle G(\j\omega)\big)$$</p>
+        <p>逻辑链：$\sin\omega t=\mathrm{Im}\,\mathrm{e}^{\j\omega t}$；复指数过系统相当于把传递函数求值到 $s=\j\omega$；线性系统对 $\mathrm{e}^{\j\omega t}$ 的稳态响应是 $G(\j\omega)\mathrm{e}^{\j\omega t}$（幅值乘 $|G|$、辐角加 $\angle G$）；取虚部即得。<b>频率特性 $G(\j\omega)$ 就是传递函数在虚轴上的取值</b>——这是本章与第 2 章之间唯一的桥。</p>
+        <h5>④ 相角速算与象限陷阱</h5>
+        <ul>
+          <li>积分环节 $\dfrac{1}{\j\omega}$：相角 $-90\deg$（分母是 $+90\deg$）；</li>
+          <li>惯性环节 $\dfrac{1}{1+\j\omega T}$：相角 $-\arctan\omega T$，从 $0\deg$ 滑到 $-90\deg$，转折频率处恰好 $-45\deg$；</li>
+          <li>一阶微分 $1+\j\omega T$：相角 $+\arctan\omega T$。</li>
+          <li><b>陷阱</b>：$\arctan$ 只给 $-90\deg\sim 90\deg$ 的主值。因子 $(1-\j\omega T)$ 的相角是 $-\arctan\omega T$（第四象限），不是 $+\arctan$；遇到形如 $\j\omega T-1$ 的因子要按“实部为负”先判象限（相角在 $90\deg\sim180\deg$）。</li>
+        </ul>
+      </div>
+    </details>
+
+    <h3>5.1 频率特性是什么</h3>
+    <div class="box def">
+      <div class="t">定义与物理意义</div>
+      <p>线性定常系统在<b>正弦输入</b> $r(t)=A\sin\omega t$ 作用下，稳态输出仍是同频率的正弦，只是幅值与相位发生变化：</p>
+      <p>$$c_{ss}(t)=A\,|G(\mathrm{j}\omega)|\sin\left[\omega t+\angle G(\mathrm{j}\omega)\right]$$</p>
+      <p>幅值比 $|G(\mathrm{j}\omega)|$ 称为<b>幅频特性</b>，相位差 $\angle G(\mathrm{j}\omega)$ 称为<b>相频特性</b>，二者合称频率特性。数学上它就是传递函数令 $s=\mathrm{j}\omega$：</p>
+      <p>$$G(\mathrm{j}\omega)=G(s)\big|_{s=\mathrm{j}\omega}$$</p>
+    </div>
+    <p>三种图示方式各有用途：<b>Nyquist 图</b>（幅相特性）便于判稳，<b>Bode 图</b>（对数幅频＋相频）便于作图与校正设计，<b>Nichols 图</b>用于工程查图。考试以 Nyquist 与 Bode 为主。</p>
+
+    <h3>5.2 典型环节的频率特性</h3>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <caption>表 5-1　典型环节的幅频、相频与渐近线（$T$ 为时间常数，转折频率 $\omega=1/T$）</caption>
+        <thead><tr><th style="width:20%">环节</th><th style="width:26%">$G(\mathrm{j}\omega)$</th><th style="width:18%">$L(\omega)$</th><th>相频与渐近线</th></tr></thead>
+        <tbody>
+          <tr><td>比例 $K$</td><td>$K$</td><td>$20\lg K$</td><td>$0°$，一条水平线</td></tr>
+          <tr><td>积分 $1/s$</td><td>$\dfrac{1}{\mathrm{j}\omega}$</td><td>$-20\lg\omega$</td><td>$-90°$，过 $\omega=1$ 的 $-20\,\mathrm{dB/dec}$ 直线</td></tr>
+          <tr><td>微分 $s$</td><td>$\mathrm{j}\omega$</td><td>$20\lg\omega$</td><td>$+90°$，斜率 $+20\,\mathrm{dB/dec}$</td></tr>
+          <tr><td>惯性 $\dfrac{1}{Ts+1}$</td><td>$\dfrac{1}{1+\mathrm{j}\omega T}$</td><td>$-20\lg\sqrt{1+\omega^2T^2}$</td><td>$0°\to-90°$；低频 $0\,\mathrm{dB}$，高频 $-20\,\mathrm{dB/dec}$</td></tr>
+          <tr><td>一阶微分 $Ts+1$</td><td>$1+\mathrm{j}\omega T$</td><td>$20\lg\sqrt{1+\omega^2T^2}$</td><td>$0°\to+90°$，与惯性环节镜像</td></tr>
+          <tr><td>振荡 $\dfrac{1}{T^2s^2+2\zeta Ts+1}$</td><td>$\dfrac{1}{1-\omega^2T^2+\mathrm{j}2\zeta\omega T}$</td><td>低频 $0$，高频 $-40\,\mathrm{dB/dec}$</td><td>$0°\to-180°$；$\zeta<0.707$ 时出现谐振峰</td></tr>
+          <tr><td>延迟 $\mathrm{e}^{-\tau s}$</td><td>$\mathrm{e}^{-\mathrm{j}\omega\tau}$</td><td>$0\,\mathrm{dB}$</td><td>$\varphi=-57.3°\omega\tau$，幅值恒为 1</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box key">
+      <div class="t">振荡环节的三个特征量（$0<\zeta<0.707$）</div>
+      <p>谐振峰值 $M_r=\dfrac{1}{2\zeta\sqrt{1-\zeta^2}}$，谐振频率 $\omega_r=\omega_n\sqrt{1-2\zeta^2}$，带宽 $\omega_b=\omega_n\sqrt{(1-2\zeta^2)+\sqrt{4\zeta^4-4\zeta^2+2}}$。<br>
+      $\zeta$ 越小，$M_r$ 越大、$\omega_r$ 越靠近 $\omega_n$；$\zeta\geq0.707$ 时 $M_r=1$，不再出现谐振峰。</p>
+    </div>
+
+    <h3>5.3 开环频率特性的绘制</h3>
+    <h4>Nyquist 图：只需抓住起点、终点与关键交点</h4>
+    <ul>
+      <li><b>起点</b>（$\omega\to0^+$）：由系统型别决定。0 型从 $(K,\mathrm{j}0)$ 出发；I 型沿 $-90°$ 方向趋于无穷；II 型沿 $-180°$ 方向趋于无穷。</li>
+      <li><b>终点</b>（$\omega\to\infty$）：$|G|\to0$，相角趋于 $-(n-m)\times90°$。</li>
+      <li><b>与负实轴的交点</b>：令 $\mathrm{Im}\,G(\mathrm{j}\omega)=0$ 解出 $\omega$，再代回求实部——这是判稳的关键点。</li>
+      <li>曲线关于实轴对称，画 $\omega:0\to\infty$ 即可，其余靠镜像。</li>
+    </ul>
+
+    <h4>Bode 图：逐段叠加</h4>
+    <ol class="steps">
+      <li>把 $G(s)$ 化成<b>时间常数形式</b>，确定开环增益 $K$ 与型别 $\nu$。</li>
+      <li>把所有转折频率 $\omega_i=1/T_i$ 从小到大排序。</li>
+      <li>低频段：过点 $(\omega=1,\ 20\lg K)$、斜率 $-20\nu\ \mathrm{dB/dec}$ 的直线。</li>
+      <li>每遇到一个惯性环节，斜率减 $20$；遇到一阶微分，斜率加 $20$；遇到振荡环节，斜率减 $40$；遇到二阶微分，加 $40$。</li>
+      <li>相频曲线按各环节相位<b>代数相加</b>，注意振荡环节在 $\omega_n$ 处陡降 $180°$。</li>
+    </ol>
+
+    <div class="box tip">
+      <div class="t">最小相位系统</div>
+      <p>若开环传递函数<b>没有右半平面零、极点，也没有延迟环节</b>，则称为最小相位系统。其幅频与相频<b>一一对应</b>：知道 $L(\omega)$ 就能唯一确定 $\varphi(\omega)$，反之亦然。这是“由 Bode 图求传递函数”题目的前提；若存在右半平面零点或延迟，必须额外说明。</p>
+    </div>
+
+    <h3>5.4 奈奎斯特稳定判据</h3>
+    <div class="box key">
+      <div class="t">判据（半闭合曲线形式）</div>
+      <p>设 $P$ 为开环传递函数在 s 右半平面的极点数，$N$ 为 $\omega:0^+\to\infty$ 的幅相曲线对 $(-1,\mathrm{j}0)$ 点<b>左侧实轴段</b> $(-\infty,-1)$ 的净穿越次数（自上而下为正，记 $+1$；自下而上为负，记 $-1$），则闭环右半平面极点数为</p>
+      <p>$$Z=P-2N$$</p>
+      <p>系统稳定的充要条件是 $Z=0$。工程上绝大多数题目 $P=0$，此时稳定等价于 <b>$N=0$，即曲线不穿越 $(-\infty,-1)$ 段</b>。</p>
+    </div>
+
+    <figure>
+      <!--FIG:nyquist-->
+      <figcaption><b>图 5-1</b>　$G(s)=\dfrac{10}{s(0.1s+1)(0.01s+1)}$ 的幅相特性。曲线自 $-90°$ 方向无穷远处出发，绕向原点，全程位于 $(-1,\mathrm{j}0)$ 右侧，故 $N=0$、$Z=P=0$，闭环稳定。</figcaption>
+    </figure>
+
+    <div class="figx">
+      <div class="figx-head">
+        <span class="figx-badge">可交互</span>
+        <span class="figx-title">拖动增益 K：曲线怎么“移动”，什么时候包围 (−1, j0)</span>
+        <span class="figx-hint">只改变 K，曲线形状不变、整体按比例缩放</span>
+      </div>
+      <div class="figx-body one">
+        <div class="figx-pane" style="max-width:640px;margin:0 auto;width:100%">
+          <svg id="nyqSvg" viewBox="0 0 640 520" role="img" aria-label="幅相特性与负实轴交点"></svg>
+        </div>
+      </div>
+      <div class="figx-ctl">
+        <label>开环增益 K
+          <input type="range" id="nyqK" min="1" max="250" step="1" value="10">
+          <output id="nyqKOut">10</output>
+        </label>
+      </div>
+      <div class="figx-read" id="nyqRead"></div>
+      <div class="figx-verdict" id="nyqVerdict"></div>
+      <div class="figx-note">对象仍是 G(s) = K / [s(0.1s+1)(0.01s+1)]。它的相位与 K 无关，负实轴交点恒为 $-K/110$，所以临界增益一眼可读：<b>令 $-K/110=-1$ 得 $K=110$</b>。把 K 从 10 拉到 250，观察红叉什么时候落进曲线围成的区域。</div>
+    </div>
+
+    <div class="box warn">
+      <div class="t">含积分环节时怎么“补线”</div>
+      <p>当开环含 $\nu$ 个积分环节时，$\omega\to0^+$ 的幅相曲线趋于无穷远，曲线不闭合，无法直接数包围圈数。此时须补画<b>半径为无穷大、逆时针方向、角度为 $\nu\times90°$ 的圆弧</b>，把 $\omega=0^+$ 的端点与正实轴上的起点连成闭合曲线，再按判据数穿越。补线方向画反是奈氏判据最常见的失分点。</p>
+    </div>
+
+    <h4>对数形式（Bode 判据）</h4>
+    <p>在 $L(\omega)>0\ \mathrm{dB}$ 的频段内，统计相频曲线对 $-180°$ 线的正、负穿越次数 $N_+$、$N_-$，令 $N=N_+-N_-$，仍用 $Z=P-2N$ 判定。直观理解：<b>幅值还没衰减到 1 之前，相位就已经穿过 $-180°$，系统就危险了</b>。</p>
+
+    <div class="box warn">
+      <div class="t">三个细节</div>
+      <p>① $P$ 是<b>开环</b>右半平面极点数，不是闭环；<br>
+      ② 穿越必须发生在 $|G|>1$（$L>0$）的频段内才计数；<br>
+      ③ 曲线恰好通过 $(-1,\mathrm{j}0)$ 时属临界稳定，$Z$ 的计数需按半次穿越处理，此时工程上判为不稳定或临界。</p>
+    </div>
+
+    <h3>5.5 稳定裕度</h3>
+    <p>判据只回答“稳不稳”，裕度回答“稳多少”。定义两个截止频率：<b>剪切频率 $\omega_c$</b> 满足 $|G(\mathrm{j}\omega_c)|=1$；<b>相位交界频率 $\omega_g$</b> 满足 $\angle G(\mathrm{j}\omega_g)=-180°$。</p>
+    <div class="formula">
+      <p>$$\text{相位裕度：}\ \gamma=180°+\angle G(\mathrm{j}\omega_c)\qquad
+      \text{幅值裕度：}\ K_g=\frac{1}{|G(\mathrm{j}\omega_g)|},\quad K_g(\mathrm{dB})=-20\lg|G(\mathrm{j}\omega_g)|$$</p>
+      <div class="cap">$\gamma>0$ 且 $K_g>1$（$K_g(\mathrm{dB})>0$）时闭环稳定；数值越大，稳定程度越高。</div>
+    </div>
+    <div class="box key">
+      <div class="t">工程取值</div>
+      <p>通常要求 $\gamma=30°\sim60°$、$K_g\geq6\ \mathrm{dB}$（常用 $6\sim20\ \mathrm{dB}$）。$\gamma$ 过小则超调大、振荡强；$\gamma$ 过大则响应迟钝。$\gamma\approx45°$ 附近往往是“稳”与“快”的折中点。</p>
+    </div>
+
+    <div class="box tip">
+      <div class="t">条件稳定系统</div>
+      <p>若系统只在某一<b>有界</b>的增益范围内稳定（增益过大或过小都不稳定），称为条件稳定系统。判别标志是幅相曲线多次穿越负实轴。二阶系统最多穿越一次，因此<b>不可能条件稳定</b>；三阶及以上才可能出现。</p>
+    </div>
+
+    <figure>
+      <!--FIG:bode-->
+      <figcaption><b>图 5-2</b>　同一系统的 Bode 图。$\omega_c=7.85\ \mathrm{rad/s}$ 处 $L=0\ \mathrm{dB}$，此时相位 $-132.6°$，故 $\gamma=47.4°$；$\omega_g=31.6\ \mathrm{rad/s}$ 处相位 $-180°$，对应 $K_g=20.8\ \mathrm{dB}$。</figcaption>
+    </figure>
+
+    <div class="figx">
+      <div class="figx-head">
+        <span class="figx-badge">可交互</span>
+        <span class="figx-title">Bode 实验：增益上移一寸，相位裕度退一步</span>
+        <span class="figx-hint">拖动 K，看 ωc、γ、Kg 三个数怎么联动</span>
+      </div>
+      <div class="figx-body one">
+        <div class="figx-pane">
+          <svg id="bodeSvg" viewBox="0 0 820 500" role="img" aria-label="Bode 图与稳定裕度"></svg>
+        </div>
+      </div>
+      <div class="figx-ctl">
+        <label>开环增益 K
+          <input type="range" id="bodeK" min="0" max="2.5" step="0.01" value="1">
+          <output id="bodeKOut">10</output>
+        </label>
+      </div>
+      <div class="figx-read" id="bodeRead"></div>
+      <div class="figx-verdict" id="bodeVerdict"></div>
+      <div class="figx-note">K 只让幅频曲线<b>整体上下平移</b>，相频曲线一点不动。所以 ωc 随 K 增大右移，γ 随之减小；而 ωg 固定不变，Kg 只随 K 平移。<b>这就是“增益裕度”这个名字的来历</b>：K 还能放大多少倍才到临界，看的就是 Kg。</div>
+    </div>
+
+    <h3>5.6 闭环频域指标与时域指标的关系</h3>
+    <p>闭环幅频特性 $|M(\mathrm{j}\omega)|$ 的三个特征量：<b>谐振峰值 $M_r$</b>、<b>谐振频率 $\omega_r$</b>、<b>带宽 $\omega_b$</b>（$|M|$ 降到 $0.707M(0)$ 对应的频率）。</p>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th style="width:18%">频域指标</th><th style="width:40%">二阶系统表达式</th><th>与时域指标的定性关系</th></tr></thead>
+        <tbody>
+          <tr><td>$M_r$</td><td>$\dfrac{1}{2\zeta\sqrt{1-\zeta^2}}\ (\zeta<0.707)$</td><td>$M_r$ 越大 → $\sigma\%$ 越大，相对稳定性越差</td></tr>
+          <tr><td>$\omega_r$</td><td>$\omega_n\sqrt{1-2\zeta^2}$</td><td>$\omega_r$ 越大 → 响应越快</td></tr>
+          <tr><td>$\omega_b$</td><td>$\omega_n\sqrt{(1-2\zeta^2)+\sqrt{4\zeta^4-4\zeta^2+2}}$</td><td>$\omega_b$ 越大 → 带宽越宽、$t_s$ 越小，但抗高频干扰能力越差</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>工程上常用经验换算：$M_r=1.0\sim1.4$ 大致对应 $\sigma\%=10\%\sim30\%$、$\gamma=30°\sim60°$；$M_r$ 与 $\gamma$ 近似满足 $M_r\approx\dfrac{1}{\sin\gamma}$（$\gamma$ 较小时较准）。</p>
+
+    <h3>5.7 三频段：频域设计的总纲</h3>
+    <div class="grid g3">
+      <div class="card">
+        <div class="h">低频段</div>
+        <p>决定<b>稳态精度</b>。低频段越高、斜率越陡（型别越高），稳态误差越小。</p>
+      </div>
+      <div class="card">
+        <div class="h">中频段</div>
+        <p>决定<b>稳定性和快速性</b>。以 $-20\ \mathrm{dB/dec}$ 穿越 $0\ \mathrm{dB}$ 线、且该段足够宽，则 $\gamma$ 大、超调小；若以 $-40$ 或更陡的斜率穿越，容易振荡。</p>
+      </div>
+      <div class="card">
+        <div class="h">高频段</div>
+        <p>决定<b>抗干扰能力</b>。高频衰减越快，对噪声越不敏感；但也意味着系统“迟钝”。</p>
+      </div>
+    </div>
+
+    <h3>5.8 频域设计：期望特性法</h3>
+    <p>教材 5-6 节把频域分析反过来用：不去“算”已有系统的指标，而是先画出一条<b>满足全部指标的期望开环特性</b> $L_d(\omega)$，再让它与未校正特性相减，差值就是校正装置。</p>
+    <ol class="steps">
+      <li><b>画低频段。</b>由型别 $\nu$ 与 $K_v$（或 $K_p,K_a$）确定：过 $(\omega=1,\ 20\lg K)$、斜率 $-20\nu\ \mathrm{dB/dec}$ 的直线，直到第一个转折频率。</li>
+      <li><b>画中频段。</b>以 $-20\ \mathrm{dB/dec}$ 穿越 $0\ \mathrm{dB}$，剪切频率 $\omega_c$ 由快速性要求定；中频段越宽，相位裕度越大、超调越小。经验上 $\gamma$ 与 $\zeta$ 近似满足 $\zeta\approx\gamma/100$（$\gamma$ 以度计），而 $M_r\approx1/\sin\gamma$。</li>
+      <li><b>画高频段。</b>斜率取 $-40\sim-60\ \mathrm{dB/dec}$，尽快衰减以抑制噪声。</li>
+      <li><b>相减得校正装置。</b>$L_c(\omega)=L_d(\omega)-L_0(\omega)$，$\varphi_c=\varphi_d-\varphi_0$；由 $L_c$ 的形状反推 $G_c(s)$（一段 $-20$ 斜率对应一个惯性或积分，一段平台对应比例）。</li>
+      <li><b>校验。</b>用完整 $G_cG_0$ 重算 $\omega_c,\gamma,K_g$ 与 $e_{ss}$，不达标就调整中频段位置。</li>
+    </ol>
+    <div class="box key">
+      <div class="t">与第 6 章的关系</div>
+      <p>期望特性法得到的 $L_c$ 若呈“低频平、中频升、高频平”的形状，就是<b>超前校正</b>；若呈“低频平、中频降、高频更低”的形状，就是<b>滞后校正</b>。两者不是两套方法，而是同一条期望特性的两种实现。</p>
+    </div>
+    <div class="box warn">
+      <div class="t">可实现性检查</div>
+      <p>相减得到的 $L_c$ 若高频段增益为正（$L_c(\infty)>0$），说明校正装置会放大高频噪声，工程上不可取——此时应改用滞后校正或降低 $\omega_c$。另外 $G_c$ 必须是真分式（分子阶次不高于分母），否则无法用无源网络或有源网络实现。</p>
+    </div>
+
+    <h3>5.9 典型例题</h3>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 5-1</span><span class="ex-title">求剪切频率、稳定裕度并判稳</span><span class="lv">必考题型</span></div>
+      <div class="q">
+        <p>单位负反馈系统开环传递函数 $G(s)=\dfrac{10}{s(0.1s+1)(0.01s+1)}$。求 $\omega_c,\gamma,\omega_g,K_g(\mathrm{dB})$，并判断闭环稳定性。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <ol class="steps">
+            <li><b>幅频与相频。</b>
+            $$|G(\mathrm{j}\omega)|=\frac{10}{\omega\sqrt{1+0.01\omega^2}\sqrt{1+10^{-4}\omega^2}},\qquad
+            \varphi(\omega)=-90°-\arctan(0.1\omega)-\arctan(0.01\omega)$$</li>
+            <li><b>求 $\omega_c$。</b>令 $|G|=1$，试算 $\omega=7.85$：
+            $$\frac{10}{7.85\times\sqrt{1.616}\times\sqrt{1.0062}}=\frac{10}{7.85\times1.271\times1.003}\approx1.00$$
+            故 $\omega_c\approx7.85\ \mathrm{rad/s}$。</li>
+            <li><b>求 $\gamma$。</b>
+            $$\gamma=180°-90°-\arctan(0.785)-\arctan(0.0785)=90°-38.1°-4.5°=47.4°$$</li>
+            <li><b>求 $\omega_g$。</b>令 $\varphi=-180°$，即 $\arctan(0.1\omega)+\arctan(0.01\omega)=90°$。由 $\tan(A+B)\to\infty$ 得 $1-0.001\omega^2=0$，故 $\omega_g=31.6\ \mathrm{rad/s}$。</li>
+            <li><b>求 $K_g$。</b>
+            $$|G(\mathrm{j}31.6)|=\frac{10}{31.6\times\sqrt{11}\times\sqrt{1.1}}=0.0909,\qquad K_g=-20\lg0.0909=20.8\ \mathrm{dB}$$</li>
+            <li><b>判稳。</b>开环无右半平面极点（$P=0$），$\gamma>0$、$K_g>0$，故 $N=0$、$Z=0$，闭环稳定。</li>
+          </ol>
+          <div class="box tip" style="margin-bottom:0">
+            <div class="t">答题顺序</div>
+            <p>先求 $\omega_c$（幅值条件）→ 再求 $\gamma$（相角代入）→ 再求 $\omega_g$（相角条件）→ 最后求 $K_g$。四步各有独立的方程，不要混在一起试算。</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 5-2</span><span class="ex-title">由 Bode 图确定最小相位系统传递函数</span><span class="lv">教材习题 5-? 类型</span></div>
+      <div class="q">
+        <p>某最小相位系统的对数幅频渐近线：低频段斜率为 $-20\ \mathrm{dB/dec}$，其延长线在 $\omega=1\ \mathrm{rad/s}$ 处的高度为 $40\ \mathrm{dB}$；在 $\omega=2\ \mathrm{rad/s}$ 处斜率变为 $-40\ \mathrm{dB/dec}$，在 $\omega=50\ \mathrm{rad/s}$ 处变为 $-60\ \mathrm{dB/dec}$；高频相角趋于 $-270°$。求 $G(s)$。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <ol class="steps">
+            <li><b>定型别。</b>低频斜率 $-20\ \mathrm{dB/dec}$ → 含一个积分环节（I 型）。</li>
+            <li><b>定增益。</b>$20\lg K-20\lg\omega\big|_{\omega=1}=40\ \mathrm{dB}$，得 $K=100$。</li>
+            <li><b>定转折频率。</b>$\omega=2$ 处斜率由 $-20$ 变 $-40$（减 20）→ 一个惯性环节，$T_1=1/2=0.5$；$\omega=50$ 处由 $-40$ 变 $-60$ → 又一个惯性环节，$T_2=1/50=0.02$。</li>
+            <li><b>校验相角。</b>高频相角 $=-90°-90°-90°=-270°$，与题给一致；环节数 $n-m=3$，吻合。</li>
+          </ol>
+          <p>$$G(s)=\frac{100}{s(0.5s+1)(0.02s+1)}$$</p>
+          <div class="box warn" style="margin-bottom:0">
+            <div class="t">若斜率变化为 ±40</div>
+            <p>说明遇到<b>振荡环节</b>（或二阶微分），对应 $(T^2s^2+2\zeta Ts+1)$，此时还需由图上的谐振峰高度反求 $\zeta$：$M_r=\dfrac{1}{2\zeta\sqrt{1-\zeta^2}}$。</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 5-3</span><span class="ex-title">用奈氏判据确定临界增益</span><span class="lv">与第 4 章对照</span></div>
+      <div class="q">
+        <p>单位负反馈系统 $G(s)=\dfrac{K}{s(s+1)(s+2)}$，用频域方法求使闭环稳定的 $K$ 范围。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p>令 $s=\mathrm{j}\omega$：</p>
+          <p>$$G(\mathrm{j}\omega)=\frac{K}{\mathrm{j}\omega(1+\mathrm{j}\omega)(2+\mathrm{j}\omega)}
+          =\frac{K}{\mathrm{j}\omega\left[(2-\omega^2)+\mathrm{j}3\omega\right]}
+          =\frac{K\left[-3\omega^2-\mathrm{j}\omega(2-\omega^2)\right]}{\omega^2\left[(2-\omega^2)^2+9\omega^2\right]}$$</p>
+          <p>与负实轴相交要求虚部为零：$2-\omega^2=0\Rightarrow\omega=\sqrt2$。此时</p>
+          <p>$$\mathrm{Re}\,G(\mathrm{j}\sqrt2)=\frac{-3K\cdot2}{2\left[(2-2)^2+9\cdot2\right]}=-\frac{6K}{36}=-\frac{K}{6}$$</p>
+          <p>交点位于 $(-K/6,\mathrm{j}0)$。要使其不越过 $(-1,\mathrm{j}0)$，需 $\dfrac{K}{6}<1$，即 $K<6$；再由 $K>0$ 保证开环稳定（$P=0$）。</p>
+          <p><b>结论：</b>$0<K<6$，与根轨迹法所得临界增益完全一致——两种方法必须给出同一答案，可作为交叉校验。</p>
+        </div>
+      </details>
+    </div>
+
+    <h3>5.10 本章易错清单</h3>
+    <div class="box warn">
+      <div class="t">考前自检</div>
+      <p>① 把 $P$ 当成闭环右半平面极点数；<br>
+      ② 在 $L<0$ 的频段统计穿越次数（不该计数）；<br>
+      ③ $\gamma$ 公式写成 $180°-\angle G$（应为 $180°+\angle G$，$\angle G$ 为负值）；<br>
+      ④ $K_g$ 的 dB 值忘记负号：$K_g(\mathrm{dB})=-20\lg|G(\mathrm{j}\omega_g)|$；<br>
+      ⑤ Bode 图低频段斜率与型别对应错误（每增加一个积分环节，斜率减 20）；<br>
+      ⑥ 由 Bode 求传递函数时忽略“最小相位”前提；<br>
+      ⑦ 把转折频率当成 $T$（实际 $\omega=1/T$，$T=1/\omega$）。</p>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,204 @@
+<section class="chapter" id="c9" data-num="9" data-title="第九章 线性系统的状态空间分析与综合" data-short="⑨ 状态空间（拓展）">
+  <div class="wrap">
+    <div class="ch-head">
+      <div class="ch-no"><b>09</b> CHAPTER NINE · 拓展</div>
+      <h2>线性系统的状态空间分析与综合<span class="en">State-space analysis and synthesis</span></h2>
+      <p class="ch-desc">现代控制理论的入口。若本学期只讲到第八章，本章可作为考研衔接；若课程包含状态空间，则 9.1–9.6 全部为考试范围（教材本章习题多达 45 道）。</p>
+    </div>
+
+    <details class="prereq" open>
+      <summary>预备知识 · 线性代数六件套<span class="who">9.1–9.6 每一步都在用；考研题的运算量也集中在这里</span></summary>
+      <div class="bd">
+        <p>状态空间方法的全部运算工具就是六件。逐一过一遍，遇到相应小节回来查。</p>
+        <h5>① 矩阵乘法、转置与逆</h5>
+        <p>$(AB)_{ij}=$ 第 $i$ 行与第 $j$ 列的内积；$AB\ne BA$（顺序不能换）。2×2 逆公式要条件反射：</p>
+        <p>$$A=\begin{bmatrix}a&b\\c&d\end{bmatrix}\ \Rightarrow\ A^{-1}=\frac{1}{ad-bc}\begin{bmatrix}d&-b\\-c&a\end{bmatrix}$$</p>
+        <h5>② 秩：线性无关的行（列）数</h5>
+        <p>秩是矩阵里“真正独立的信息量”。可控性矩阵 $\mathbf{Q}_c=[B\ \ AB\ \ \cdots\ \ A^{n-1}B]$ 满秩 $\iff$ 可控；可观性矩阵 $\mathbf{Q}_o$ 满秩 $\iff$ 可观（9.3 节）。<b>判满秩 = 判 $\det\ne 0$</b>，对 2×2、3×3 直接展开行列式即可。</p>
+        <h5>③ 特征值：矩阵的“根”</h5>
+        <p>$$\det(\lambda I-A)=0\quad\Rightarrow\quad \lambda_1,\dots,\lambda_n$$</p>
+        <p>三条对应关系：<b>特征值 = 系统极点 = 响应模态 $\mathrm{e}^{\lambda_i t}$ 的衰减率</b>。全为负实部 $\iff$ 渐近稳定（9.4 节）；极点配置（9.5 节）就是通过选 $K$ 把 $A-BK$ 的特征值放到指定位置。</p>
+        <h5>④ 凯莱-哈密顿定理：把无限级数截断</h5>
+        <p><b>任何方阵满足自己的特征多项式</b>：设 $\varphi(\lambda)=\det(\lambda I-A)$，则 $\varphi(A)=0$。于是 $A^n$（及更高次幂）都能写成 $I,A,\dots,A^{n-1}$ 的线性组合，矩阵指数</p>
+        <p>$$\mathrm{e}^{At}=I+At+\frac{A^2t^2}{2!}+\cdots\quad\Longrightarrow\quad \mathrm{e}^{At}=\alpha_0(t)I+\alpha_1(t)A+\cdots+\alpha_{n-1}(t)A^{n-1}$$</p>
+        <p>这就是 9.2 节“化 $\mathrm{e}^{At}$ 为有限项”的第三种方法（待定系数法）的合法性来源。</p>
+        <h5>⑤ 相似变换：换状态变量不换系统本质</h5>
+        <p>取新状态 $\bar x=Px$，则 $\bar A=P^{-1}AP$。相似矩阵的<b>特征值、特征多项式、传递函数全都不变</b>——所以状态变量的选法（物理量还是组合量）不影响系统行为，能控能观性也不变。对角化就是找 $P$ 把 $A$ 化成 $\mathrm{diag}(\lambda_i)$，让各模态解耦。</p>
+        <h5>⑥ 线性方程组：极点配置的最后一步</h5>
+        <p>配置极点时把 $\det(\lambda I-A+BK)$ 与期望多项式逐项比对，未知量是 $K$ 的各元素——本质是<b>解线性方程组</b>。用代入消元或克拉默法则均可；希望 $(A,B)$ 可控（第②件）保证方程组恒有解、极点可任意配置。</p>
+      </div>
+    </details>
+
+    <h3>9.1 状态空间表达式</h3>
+    <p>用一阶微分方程组描述系统内部状态：</p>
+    <p>$$\dot{\mathbf{x}}=A\mathbf{x}+B\mathbf{u},\qquad \mathbf{y}=C\mathbf{x}+D\mathbf{u}$$</p>
+    <p>$\mathbf{x}\in\mathbf{R}^n$ 为状态向量，$A$（$n\times n$）为系统矩阵，$B$（$n\times r$）为输入矩阵，$C$（$m\times n$）为输出矩阵，$D$（$m\times r$）为直传矩阵。与传递函数的关系为</p>
+    <p>$$G(s)=C(sI-A)^{-1}B+D$$</p>
+    <p>分母 $\det(sI-A)$ 即特征多项式，其根为系统的特征值（极点）。</p>
+
+    <h4>由微分方程写状态方程（可控标准型）</h4>
+    <p>设 $y^{(n)}+a_{n-1}y^{(n-1)}+\cdots+a_1\dot y+a_0y=b_0u$，取相变量 $x_1=y,\ x_2=\dot y,\ \cdots,\ x_n=y^{(n-1)}$，则</p>
+    <p>$$A=\begin{bmatrix}0&1&0&\cdots&0\\0&0&1&\cdots&0\\\vdots&&&\ddots&\vdots\\0&0&0&\cdots&1\\-a_0&-a_1&-a_2&\cdots&-a_{n-1}\end{bmatrix},\quad
+    B=\begin{bmatrix}0\\0\\\vdots\\0\\1\end{bmatrix},\quad C=\begin{bmatrix}b_0&0&\cdots&0\end{bmatrix}$$</p>
+    <p>这种形式称为<b>可控标准型</b>（$A$ 为友矩阵）。若由传递函数 $G(s)=\dfrac{b_ms^m+\cdots+b_0}{s^n+a_{n-1}s^{n-1}+\cdots+a_0}$ 出发，把分子系数依次填入 $C$ 即可（$m<n$ 时 $C=[b_0\ b_1\ \cdots\ b_m\ 0\ \cdots]$）。</p>
+
+    <p>若传递函数含<b>重极点</b>，还可化为<b>约当标准型</b>：$A$ 为约当阵（主对角线为极点，上对角线为 1），可直接读出各模态的衰减速率与耦合关系；由状态方程还能画出<b>状态变量图</b>（积分器＋比例器＋相加点），它与结构图一一对应，习题 9-4 就要求画此图。</p>
+
+    <h3>9.2 状态转移矩阵与状态方程的解</h3>
+    <div class="box def">
+      <div class="t">定义与性质</div>
+      <p>$$\Phi(t)=\mathrm{e}^{At}=I+At+\frac{1}{2!}A^2t^2+\cdots$$</p>
+      <p>性质：$\Phi(0)=I$；$\Phi(t_1+t_2)=\Phi(t_1)\Phi(t_2)$；$\Phi^{-1}(t)=\Phi(-t)$；$\dfrac{\dd}{\dd t}\Phi(t)=A\Phi(t)=\Phi(t)A$。</p>
+    </div>
+    <p>两种求法：<b>级数法</b>（适用于幂零、对角等特殊矩阵）与<b>拉氏反变换法</b>（通用）：</p>
+    <p>$$\Phi(t)=\mathscr{L}^{-1}\left[(sI-A)^{-1}\right]$$</p>
+    <p>状态方程的解为</p>
+    <p>$$\mathbf{x}(t)=\Phi(t)\mathbf{x}(0)+\int_0^t\Phi(t-\tau)B\mathbf{u}(\tau)\dd\tau$$</p>
+    <p>第一项是零输入响应（初值的影响），第二项是零状态响应（输入的卷积）。</p>
+
+    <h3>9.3 可控性与可观性</h3>
+    <div class="grid g2">
+      <div class="card">
+        <div class="h">可控性判据</div>
+        <p>系统完全可控 ⇔ 可控性矩阵满秩：
+        $$Q_c=\begin{bmatrix}B&AB&\cdots&A^{n-1}B\end{bmatrix},\quad\mathrm{rank}\,Q_c=n$$
+        物理含义：输入能否把状态驱动到任意指定位置。</p>
+      </div>
+      <div class="card">
+        <div class="h">可观性判据</div>
+        <p>系统完全可观 ⇔ 可观性矩阵满秩：
+        $$Q_o=\begin{bmatrix}C\\CA\\\vdots\\CA^{n-1}\end{bmatrix},\quad\mathrm{rank}\,Q_o=n$$
+        物理含义：能否由输出重构全部状态。</p>
+      </div>
+    </div>
+    <ul>
+      <li><b>输出可控性</b>：$\begin{bmatrix}CB&CAB&\cdots&CA^{n-1}B\end{bmatrix}$ 满秩（只要求输出可控，条件更弱）。</li>
+      <li><b>对偶原理</b>：$(A,B,C)$ 完全可控 ⇔ $(A^{\mathrm T},C^{\mathrm T},B^{\mathrm T})$ 完全可观。因此关于可控性的全部结论都可以“转置”成可观性的结论。</li>
+      <li><b>标准型</b>：可控系统可经线性变换化为可控标准型，可观系统可化为可观标准型，两者互为转置关系。传递函数出现零极点对消时，系统必不完全可控或完全可观。</li>
+      <li><b>结构分解</b>：不完全可控系统可分解为可控子系统与不可控子系统；不可控部分不出现在传递函数中，但会影响稳定性。</li>
+    </ul>
+
+    <h3>9.4 稳定性：特征值与李雅普诺夫方程</h3>
+    <p>线性定常系统 $\dot{\mathbf{x}}=A\mathbf{x}$ 渐近稳定 ⇔ $A$ 的全部特征值具有负实部（与经典理论一致）。</p>
+    <div class="box key">
+      <div class="t">李雅普诺夫方程</div>
+      <p>对任意正定矩阵 $Q$，方程</p>
+      <p>$$A^{\mathrm T}P+PA=-Q$$</p>
+      <p>存在<b>正定解</b> $P$ ⇔ 系统渐近稳定。计算时取 $Q=I$，解出 $P$ 后检验其正定性（顺序主子式全正）。</p>
+      <p>离散系统对应形式：$\Phi^{\mathrm T}P\Phi-P=-Q$。</p>
+    </div>
+    <p>对非线性系统 $\dot{\mathbf{x}}=\mathbf{f}(\mathbf{x})$：若能找到正定函数 $V(\mathbf{x})$，使 $\dot V(\mathbf{x})$ 沿轨迹负定，则原点渐近稳定——这是李雅普诺夫第二法的原始形式，考试中常要求“选 $V=x_1^2+x_2^2$ 判断稳定性”。</p>
+
+    <h3>9.5 状态反馈与极点配置</h3>
+    <p>取状态反馈 $\mathbf{u}=\mathbf{v}-K\mathbf{x}$，闭环变为</p>
+    <p>$$\dot{\mathbf{x}}=(A-BK)\mathbf{x}+B\mathbf{v}$$</p>
+    <div class="box key">
+      <div class="t">极点配置定理</div>
+      <p>系统 $(A,B)$ 完全可控 ⇔ 存在 $K$ 使 $A-BK$ 的特征值可任意配置（复极点须共轭成对）。</p>
+      <p><b>方法一（多项式比较）</b>：设 $K=[k_1\ \cdots\ k_n]$，写出 $\det(sI-A+BK)$，与期望特征多项式逐项比较系数。</p>
+      <p><b>方法二（Ackermann 公式）</b>：$K=\begin{bmatrix}0&\cdots&0&1\end{bmatrix}Q_c^{-1}\varphi(A)$，其中 $\varphi(s)$ 为期望特征多项式。</p>
+    </div>
+    <div class="box warn">
+      <div class="t">状态反馈不改变零点</div>
+      <p>状态反馈只能移动极点，<b>不改变传递函数的零点</b>。若原系统存在右半平面零点（非最小相位），无论怎么配置极点都无法消除它的不良影响。另外，输出反馈 $\mathbf{u}=\mathbf{v}-k\mathbf{y}$ 一般不能任意配置极点。</p>
+    </div>
+
+    <h3>9.6 状态观测器</h3>
+    <p>当状态不可直接测量时，构造全维观测器：</p>
+    <p>$$\dot{\hat{\mathbf{x}}}=A\hat{\mathbf{x}}+B\mathbf{u}+L(\mathbf{y}-\hat{\mathbf{y}}),\qquad \hat{\mathbf{y}}=C\hat{\mathbf{x}}$$</p>
+    <p>令误差 $\mathbf{e}=\mathbf{x}-\hat{\mathbf{x}}$，则</p>
+    <p>$$\dot{\mathbf{e}}=(A-LC)\mathbf{e}$$</p>
+    <p>只要 $(A,C)$ 完全可观，就可用 $L$ 把 $A-LC$ 的极点配置到任意位置，使误差按指定速率衰减。观测器极点通常取得比闭环极点快 2～5 倍。</p>
+    <p><b>分离原理</b>：状态反馈与观测器可独立设计，闭环极点由 $A-BK$ 与 $A-LC$ 的特征值共同组成——这是“控制器＋观测器”能分开计算的理论依据。</p>
+
+    <h4>降维观测器与内模原理（了解）</h4>
+    <p><b>降维观测器</b>：若部分状态可由输出直接测得，就只需对不可测部分构造观测器，阶数为 $n-m$（$m$ 为输出维数），可显著减少计算量。设计思路仍是配置 $(A-LC)$ 的极点，只是先把状态按“可测/不可测”分块。</p>
+    <p><b>内模原理</b>：在控制器中嵌入外部参考或扰动信号的“模型”（阶跃对应积分器 $1/s$，斜坡对应 $1/s^2$），即可实现对这类信号的零稳态误差跟踪或抑制。它是第 6 章“积分环节提高型别”的一般化，也是 9-41～9-43 内模控制题的出发点。</p>
+
+    <h3>9.7 离散状态方程（简述）</h3>
+    <p>连续系统离散化后：</p>
+    <p>$$\mathbf{x}(k+1)=G\mathbf{x}(k)+H\mathbf{u}(k),\qquad G=\mathrm{e}^{AT},\quad H=\int_0^T\mathrm{e}^{A\tau}B\dd\tau$$</p>
+    <p>可控性判据改为 $\begin{bmatrix}H&GH&\cdots&G^{n-1}H\end{bmatrix}$ 满秩；稳定性要求 $G$ 的特征值全部位于单位圆内。</p>
+
+    <h3>9.8 典型例题</h3>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 9-1</span><span class="ex-title">由微分方程写状态空间表达式并求传递函数</span><span class="lv">基础必会</span></div>
+      <div class="q">
+        <p>系统微分方程 $\ddot y+3\dot y+2y=u$，取状态 $x_1=y$、$x_2=\dot y$，写状态空间表达式，并求传递函数与特征值。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p>由 $x_1=y,\ x_2=\dot y$ 得 $\dot x_1=x_2$，$\dot x_2=\ddot y=-2x_1-3x_2+u$，故</p>
+          <p>$$A=\begin{bmatrix}0&1\\-2&-3\end{bmatrix},\quad B=\begin{bmatrix}0\\1\end{bmatrix},\quad C=\begin{bmatrix}1&0\end{bmatrix},\quad D=0$$</p>
+          <p>$$G(s)=C(sI-A)^{-1}B=\frac{1}{s^2+3s+2}\begin{bmatrix}1&0\end{bmatrix}\begin{bmatrix}1\\s\end{bmatrix}=\frac{1}{s^2+3s+2}$$</p>
+          <p>特征值由 $s^2+3s+2=0$ 得 $-1,-2$，均在左半平面 → 渐近稳定。</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 9-2</span><span class="ex-title">用拉氏反变换求状态转移矩阵</span><span class="lv">教材习题 9-9 类型</span></div>
+      <div class="q">
+        <p>设 $A=\begin{bmatrix}0&1\\-2&-3\end{bmatrix}$，求 $\mathrm{e}^{At}$。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p>$$sI-A=\begin{bmatrix}s&-1\\2&s+3\end{bmatrix},\qquad
+          (sI-A)^{-1}=\frac{1}{(s+1)(s+2)}\begin{bmatrix}s+3&1\\-2&s\end{bmatrix}$$</p>
+          <p>逐项部分分式展开：</p>
+          <p>$$\frac{s+3}{(s+1)(s+2)}=\frac{2}{s+1}-\frac{1}{s+2},\qquad
+          \frac{1}{(s+1)(s+2)}=\frac{1}{s+1}-\frac{1}{s+2}$$</p>
+          <p>$$\frac{-2}{(s+1)(s+2)}=\frac{-2}{s+1}+\frac{2}{s+2},\qquad
+          \frac{s}{(s+1)(s+2)}=\frac{-1}{s+1}+\frac{2}{s+2}$$</p>
+          <p>反变换得</p>
+          <p>$$\mathrm{e}^{At}=\begin{bmatrix}2\mathrm{e}^{-t}-\mathrm{e}^{-2t}&\mathrm{e}^{-t}-\mathrm{e}^{-2t}\\-2\mathrm{e}^{-t}+2\mathrm{e}^{-2t}&-\mathrm{e}^{-t}+2\mathrm{e}^{-2t}\end{bmatrix}$$</p>
+          <p><b>校验：</b>$t=0$ 时为单位阵 $I$ ✓；求导后令 $t=0$：$\begin{bmatrix}0&1\\-2&-3\end{bmatrix}=A$ ✓。</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 9-3</span><span class="ex-title">状态反馈极点配置</span><span class="lv">必考题型</span></div>
+      <div class="q">
+        <p>系统 $A=\begin{bmatrix}0&1\\0&0\end{bmatrix}$，$B=\begin{bmatrix}0\\1\end{bmatrix}$，求状态反馈 $K=[k_1\ k_2]$ 使闭环极点为 $-1,-2$。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p>先验可控性：$Q_c=\begin{bmatrix}0&1\\1&0\end{bmatrix}$，$\det=-1\neq0$，完全可控，可任意配置。</p>
+          <p>$$A-BK=\begin{bmatrix}0&1\\0&0\end{bmatrix}-\begin{bmatrix}0\\1\end{bmatrix}\begin{bmatrix}k_1&k_2\end{bmatrix}=\begin{bmatrix}0&1\\-k_1&-k_2\end{bmatrix}$$</p>
+          <p>特征多项式：$s^2+k_2s+k_1$；期望：$(s+1)(s+2)=s^2+3s+2$。</p>
+          <p>比较系数得 $k_1=2,\ k_2=3$，即 $K=[2\ \ 3]$。</p>
+          <p><b>校验：</b>$A-BK=\begin{bmatrix}0&1\\-2&-3\end{bmatrix}$，特征值 $-1,-2$ ✓。</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 9-4</span><span class="ex-title">全维状态观测器设计</span><span class="lv">教材习题 9-30 类型</span></div>
+      <div class="q">
+        <p>系统同例 9-2，$C=\begin{bmatrix}1&0\end{bmatrix}$，设计观测器增益 $L$，使观测器极点为 $-5,-5$。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p>可观性：$Q_o=\begin{bmatrix}C\\CA\end{bmatrix}=\begin{bmatrix}1&0\\0&1\end{bmatrix}$，满秩，可设计。</p>
+          <p>设 $L=\begin{bmatrix}l_1\\l_2\end{bmatrix}$，则</p>
+          <p>$$A-LC=\begin{bmatrix}-l_1&1\\-2-l_2&-3\end{bmatrix}$$</p>
+          <p>$$\det(sI-A+LC)=(s+l_1)(s+3)+(2+l_2)=s^2+(l_1+3)s+(3l_1+2+l_2)$$</p>
+          <p>期望 $(s+5)^2=s^2+10s+25$，比较得</p>
+          <p>$$l_1+3=10\Rightarrow l_1=7,\qquad 3\times7+2+l_2=25\Rightarrow l_2=2$$</p>
+          <p>即 $L=\begin{bmatrix}7\\2\end{bmatrix}$，观测器为 $\dot{\hat{\mathbf{x}}}=A\hat{\mathbf{x}}+B\mathbf{u}+L(y-\hat y)$。</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="box tip">
+      <div class="t">与前八章的关系</div>
+      <p>经典理论用传递函数描述“输入—输出”，现代理论用状态空间描述“内部状态—输出”。对线性定常单变量系统两者完全等价，$G(s)=C(sI-A)^{-1}B+D$ 就是桥梁：传递函数只反映可控且可观的那部分模态，被零极点对消掉的模态在状态空间里仍然存在，并可能影响稳定性。</p>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,470 @@
+<section class="chapter" id="c3" data-num="3" data-title="第三章 线性系统的时域分析法" data-short="③ 时域分析法">
+  <div class="wrap">
+    <div class="ch-head">
+      <div class="ch-no"><b>03</b> CHAPTER THREE</div>
+      <h2>线性系统的时域分析法<span class="en">Time-domain analysis of linear systems</span></h2>
+      <p class="ch-desc">全书分值最高的模块，几乎所有学校的必考大题都在这里：二阶指标计算、劳斯判据求参数范围、稳态误差计算。三块内容必须练到“看到题就知道套哪张表”。</p>
+    </div>
+
+    <details class="prereq" open>
+      <summary>预备知识 · 常系数线性微分方程的解<span class="who">3.2–3.3 所有响应公式都由此推出，看懂推导可防记错</span></summary>
+      <div class="bd">
+        <p>本章的二阶系统就是一个二阶常系数线性微分方程：$\ddot c+a_1\dot c+a_0c=f(t)$。它的解有一条总纲：</p>
+        <p>$$\text{全解}=\underbrace{\text{齐次通解}}_{\text{瞬态分量}}+\underbrace{\text{任一特解}}_{\text{强制分量}}$$</p>
+        <h5>① 齐次通解由特征方程决定</h5>
+        <p>令 $c=\mathrm{e}^{st}$ 代入齐次方程，得<b>特征方程</b> $s^2+a_1s+a_0=0$。设根为 $s_{1,2}=-\sigma\pm\j\omega_d$：</p>
+        <ul>
+          <li><b>两不等负实根</b> $s_1\ne s_2$：$c_h=A_1\mathrm{e}^{s_1t}+A_2\mathrm{e}^{s_2t}$——单调、无振荡（过阻尼）；</li>
+          <li><b>共轭复根</b> $-\sigma\pm\j\omega_d$：$c_h=A\mathrm{e}^{-\sigma t}\sin(\omega_dt+\varphi)$——衰减振荡（欠阻尼）；</li>
+          <li><b>负实重根</b> $s_1=s_2$：$c_h=(A_1+A_2t)\mathrm{e}^{s_1t}$——临界阻尼，是过阻尼与欠阻尼的分界，响应无超调。</li>
+        </ul>
+        <p>根的<b>实部决定收敛快慢，虚部决定振荡频率</b>。实部 $>0$ 则 $\mathrm{e}^{st}$ 发散——这就是“稳定性由特征根实部决定”的来源（3.5 节）。</p>
+        <h5>② 特解：形式跟随输入</h5>
+        <p>阶跃输入 $f(t)=C_0\cdot 1(t)$ 时，试特解 $c_p=B$（常数），代回方程得 $a_0B=C_0$，故 $B=C_0/a_0$——这恰好是稳态值 $c(\infty)$。<b>稳态误差、终值都从这个特解里来。</b>更一般的对照表：输入 $\sin\omega t$ → 特解取 $A_1\sin\omega t+A_2\cos\omega t$；输入 $\mathrm{e}^{\alpha t}$ → 特解取 $B\mathrm{e}^{\alpha t}$（$\alpha$ 不与特征根重合时）。</p>
+        <h5>③ 初始条件定常数</h5>
+        <p>两个待定常数 $A_1,A_2$ 由 $c(0)$ 与 $\dot c(0)$ 两个初值代入全解确定。零初始条件下 $c(0)=\dot c(0)=0$，解出的就是 3.3 节的标准欠阻尼响应 $1-\dfrac{\mathrm{e}^{-\sigma t}}{\sqrt{1-\zeta^2}}\sin(\omega_dt+\beta)$。</p>
+        <h5>④ 一个量纲直觉</h5>
+        <p>把时间轴缩放 $t\to\omega_nt$，方程变成无量纲的 $\ddot c+2\zeta\dot c+c=1$，只剩一个参数 $\zeta$。所以<b>超调量 $\sigma\%$ 只由 $\zeta$ 决定</b>，$\omega_n$ 只压缩或拉伸时间轴（$t_r,t_p,t_s$ 与 $\omega_n$ 成反比）。记住这个，指标公式的结构就不会背串。</p>
+      </div>
+    </details>
+
+    <h3>3.1 典型输入信号与性能指标</h3>
+    <p>工程上不可能用任意输入评价系统，因此约定五种典型信号：<b>阶跃、斜坡（速度）、加速度、脉冲、正弦</b>。前四种用于时域分析，正弦用于频域分析。</p>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th style="width:20%">信号</th><th style="width:28%">时域</th><th style="width:22%">拉氏变换</th><th>用途</th></tr></thead>
+        <tbody>
+          <tr><td>单位阶跃</td><td>$1(t)$</td><td>$1/s$</td><td>评价动态性能与稳态精度（最常用）</td></tr>
+          <tr><td>单位斜坡</td><td>$t$</td><td>$1/s^2$</td><td>评价跟踪匀速信号的能力</td></tr>
+          <tr><td>单位加速度</td><td>$t^2/2$</td><td>$1/s^3$</td><td>评价跟踪加速信号的能力</td></tr>
+          <tr><td>单位脉冲</td><td>$\delta(t)$</td><td>$1$</td><td>求脉冲响应 $h(t)$，即系统的“指纹”</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box def">
+      <div class="t">五个动态性能指标（以单位阶跃响应定义）</div>
+      <p><b>上升时间 $t_r$</b>：响应从终值的 10% 升到 90% 所需时间；有振荡时也可定义为第一次到达终值的时间。<br>
+      <b>峰值时间 $t_p$</b>：响应第一次达到峰值的时间。<br>
+      <b>最大超调量 $\sigma\%$</b>：$\sigma\%=\dfrac{c(t_p)-c(\infty)}{c(\infty)}\times100\%$。<br>
+      <b>调节时间 $t_s$</b>：响应进入并保持在终值 $\pm5\%$（或 $\pm2\%$）误差带内的最短时间。<br>
+      <b>振荡次数 $N$</b>：调节时间内穿越终值次数的一半。</p>
+    </div>
+
+    <h3>3.2 一阶系统</h3>
+    <p>传递函数 $\Phi(s)=\dfrac{1}{Ts+1}$，单位阶跃响应为</p>
+    <p>$$c(t)=1-\mathrm{e}^{-t/T}\quad(t\geq0)$$</p>
+    <ul>
+      <li>无超调、单调上升，$t=0$ 处斜率为 $1/T$，$t=T$ 时到达终值的 $63.2\%$。</li>
+      <li>$t_r=2.2T$（10%→90%）；$t_s=3T$（$\pm5\%$）或 $4T$（$\pm2\%$）。</li>
+      <li><b>唯一可调参数是 $T$</b>：$T$ 越小响应越快。一阶系统不存在稳定性问题（极点 $-1/T<0$）。</li>
+    </ul>
+
+    <h3>3.3 二阶系统——本章核心</h3>
+    <h4>标准形式与极点分布</h4>
+    <p>$$\Phi(s)=\frac{\omega_n^2}{s^2+2\zeta\omega_n s+\omega_n^2},\qquad s_{1,2}=-\zeta\omega_n\pm \mathrm{j}\omega_n\sqrt{1-\zeta^2}$$</p>
+    <p>记阻尼振荡角频率 $\omega_d=\omega_n\sqrt{1-\zeta^2}$，阻尼角 $\beta=\arccos\zeta$。闭环极点在 s 平面上的位置由 $\zeta,\omega_n$ 完全确定：极点到虚轴距离为 $\zeta\omega_n$，到原点距离为 $\omega_n$，与负实轴夹角余弦为 $\zeta$。</p>
+
+    <figure>
+      <!--FIG:polemap-->
+      <figcaption><b>图 3-1</b>　二阶系统极点分布与 $\zeta$ 的关系。等阻尼线是从原点出发的射线，$\beta=\arccos\zeta$；等 $\omega_n$ 线是以原点为圆心的圆弧。</figcaption>
+    </figure>
+
+    <h4>单位阶跃响应（欠阻尼 $0<\zeta<1$）</h4>
+    <p>$$c(t)=1-\frac{\mathrm{e}^{-\zeta\omega_n t}}{\sqrt{1-\zeta^2}}\sin\left(\omega_d t+\beta\right),\qquad \beta=\arccos\zeta$$</p>
+    <p>响应由两部分构成：<b>稳态项 1</b> 与<b>衰减振荡项</b>。衰减速度由 $\zeta\omega_n$（极点到虚轴的距离）决定，振荡频率由 $\omega_d$ 决定——这两句话是理解全部指标公式的钥匙。</p>
+
+    <figure>
+      <!--FIG:step2-->
+      <figcaption><b>图 3-2</b>　不同阻尼比下的单位阶跃响应（$\omega_n=1$）。$\zeta$ 越小振荡越剧烈；$\zeta\geq1$ 时无超调。</figcaption>
+    </figure>
+
+    <div class="figx">
+      <div class="figx-head">
+        <span class="figx-badge">可交互</span>
+        <span class="figx-title">拖动极点：指标与阶跃响应同步变化</span>
+        <span class="figx-hint">在左图任意位置按下并拖动</span>
+      </div>
+      <div class="figx-body">
+        <div class="figx-pane">
+          <span class="pane-tag">s 平面（上半平面）</span>
+          <svg id="poleSvg" viewBox="0 0 440 430" role="img" aria-label="可拖动的二阶系统极点分布"></svg>
+        </div>
+        <div class="figx-pane">
+          <span class="pane-tag">单位阶跃响应</span>
+          <svg id="poleResp" viewBox="0 0 440 430" role="img" aria-label="对应的单位阶跃响应"></svg>
+        </div>
+      </div>
+      <div class="figx-ctl">
+        <label>阻尼比 ζ
+          <input type="range" id="pz" min="0.02" max="1" step="0.01" value="0.5">
+          <output id="pzOut">0.50</output>
+        </label>
+        <label>自然频率 ωn
+          <input type="range" id="pwn" min="0.45" max="2.35" step="0.01" value="2">
+          <output id="pwnOut">2.00</output>
+        </label>
+      </div>
+      <div class="figx-read" id="poleRead"></div>
+      <div class="figx-note">左图只画上半平面，下半平面的极点是它的共轭；极点到原点的距离就是 ωn，与负实轴的夹角 β = arccos ζ。<b>先看 ζ 变小（极点靠近虚轴）时 σ% 与 ts 怎么变，再固定 ζ 拉 ωn 看快慢</b>——这两条比背公式有用。</div>
+    </div>
+
+    <h4>五个指标公式</h4>
+    <div class="formula">
+      <p>$$t_r=\frac{\pi-\beta}{\omega_d},\qquad t_p=\frac{\pi}{\omega_d}=\frac{\pi}{\omega_n\sqrt{1-\zeta^2}}$$</p>
+      <p>$$\sigma\%=\mathrm{e}^{-\frac{\pi\zeta}{\sqrt{1-\zeta^2}}}\times100\%,\qquad
+      t_s\approx\frac{3.5}{\zeta\omega_n}\ (\pm5\%)\ \text{或}\ \frac{4.4}{\zeta\omega_n}\ (\pm2\%)$$</p>
+      <div class="cap">前两式由“相位到达 $\pi-\beta$ 与 $\pi$”得到；$\sigma\%$ 由 $c(t_p)$ 代入化得；$t_s$ 用包络线 $\mathrm{e}^{-\zeta\omega_n t}/\sqrt{1-\zeta^2}$ 近似，略偏保守。</div>
+    </div>
+
+    <div class="box key">
+      <div class="t">三个必须记住的结论</div>
+      <p>① $\sigma\%$ <b>只与 $\zeta$ 有关</b>，与 $\omega_n$ 无关；$\zeta$ 越大超调越小，$\zeta=1$ 时无超调。<br>
+      ② $t_p,t_r$ <b>与 $\omega_n$ 成反比</b>：$\omega_n$ 越大，响应越快（极点离原点越远）。<br>
+      ③ $t_s$ 由<b>实部</b> $\zeta\omega_n$ 决定：极点离虚轴越远，衰减越快。工程上常取 $\zeta=0.4\sim0.8$，此时 $\sigma\%\approx1.5\%\sim25.4\%$。</p>
+    </div>
+
+    <figure>
+      <!--FIG:zetasigma-->
+      <figcaption><b>图 3-3</b>　$\sigma\%$ 与 $\zeta$ 的单值关系。常用点：$\zeta=0.707\to4.3\%$；$0.5\to16.3\%$；$0.4\to25.4\%$。</figcaption>
+    </figure>
+
+    <h4>其他阻尼情况</h4>
+    <table class="tbl">
+      <thead><tr><th style="width:18%">阻尼情况</th><th style="width:20%">极点</th><th>响应特征</th></tr></thead>
+      <tbody>
+        <tr><td>$\zeta=0$ 无阻尼</td><td>$\pm\mathrm{j}\omega_n$</td><td>等幅振荡，频率 $\omega_n$，临界稳定</td></tr>
+        <tr><td>$0<\zeta<1$ 欠阻尼</td><td>共轭复根</td><td>衰减振荡，有超调，工程最常用</td></tr>
+        <tr><td>$\zeta=1$ 临界阻尼</td><td>二重实根 $-\omega_n$</td><td>单调上升，无超调，为无超调的最快响应</td></tr>
+        <tr><td>$\zeta>1$ 过阻尼</td><td>两个不等负实根</td><td>单调上升，响应变慢；$\zeta\gg1$ 时可近似为一阶系统</td></tr>
+      </tbody>
+    </table>
+
+    <h4>改善二阶系统性能的两条常用途径</h4>
+    <div class="grid g2">
+      <div class="card">
+        <div class="h">比例—微分（PD）控制</div>
+        <p>在前向通道串入 $(T_ds+1)$：
+        $$\Phi(s)=\frac{\omega_n^2(T_ds+1)}{s^2+(2\zeta\omega_n+\omega_n^2T_d)s+\omega_n^2}$$
+        等效阻尼 $\zeta_d=\zeta+\dfrac{\omega_nT_d}{2}$ 增大，$\sigma\%$ 下降；但闭环引入零点，使响应加快、实际超调比公式估计的略大。微分不改变常值稳态误差。</p>
+      </div>
+      <div class="card">
+        <div class="h">测速反馈（速度负反馈）</div>
+        <p>把输出速度经 $K_t$ 负反馈到输入端，等效阻尼同样增大为 $\zeta_t=\zeta+\dfrac{K_t\omega_n}{2}$。代价是<b>开环增益下降</b>：对斜坡输入的稳态误差按 $1/(1+K_t)$ 量级增大，即“用精度换平稳”。</p>
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 3-1</span><span class="ex-title">由闭环传递函数求全部动态指标</span><span class="lv">基础必会</span></div>
+      <div class="q">
+        <p>已知单位负反馈系统开环传递函数 $G(s)=\dfrac{100}{s(s+10)}$，求 $\zeta,\omega_n,t_r,t_p,\sigma\%,t_s$（取 $\pm5\%$）。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p>闭环：$\Phi(s)=\dfrac{100}{s^2+10s+100}$，与标准式对比得</p>
+          <p>$$\omega_n^2=100\Rightarrow\omega_n=10\ \mathrm{rad/s},\qquad 2\zeta\omega_n=10\Rightarrow\zeta=0.5$$</p>
+          <p>$\omega_d=\omega_n\sqrt{1-\zeta^2}=10\times0.866=8.66\ \mathrm{rad/s}$，$\beta=\arccos0.5=60°=1.047\ \mathrm{rad}$。</p>
+          <ul>
+            <li>$t_r=\dfrac{\pi-\beta}{\omega_d}=\dfrac{3.1416-1.047}{8.66}=0.242\ \mathrm{s}$</li>
+            <li>$t_p=\dfrac{\pi}{\omega_d}=\dfrac{3.1416}{8.66}=0.363\ \mathrm{s}$</li>
+            <li>$\sigma\%=\mathrm{e}^{-\pi\zeta/\sqrt{1-\zeta^2}}=\mathrm{e}^{-1.814}=16.3\%$</li>
+            <li>$t_s=\dfrac{3.5}{\zeta\omega_n}=\dfrac{3.5}{5}=0.7\ \mathrm{s}$</li>
+          </ul>
+          <div class="box tip" style="margin-bottom:0">
+            <div class="t">答题要点</div>
+            <p>先化成标准式再报 $\zeta,\omega_n$，不要直接拿开环参数套公式。若题目给的是开环 $G(s)$，务必先求闭环 $\Phi(s)$。</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 3-2</span><span class="ex-title">由性能指标反求系统参数</span><span class="lv">教材习题 3-7 类型</span></div>
+      <div class="q">
+        <p>单位负反馈系统开环传递函数 $G(s)=\dfrac{K}{s(0.1s+1)}$。要求 $\sigma\%\leq16.3\%$ 且 $t_s\leq1\ \mathrm{s}$（$\pm5\%$），求 $K$ 的取值范围。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p>闭环特征方程：$0.1s^2+s+K=0$，即 $s^2+10s+10K=0$。故</p>
+          <p>$$\omega_n=\sqrt{10K},\qquad 2\zeta\omega_n=10\Rightarrow\zeta=\frac{5}{\sqrt{10K}}$$</p>
+          <ol class="steps">
+            <li><b>超调量要求。</b>$\sigma\%\leq16.3\%$ 对应 $\zeta\geq0.5$（$\mathrm{e}^{-\pi\cdot0.5/0.866}=16.3\%$）：
+            $$\frac{5}{\sqrt{10K}}\geq0.5\Rightarrow\sqrt{10K}\leq10\Rightarrow K\leq10$$</li>
+            <li><b>调节时间要求。</b>$t_s=\dfrac{3.5}{\zeta\omega_n}=\dfrac{3.5}{5}=0.7\ \mathrm{s}$，与 $K$ <b>无关</b>（因为 $\zeta\omega_n=5$ 由特征方程的一次项系数固定），恒满足 $0.7\leq1$。</li>
+            <li><b>稳定性要求。</b>二阶系统只需 $K>0$（各项系数为正）。</li>
+          </ol>
+          <p><b>结论：</b>$0<K\leq10$。</p>
+          <div class="box warn" style="margin-bottom:0">
+            <div class="t">这个结论值得记住</div>
+            <p>对 $G(s)=\dfrac{K}{s(Ts+1)}$，特征方程为 $s^2+\dfrac{1}{T}s+\dfrac{K}{T}=0$，于是
+            $\zeta\omega_n=\dfrac{1}{2T}$ 是<b>常数</b>，$t_s=\dfrac{3.5}{\zeta\omega_n}=7T$ 只由 $T$ 决定、与 $K$ 无关；
+            而 $K$ 增大会使 $\omega_n=\sqrt{K/T}$ 变大（响应变快）、$\zeta=\dfrac{1}{2\sqrt{KT}}$ 变小（超调变大）。
+            所以超调量给出的是 $K$ 的<b>上限</b>，调节时间给出的是 $T$ 的约束。</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <h3>3.4 高阶系统：主导极点与偶极子</h3>
+    <p>三阶以上系统的响应是多个一阶/二阶模态的叠加。工程上不必精确求解，可用<b>主导极点</b>降阶：</p>
+    <ul>
+      <li><b>主导极点</b>：距虚轴最近、且其附近没有闭环零点的一对共轭极点（或一个实极点）。它们衰减最慢，决定响应形状。</li>
+      <li><b>可降阶条件</b>：非主导极点的实部绝对值 ≥ 主导极点实部的 <b>5 倍</b>，且其对应的留数较小（离零点不太近）。此时可忽略这些极点，按二阶（或一阶）系统近似。</li>
+      <li><b>偶极子</b>：一对靠得很近的闭环零、极点，其作用近似相消，可同时略去。</li>
+      <li><b>闭环零点</b>会加快响应、增大超调（零点越靠近虚轴影响越大），降阶时不能随意忽略。</li>
+    </ul>
+
+    <h3>3.5 稳定性与劳斯判据</h3>
+    <div class="box def">
+      <div class="t">稳定性定义（线性定常系统）</div>
+      <p>若系统在扰动作用下偏离了平衡状态，扰动消失后能自行恢复到原平衡状态，则称系统稳定。充要条件：<b>闭环特征方程的全部根（闭环极点）均位于 s 左半平面</b>，即 $\mathrm{Re}(s_i)<0$。</p>
+    </div>
+
+    <p><b>必要条件</b>：特征方程 $D(s)=a_ns^n+\cdots+a_1s+a_0=0$ 的各项系数同号且不缺项（$a_i>0$）。这只是必要条件，<b>不能作为判据</b>——满足它仍可能不稳定（如 $s^3+s^2+2s+8=0$）。</p>
+
+    <div class="box key">
+      <div class="t">劳斯判据（充要条件）</div>
+      <p>列出劳斯表，若<b>第一列元素全部大于零</b>，则系统稳定；第一列符号改变的次数等于 s 右半平面内的特征根个数。</p>
+      <p>$$\begin{array}{c|cccc} s^n & a_n & a_{n-2} & a_{n-4} & \cdots\\ s^{n-1} & a_{n-1} & a_{n-3} & a_{n-5} & \cdots\\ s^{n-2} & b_1 & b_2 & b_3 & \cdots\\ s^{n-3} & c_1 & c_2 & \cdots\\ \vdots & & & & \end{array}$$</p>
+      <p>其中 $b_1=\dfrac{a_{n-1}a_{n-2}-a_na_{n-3}}{a_{n-1}}$，$b_2=\dfrac{a_{n-1}a_{n-4}-a_na_{n-5}}{a_{n-1}}$，其余逐行类推，每行只用到上两行。</p>
+    </div>
+
+    <div class="box warn">
+      <div class="t">两种特殊情况（必考）</div>
+      <p><b>情况一：某行首列元素为 0，而该行其余元素不全为 0。</b>用无穷小正数 $\varepsilon$ 代替 0 继续计算，最后令 $\varepsilon\to0^+$ 判断第一列符号。<br>
+      <b>情况二：某行元素全为 0。</b>说明存在关于原点对称的根（如 $\pm\mathrm{j}\omega$ 或 $\pm\sigma$）。用<b>上一行</b>系数构造辅助方程 $A(s)=0$，对其求导得 $A'(s)$，用 $A'(s)$ 的系数替换全零行，继续计算。辅助方程的阶数指示了对称根的个数。</p>
+    </div>
+
+    <div class="box key">
+      <div class="t">赫尔维茨判据（与劳斯判据等价）</div>
+      <p>设特征方程 $a_ns^n+\cdots+a_1s+a_0=0$（$a_n>0$），构造赫尔维茨行列式：主对角线依次为 $a_{n-1},a_{n-2},\cdots,a_0$，每列向下标递减、向上递增，越界补零。系统稳定的充要条件是<b>各阶主子式全大于零</b>：$\Delta_1>0,\Delta_2>0,\cdots,\Delta_n>0$。</p>
+      <p>低阶常用结果（记 $a_ns^n+\cdots+a_1s+a_0=0$，且各项系数已为正）：二阶只需 $a_2,a_1,a_0>0$；三阶需 $a_1a_2-a_0a_3>0$；四阶需 $a_1a_2a_3-a_1^2a_4-a_0a_3^2>0$。</p>
+      <p>行列式法适合阶数低（$\leq4$）、参数少的场合；阶数高时劳斯表更不易出错。两者结论必须一致，可互相验算。</p>
+    </div>
+
+    <div class="box warn">
+      <div class="t">结构不稳定系统</div>
+      <p>若特征方程<b>缺项</b>（如 $s^3+as+b=0$ 缺 $s^2$ 项），则无论参数取何值都无法稳定：三阶判据 $a_1a_2-a_0a_3=0\cdot a-b=-b<0$。这类系统称为<b>结构不稳定系统</b>。判断时先看必要条件（系数同号、不缺项），不满足即可直接判为结构不稳定，无需列劳斯表。</p>
+    </div>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 3-3</span><span class="ex-title">劳斯表判定右半平面根数</span><span class="lv">基础必会</span></div>
+      <div class="q">
+        <p>设特征方程为 $s^4+2s^3+3s^2+4s+5=0$，判断系统稳定性，并指出 s 右半平面内的根数。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p>$$\begin{array}{c|ccc} s^4 & 1 & 3 & 5\\ s^3 & 2 & 4 & 0\\ s^2 & \frac{2\times3-1\times4}{2}=1 & \frac{2\times5-1\times0}{2}=5 & \\ s^1 & \frac{1\times4-2\times5}{1}=-6 & 0 & \\ s^0 & 5 & & \end{array}$$</p>
+          <p>第一列为 $1,\,2,\,1,\,-6,\,5$，符号由 $+$ 变 $-$ 再变 $+$，共<b>两次变号</b>。</p>
+          <p><b>结论：</b>系统不稳定，s 右半平面内有 <b>2 个</b>根。</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 3-4</span><span class="ex-title">用劳斯判据求参数范围</span><span class="lv">教材习题 3-? 类型 · 高频</span></div>
+      <div class="q">
+        <p>单位负反馈系统开环传递函数 $G(s)=\dfrac{K}{s(s+1)(s+2)}$，求使闭环系统稳定的 $K$ 范围。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p>闭环特征方程：$s(s+1)(s+2)+K=0$，展开得</p>
+          <p>$$s^3+3s^2+2s+K=0$$</p>
+          <p>劳斯表：</p>
+          <p>$$\begin{array}{c|cc} s^3 & 1 & 2\\ s^2 & 3 & K\\ s^1 & \frac{6-K}{3} & 0\\ s^0 & K & \end{array}$$</p>
+          <p>稳定要求第一列全正：$\dfrac{6-K}{3}>0\Rightarrow K<6$，且 $K>0$。</p>
+          <p><b>结论：</b>$0<K<6$。临界增益 $K=6$ 时系统处于等幅振荡，振荡频率可由辅助方程 $3s^2+6=0$ 得 $\omega=\sqrt2\ \mathrm{rad/s}$。</p>
+        </div>
+      </details>
+    </div>
+
+    <h3>3.6 稳态误差</h3>
+    <h4>误差的定义与计算</h4>
+    <p>误差定义为系统输入与输出之差 $e(t)=r(t)-c(t)$，其拉氏变换 $E(s)=R(s)-C(s)=R(s)\left[1-\Phi(s)\right]$。若系统稳定，由终值定理</p>
+    <p>$$e_{ss}=\lim_{t\to\infty}e(t)=\lim_{s\to0}sE(s)$$</p>
+    <div class="box warn">
+      <div class="t">顺序不能反</div>
+      <p>必须先确认系统稳定，才能用终值定理求 $e_{ss}$。不稳定系统的“稳态误差”没有意义（响应发散），强行计算会得到有限值，属于典型错误。</p>
+    </div>
+
+    <h4>单位负反馈下的静态误差系数法</h4>
+    <p>设开环传递函数写成时间常数形式</p>
+    <p>$$G(s)=\frac{K\prod_{i=1}^{m}(\tau_is+1)}{s^{\nu}\prod_{j=1}^{n-\nu}(T_js+1)}$$</p>
+    <p>$\nu$ 称为<b>系统型别</b>（0 型、I 型、II 型……），$K$ 为开环增益。定义</p>
+    <p>$$K_p=\lim_{s\to0}G(s),\qquad K_v=\lim_{s\to0}sG(s),\qquad K_a=\lim_{s\to0}s^2G(s)$$</p>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <caption>表 3-1　单位负反馈系统的稳态误差（输入幅值分别为 $R_0$、$v_0$、$a_0$）</caption>
+        <thead><tr><th style="width:12%">型别 $\nu$</th><th style="width:16%">$K_p$</th><th style="width:16%">$K_v$</th><th style="width:16%">$K_a$</th><th>阶跃 / 斜坡 / 加速度</th></tr></thead>
+        <tbody>
+          <tr><td class="c">0 型</td><td>$K$</td><td>$0$</td><td>$0$</td><td>$\dfrac{R_0}{1+K}$ / $\infty$ / $\infty$</td></tr>
+          <tr><td class="c">I 型</td><td>$\infty$</td><td>$K$</td><td>$0$</td><td>$0$ / $\dfrac{v_0}{K}$ / $\infty$</td></tr>
+          <tr><td class="c">II 型</td><td>$\infty$</td><td>$\infty$</td><td>$K$</td><td>$0$ / $0$ / $\dfrac{a_0}{K}$</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="figx">
+      <div class="figx-head">
+        <span class="figx-badge">点一格</span>
+        <span class="figx-title">稳态误差矩阵：点单元格，看这一格为什么是这个值</span>
+        <span class="figx-hint">拖动 K 观察常数误差的变化</span>
+      </div>
+      <div class="figx-body one">
+        <div class="figx-pane" style="padding:8px 8px 0">
+          <table class="tbl" id="errTable"></table>
+          <div class="figx-ctl" style="padding:6px 0 8px">
+            <label>开环增益 K
+              <input type="range" id="errK" min="1" max="50" step="1" value="10">
+              <output id="errKOut">10</output>
+            </label>
+          </div>
+          <div class="figx-note" id="errDetail" style="padding:0 0 8px"></div>
+        </div>
+      </div>
+      <div class="figx-note">表中输入幅值都取 1，所以阶跃的 0 型误差写成 1/(1+K)、斜坡的 I 型误差写成 1/K。把 K 从 1 拉到 50，只会改变“常数误差”那一格——<b>型别决定有没有误差，增益决定误差多大</b>。</div>
+    </div>
+
+    <div class="box key">
+      <div class="t">三句话记住整张表</div>
+      <p>① <b>型别决定“能不能跟上”</b>：$\nu$ 型系统对 $t^{\nu-1}$ 以下阶次的输入稳态误差为零，对高一阶的输入误差为常数，再高一阶则发散。<br>
+      ② <b>增益决定“差多少”</b>：在“误差为常数”的那一档，误差与开环增益 $K$ 成反比。<br>
+      ③ 提高型别比提高增益更有效，但每增加一个积分环节就多 $-90°$ 相位，稳定性变差——这正是校正要权衡的地方。</p>
+    </div>
+
+    <h4>动态误差系数法（非典型输入）</h4>
+    <p>当输入不是阶跃、斜坡、加速度这类典型信号（例如 $r(t)=\sin2t$ 或复杂波形）时，静态误差系数法失效，改用<b>误差级数</b>。定义误差传递函数</p>
+    <p>$$\Phi_e(s)=\frac{E(s)}{R(s)}=1-\Phi(s)$$</p>
+    <p>在 $s=0$ 处展开为泰勒级数（系统稳定时成立）：</p>
+    <p>$$\Phi_e(s)=C_0+C_1s+\frac{C_2}{2!}s^2+\frac{C_3}{3!}s^3+\cdots$$</p>
+    <p>于是稳态误差可写成各阶导数的线性组合：</p>
+    <p>$$e_{ss}(t)=C_0r(t)+C_1\dot r(t)+\frac{C_2}{2!}\ddot r(t)+\cdots$$</p>
+    <p>$C_0,C_1,C_2,\cdots$ 称为<b>动态误差系数</b>，可由 $\Phi_e(s)$ 在 $s=0$ 处逐阶求导，或直接长除法得到。它们与静态误差系数的关系是：$C_0=\dfrac{1}{1+K_p}$，$C_1=\dfrac{1}{K_v}$，$C_2=\dfrac{1}{K_a}$。</p>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 3-5</span><span class="ex-title">动态误差系数法求非典型输入的稳态误差</span><span class="lv">教材习题 3-17 类型</span></div>
+      <div class="q">
+        <p>单位反馈系统开环 $G(s)=\dfrac{1}{Ts}$。分别求 $r(t)=t^2/2$ 与 $r(t)=\sin2t$ 时的稳态误差。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p>$$\Phi_e(s)=1-\frac{1}{Ts+1}=\frac{Ts}{Ts+1}=Ts-T^2s^2+T^3s^3-\cdots$$</p>
+          <p>故 $C_0=0$，$C_1=T$，$C_2=-2T^2$，即 $e_{ss}=T\dot r-T^2\ddot r+\cdots$</p>
+          <p><b>①</b> $r=t^2/2$：$\dot r=t$，$\ddot r=1$，</p>
+          <p>$$e_{ss}=Tt-T^2$$</p>
+          <p>误差随时间<b>线性增长</b>——I 型系统无法跟踪加速度输入，与 $K_a=0$ 的结论一致，但这里还给出了增长速率 $T$。</p>
+          <p><b>②</b> $r=\sin2t$：$\dot r=2\cos2t$，$\ddot r=-4\sin2t$，</p>
+          <p>$$e_{ss}\approx 2T\cos2t+4T^2\sin2t$$</p>
+          <p>这只是低频近似；对正弦输入更准确的做法是直接用频率特性：$e_{ss}(t)=|{\Phi_e(\mathrm{j}2)}|\sin(2t+\angle\Phi_e(\mathrm{j}2))$。当 $T$ 较小（低频）时两式吻合。</p>
+          <div class="box tip" style="margin-bottom:0">
+            <div class="t">什么时候用哪一个</div>
+            <p>典型输入（阶跃/斜坡/加速度）→ 静态误差系数法，一步到位；非典型输入 → 动态误差系数法（多项式型输入）或频率特性（正弦型输入）。两者结论必须自洽，可作为验算。</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <h4>扰动作用下的稳态误差</h4>
+    <p>线性系统可用叠加原理：令 $R(s)=0$，只考虑扰动 $N(s)$，求出 $\Phi_n(s)=C(s)/N(s)$，则 $E_n(s)=-C(s)=-\Phi_n(s)N(s)$，再取 $e_{ssn}=\lim_{s\to0}sE_n(s)$。总误差为两部分之和。</p>
+    <p>减小扰动误差的途径：增大扰动作用点之前的增益、在扰动点之前加入积分环节、采用<b>按扰动补偿的前馈控制</b>（不变性原理）。</p>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 3-6</span><span class="ex-title">三类输入下的稳态误差</span><span class="lv">基础必会</span></div>
+      <div class="q">
+        <p>单位负反馈系统 $G(s)=\dfrac{100}{s(0.1s+1)(0.01s+1)}$，分别求输入 $r(t)=2$、$r(t)=2t$、$r(t)=t^2$ 时的稳态误差。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p>系统为 <b>I 型</b>（分母含一个 $s$），开环增益 $K=100$。故 $K_p=\infty$，$K_v=100$，$K_a=0$。</p>
+          <ul>
+            <li>$r(t)=2$（阶跃，$R_0=2$）：$e_{ss}=\dfrac{2}{1+K_p}=0$。</li>
+            <li>$r(t)=2t$（斜坡，$v_0=2$）：$e_{ss}=\dfrac{2}{K_v}=\dfrac{2}{100}=0.02$。</li>
+            <li>$r(t)=t^2$（相当于加速度 $a_0=2$）：$e_{ss}=\dfrac{2}{K_a}=\infty$，系统无法跟踪。</li>
+          </ul>
+          <p><b>注意量纲：</b>斜坡输入 $r(t)=v_0t$ 对应加速度为零、速度为 $v_0$，故用 $K_v$；$r(t)=t^2$ 的速度随时间增长，属加速度输入（$a_0=2\,r(t)=a_0t^2/2$ 的形式）。</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 3-7</span><span class="ex-title">扰动引起的稳态误差</span><span class="lv">教材习题 3-? 类型 · 高频</span></div>
+      <div class="q">
+        <p>系统结构：输入 $R$ 经比较后进入 $G_1(s)=\dfrac{K_1}{s+1}$，其输出与扰动 $N(s)=\dfrac{1}{s}$ 相加后进入 $G_2(s)=\dfrac{1}{s}$，输出为 $C$，单位负反馈。求扰动引起的稳态误差 $e_{ssn}$。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p>令 $R=0$，此时 $E(s)=-C(s)$。扰动到输出的传递函数为</p>
+          <p>$$\frac{C(s)}{N(s)}=\frac{G_2}{1+G_1G_2}=\frac{\frac{1}{s}}{1+\frac{K_1}{s(s+1)}}=\frac{s+1}{s(s+1)+K_1}$$</p>
+          <p>故</p>
+          <p>$$e_{ssn}=\lim_{s\to0}s\left[-\frac{C(s)}{N(s)}\cdot\frac{1}{s}\right]=-\lim_{s\to0}\frac{s+1}{s(s+1)+K_1}=-\frac{1}{K_1}$$</p>
+          <p>负号表示扰动使输出偏高，误差方向与定义相反；大小为 $1/K_1$，与 $K_1$ 成反比。</p>
+          <div class="box tip" style="margin-bottom:0">
+            <div class="t">规律</div>
+            <p>扰动点<b>之前</b>的增益越大，扰动误差越小；扰动点<b>之后</b>的环节对扰动误差没有抑制作用（本例中 $G_2$ 的积分也不能消除阶跃扰动误差，因为扰动从积分器<b>之后</b>加入）。若把积分器放在扰动点之前，阶跃扰动误差可降为零。</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <h3>3.7 时域设计：把指标落到参数上</h3>
+    <p>教材 3-7 节讨论的“时域设计”，本质是解一个<b>反问题</b>：给定 $\sigma\%$、$t_s$、$e_{ss}$，反求系统参数或校正装置。它与第 6 章的校正设计是同一件事的两种说法——这里用闭环极点说话，那里用频率特性说话。</p>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <caption>表 3-2　指标—参数—手段的对应关系（二阶主导极点近似下）</caption>
+        <thead><tr><th style="width:22%">给定指标</th><th style="width:26%">对应参数</th><th>可调手段</th></tr></thead>
+        <tbody>
+          <tr><td>超调量 $\sigma\%$</td><td>阻尼比 $\zeta$（唯一决定）</td><td>增益、PD 微分时间 $T_d$、测速反馈系数 $K_t$</td></tr>
+          <tr><td>调节时间 $t_s$</td><td>衰减系数 $\zeta\omega_n$（极点实部）</td><td>增益（提高 $\omega_n$）、超前校正</td></tr>
+          <tr><td>峰值时间 $t_p$</td><td>阻尼频率 $\omega_d=\omega_n\sqrt{1-\zeta^2}$</td><td>增益</td></tr>
+          <tr><td>稳态误差 $e_{ss}$</td><td>型别 $\nu$ 与开环增益 $K$</td><td>积分环节、增益、前馈补偿</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ol class="steps">
+      <li><b>先定增益。</b>由 $e_{ss}$ 或 $K_v,K_a$ 反解 $K$——这一步定的是“准”，后面所有设计都在这个 $K$ 下进行。</li>
+      <li><b>再算未校正的动态指标。</b>用该 $K$ 求闭环特征方程，读出 $\zeta,\omega_n$，判断 $\sigma\%$、$t_s$ 是否达标。</li>
+      <li><b>选手段。</b>若 $\zeta$ 不足但 $\omega_n$ 够 → 加阻尼（PD 或测速反馈）；若 $\omega_n$ 不足（响应慢）→ 提高增益或超前校正。</li>
+      <li><b>解参数。</b>PD：$\zeta_d=\zeta+\dfrac{\omega_nT_d}{2}$；测速反馈：$\zeta_t=\zeta+\dfrac{K_t\omega_n}{2}$。两个式子都是“补足阻尼”，区别只在代价。</li>
+      <li><b>校验并复算稳态。</b>特别是测速反馈会降低开环增益，必须重算 $K_v$ 与 $e_{ss}$，不达标就回到第 1 步提高 $K$。</li>
+    </ol>
+
+    <div class="box key">
+      <div class="t">PD 与测速反馈怎么选</div>
+      <p><b>PD</b>：不改变开环增益，常值稳态误差不变；但微分放大高频噪声，且闭环零点使实际超调略大于公式值。<br>
+      <b>测速反馈</b>：抗噪声好、阻尼效果实在；但开环增益按 $1/(1+K_t)$ 量级下降，$K_v$ 变小、斜坡误差变大，属于“用精度换平稳”。<br>
+      <b>选择原则</b>：稳态精度紧张 → PD；噪声大、允许牺牲一点精度 → 测速反馈。</p>
+    </div>
+
+    <div class="box warn">
+      <div class="t">设计题四个常见坑</div>
+      <p>① 只用 $\sigma\%$ 定 $\zeta$ 就收笔——$t_s$ 由 $\zeta\omega_n$ 决定，必须再用一个方程定 $\omega_n$；<br>
+      ② 忘了 PD 的闭环零点，把公式算出的 $\sigma\%$ 当成实际值（实际更大）；<br>
+      ③ 测速反馈后不重算 $K_v$，导致“动态达标、稳态超标”；<br>
+      ④ 高阶系统不检验主导极点条件（其他极点实部应 ≥ 主导极点的 5 倍），直接套二阶公式。</p>
+    </div>
+
+    <h3>3.8 本章易错清单</h3>
+    <div class="box warn">
+      <div class="t">考前自检</div>
+      <p>① 用<b>开环</b>参数直接算 $\zeta,\omega_n$——必须先求闭环特征方程；<br>
+      ② 把 $t_s$ 公式里的 $\zeta\omega_n$ 写成 $\omega_n$ 或 $\omega_d$；<br>
+      ③ 认为 $\sigma\%$ 与 $\omega_n$ 有关（无关，只与 $\zeta$ 有关）；<br>
+      ④ 劳斯表首列为 0 时直接判定不稳定（应先用 $\varepsilon$ 处理）；<br>
+      ⑤ 全零行不用辅助方程而直接跳过；<br>
+      ⑥ 系统未判稳就套终值定理；<br>
+      ⑦ 系统型别数错：$\nu$ 是开环传递函数中<b>原点处极点</b>的个数，不是极点总数；<br>
+      ⑧ 混淆“误差”与“偏差”：单位负反馈时二者相同，非单位反馈时不同；<br>
+      ⑨ 扰动误差忘记用叠加原理（令 $R=0$），或漏掉负号。</p>
+    </div>
+  </div>
+</section>

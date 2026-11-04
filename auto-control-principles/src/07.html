@@ -1,0 +1,290 @@
+<section class="chapter" id="c7" data-num="7" data-title="第七章 线性离散系统的分析与校正" data-short="⑦ 离散系统">
+  <div class="wrap">
+    <div class="ch-head">
+      <div class="ch-no"><b>07</b> CHAPTER SEVEN</div>
+      <h2>线性离散系统的分析与校正<span class="en">Discrete-time systems</span></h2>
+      <p class="ch-desc">计算机控制、采样系统都属于离散系统。核心只有一句：把 s 平面的左半平面“压”进 z 平面的单位圆内，其余结论与连续系统一一对应。</p>
+    </div>
+
+    <details class="prereq" open>
+      <summary>预备知识 · 等比级数与采样信号<span class="who">z 变换表一半公式的来源、采样定理的直觉</span></summary>
+      <div class="bd">
+        <h5>① 等比级数：z 变换的发动机</h5>
+        <p>$$\sum_{k=0}^{\infty}x^k=\frac{1}{1-x}\quad(|x|<1),\qquad \sum_{k=0}^{n-1}x^k=\frac{1-x^n}{1-x}$$</p>
+        <p>z 变换的定义 $F(z)=\sum_{k=0}^{\infty}f(kT)z^{-k}$ 是“公比为 $xz^{-1}$ 的等比级数”。例：$f(k)=\mathrm{e}^{-akT}$ 时，</p>
+        <p>$$F(z)=\sum_{k=0}^{\infty}\mathrm{e}^{-akT}z^{-k}=\frac{1}{1-\mathrm{e}^{-aT}z^{-1}}=\frac{z}{z-\mathrm{e}^{-aT}}$$</p>
+        <p>一步就得到 z 变换表里的两行。同样的手法把 $f(k)=kT$ 拆成 $\sum kx^k$（对等比级数求导得到 $\frac{x}{(1-x)^2}$），就得到斜坡序列的变换。<b>表里背不下来时现场推，比硬背稳。</b></p>
+        <h5>② 理想采样：δ 冲量的直觉</h5>
+        <p>采样开关把连续信号 $f(t)$ 变成 $f^*(t)=\sum_{k=0}^{\infty}f(kT)\delta(t-kT)$：每 $T$ 秒取一个“高度无穷、面积等于 $f(kT)$”的冲量。冲量作用在惯性环节上，留下一条按 $h(t-kT)$ 衰减的尾巴——所以脉冲传递函数 $G(z)=\sum h(kT)z^{-k}$ 正是“单位冲激响应的采样序列的 z 变换”（7.3 节的推导就用这一点）。</p>
+        <h5>③ 频谱搬移与香农定理（7.1 的底牌）</h5>
+        <p>时域等间隔 $T$ 采样，在频域等价于把原频谱 $F(\j\omega)$ 以采样角频率 $\omega_s=2\pi/T$ 为<b>周期无限平移叠加</b>。若原信号最高频率 $\omega_{\max}$ 满足 $\omega_s\ge 2\omega_{\max}$，相邻副本互不重叠，可用低通滤出原信号；否则高频分量“折回”低频——混叠，原信号不可恢复。这就是采样定理 $f_s\ge 2f_{\max}$ 的来源。零阶保持器相位滞后 $-\dfrac{\omega T}{2}$ 的直觉也在这里：它把冲量拉宽成宽 $T$ 的方波，方波重心在 $\frac{T}{2}$ 处，故每个谐波都滞后 $\omega T/2$。</p>
+      </div>
+    </details>
+
+    <h3>7.1 采样过程与采样定理</h3>
+    <p>理想采样把连续信号变成脉冲序列 $f^*(t)=\sum_{k=0}^{\infty}f(kT)\delta(t-kT)$。采样会引入高频分量，若采样频率过低，频谱发生<b>混叠</b>，原信号无法恢复。</p>
+    <div class="box key">
+      <div class="t">香农（Shannon）采样定理</div>
+      <p>若连续信号的最大角频率为 $\omega_{max}$，则采样角频率须满足</p>
+      <p>$$\omega_s=\frac{2\pi}{T}\geq2\omega_{max}$$</p>
+      <p>工程上常取 $\omega_s=(5\sim10)\omega_{max}$，使重构信号更接近原信号。$\omega_s/2$ 称为<b>奈奎斯特频率</b>。</p>
+    </div>
+
+    <h4>零阶保持器（ZOH）</h4>
+    <p>把采样值保持一个周期，其传递函数为</p>
+    <p>$$G_h(s)=\frac{1-\mathrm{e}^{-Ts}}{s}$$</p>
+    <p>幅频 $|G_h(\mathrm{j}\omega)|=T\cdot\dfrac{|\sin(\omega T/2)|}{\omega T/2}$，相频约为 $-\omega T/2$。它相当于一个<b>相位滞后约 $T/2$ 的惯性环节</b>，会降低系统的稳定裕度——这是离散系统比连续系统更难稳定的原因之一。</p>
+
+    <h3>7.2 z 变换</h3>
+    <div class="box def">
+      <div class="t">定义</div>
+      <p>$$F(z)=\mathscr{Z}[f(t)]=\sum_{k=0}^{\infty}f(kT)z^{-k}$$</p>
+      <p>它是拉氏变换在采样信号上的推广：令 $z=\mathrm{e}^{sT}$，则 $F(z)=F^*(s)$。因此 <b>s 左半平面映射为 z 平面单位圆内</b>，这是全部稳定性结论的来源。</p>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <caption>表 7-1　常用 z 变换对（$a$ 为常数，$T$ 为采样周期）</caption>
+        <thead><tr><th style="width:34%">$f(t)$ 或 $F(s)$</th><th>$F(z)$</th></tr></thead>
+        <tbody>
+          <tr><td>$\delta(t)$</td><td>$1$</td></tr>
+          <tr><td>$1(t)$，$\dfrac{1}{s}$</td><td>$\dfrac{z}{z-1}$</td></tr>
+          <tr><td>$t$，$\dfrac{1}{s^2}$</td><td>$\dfrac{Tz}{(z-1)^2}$</td></tr>
+          <tr><td>$\mathrm{e}^{-at}$，$\dfrac{1}{s+a}$</td><td>$\dfrac{z}{z-\mathrm{e}^{-aT}}$</td></tr>
+          <tr><td>$1-\mathrm{e}^{-at}$，$\dfrac{a}{s(s+a)}$</td><td>$\dfrac{(1-\mathrm{e}^{-aT})z}{(z-1)(z-\mathrm{e}^{-aT})}$</td></tr>
+          <tr><td>$\sin\omega t$，$\dfrac{\omega}{s^2+\omega^2}$</td><td>$\dfrac{z\sin\omega T}{z^2-2z\cos\omega T+1}$</td></tr>
+          <tr><td>$\cos\omega t$，$\dfrac{s}{s^2+\omega^2}$</td><td>$\dfrac{z(z-\cos\omega T)}{z^2-2z\cos\omega T+1}$</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box warn">
+      <div class="t">两条最容易错的性質</div>
+      <p><b>超前定理</b>：$\mathscr{Z}[f(t+nT)]=z^nF(z)-z^nf(0)-z^{n-1}f(T)-\cdots-zf((n-1)T)$，初值项不能漏。<br>
+      <b>终值定理</b>：$\lim_{k\to\infty}f(kT)=\lim_{z\to1}(z-1)F(z)$，前提是 $(z-1)F(z)$ 的极点全部位于单位圆内。</p>
+    </div>
+
+    <h4>z 反变换的三种方法</h4>
+    <ul>
+      <li><b>部分分式法</b>：先把 $\dfrac{E(z)}{z}$ 展开为部分分式（表中多数是 $\dfrac{z}{z-a}$ 的形式，所以对 $E(z)/z$ 展开而不是对 $E(z)$），再逐项查表、乘以 $z$。</li>
+      <li><b>幂级数法（长除法）</b>：把 $E(z)$ 展成 $z^{-1}$ 的幂级数，$z^{-k}$ 的系数即 $e(kT)$。适合只求前几项、或校验闭合解。</li>
+      <li><b>反演积分法（留数法）</b>：$e(kT)=\sum_i\mathrm{Res}\left[E(z)z^{k-1}\right]_{z=z_i}$，适合理论推导与含重极点的情况。</li>
+    </ul>
+    <p><b>校验：</b>初值 $e(0)=\lim_{z\to\infty}E(z)$；终值 $e(\infty)=\lim_{z\to1}(z-1)E(z)$（须满足终值定理条件）。</p>
+
+    <h3>7.3 脉冲传递函数</h3>
+    <div class="box def">
+      <div class="t">定义</div>
+      <p>零初始条件下，系统输出采样信号的 z 变换与输入采样信号的 z 变换之比：$G(z)=\dfrac{C(z)}{R(z)}$。</p>
+    </div>
+
+    <div class="box warn">
+      <div class="t">串联环节之间有无采样开关，结果完全不同</div>
+      <p>两个连续环节 $G_1(s)$、$G_2(s)$ <b>之间没有采样开关</b>时：
+      $$G(z)=\mathscr{Z}[G_1(s)G_2(s)]\neq G_1(z)\cdot G_2(z)$$
+      只有两者<b>之间插入采样开关</b>时，才有 $G(z)=G_1(z)G_2(z)$。<b>先看采样开关的位置，再动笔</b>——这是本章第一失分点。</p>
+    </div>
+
+    <p>对典型的单位负反馈结构（误差信号被采样），闭环脉冲传递函数为</p>
+    <p>$$\Phi(z)=\frac{G(z)}{1+G(z)H(z)},\qquad E(z)=\frac{R(z)}{1+G(z)H(z)}$$</p>
+
+    <h3>7.4 稳定性分析</h3>
+    <div class="box key">
+      <div class="t">判据</div>
+      <p>闭环离散系统稳定的充要条件是：<b>闭环特征方程的全部根 $|z_i|<1$</b>（位于单位圆内）。<br>
+      等价说法：特征根在 z 平面单位圆内 ⇔ 对应 s 平面左半平面。</p>
+    </div>
+    <p>三种常用判法：</p>
+    <ul>
+      <li><b>直接求根</b>：二阶以下最方便。</li>
+      <li><b>w 变换＋劳斯判据</b>：令 $z=\dfrac{1+w}{1-w}$（即 $w=\dfrac{z-1}{z+1}$），把单位圆内映射为 w 左半平面，再用劳斯判据。这是考试主力方法。</li>
+      <li><b>朱利（Jury）判据</b>：直接对 $z$ 多项式列朱利表，适用于高阶。</li>
+    </ul>
+
+    <div class="figx">
+      <div class="figx-head">
+        <span class="figx-badge">可交互</span>
+        <span class="figx-title">采样周期 T 与增益 K：极点会不会跑出单位圆</span>
+        <span class="figx-hint">拖动 K 或 T，看 z 极点与采样响应</span>
+      </div>
+      <div class="figx-body">
+        <div class="figx-pane">
+          <span class="pane-tag">z 平面</span>
+          <svg id="zplSvg" viewBox="0 0 400 400" role="img" aria-label="z 平面闭环极点与单位圆"></svg>
+        </div>
+        <div class="figx-pane">
+          <span class="pane-tag">采样输出 y(k)</span>
+          <svg id="zplResp" viewBox="0 0 440 400" role="img" aria-label="离散系统阶跃响应"></svg>
+        </div>
+      </div>
+      <div class="figx-ctl">
+        <label>增益 K
+          <input type="range" id="zplK" min="0.2" max="10" step="0.05" value="1">
+          <output id="zplKOut">1.00</output>
+        </label>
+        <label>采样周期 T
+          <input type="range" id="zplT" min="0.05" max="2" step="0.01" value="1">
+          <output id="zplTOut">1.00</output>
+        </label>
+      </div>
+      <div class="figx-read" id="zplRead"></div>
+      <div class="figx-verdict" id="zplVerdict"></div>
+      <div class="figx-note">对象取 $G(s)=K/(s+1)$ 加零阶保持器，则 $G(z)=K(1-a)/(z-a)$（$a=\mathrm{e}^{-T}$），闭环极点 $z_p=a-K(1-a)$。稳定条件 $|z_p|<1$ 可解出 <b>$K< (1+a)/(1-a)$</b>——注意这个上限随 T 增大而迅速下降：<b>采样太慢，本来稳定的连续系统也会被“采”到不稳定</b>。</div>
+    </div>
+
+    <h3>7.5 稳态误差</h3>
+    <p>与连续系统完全平行，只是把 $s\to0$ 换成 $z\to1$：</p>
+    <p>$$e_{ss}=\lim_{z\to1}(z-1)E(z)=\lim_{z\to1}\frac{(z-1)R(z)}{1+G(z)}$$</p>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <caption>表 7-2　离散系统型别与稳态误差（$\nu$ 为 $G(z)$ 中 $z=1$ 处极点的个数）</caption>
+        <thead><tr><th style="width:14%">型别</th><th style="width:26%">阶跃 $r=1(t)$</th><th style="width:26%">斜坡 $r=t$</th><th>加速度 $r=t^2/2$</th></tr></thead>
+        <tbody>
+          <tr><td class="c">0 型</td><td>$\dfrac{1}{1+G(1)}$</td><td>$\infty$</td><td>$\infty$</td></tr>
+          <tr><td class="c">I 型</td><td>$0$</td><td>$\dfrac{T}{\lim(z-1)G(z)}$</td><td>$\infty$</td></tr>
+          <tr><td class="c">II 型</td><td>$0$</td><td>$0$</td><td>有限值</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>注意：离散系统的稳态误差<b>与采样周期 $T$ 有关</b>，$T$ 越大误差越大——这是连续系统没有的现象。</p>
+
+    <h3>7.6 最少拍（dead-beat）控制</h3>
+    <p>在典型输入下，使系统在<b>有限个采样周期</b>内达到稳态且无稳态误差的设计方法。以单位阶跃输入为例：</p>
+    <p>要求误差在 1 拍后为零，取 $\Phi_e(z)=1-z^{-1}$，则</p>
+    <p>$$\Phi(z)=1-\Phi_e(z)=z^{-1},\qquad D(z)=\frac{\Phi(z)}{G(z)\Phi_e(z)}=\frac{1}{(z-1)G(z)}$$</p>
+    <p>一般地，阶跃输入取 $\Phi_e=1-z^{-1}$，斜坡取 $(1-z^{-1})^2$，加速度取 $(1-z^{-1})^3$。设计时还须校验 $D(z)$ 的<b>物理可实现性</b>（极点数不少于零点数）与<b>闭环稳定性</b>（$D(z)G(z)$ 的极点须在单位圆内）。</p>
+
+    <h3>7.7 离散系统的动态性能与无纹波最少拍</h3>
+    <h4>z 平面极点位置与响应形态</h4>
+    <p>离散系统的动态性能由闭环极点在 z 平面上的位置决定，规律与 s 平面“形似而不同”：</p>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <caption>表 7-3　闭环极点位置与单位阶跃响应（$T$ 为采样周期）</caption>
+        <thead><tr><th style="width:26%">极点位置</th><th style="width:30%">响应形态</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>$z=1$</td><td>常值（不衰减）</td><td>临界稳定，对应 s 平面原点</td></tr>
+          <tr><td>$0<z<1$</td><td>单调衰减，无振荡</td><td>越靠近 0 衰减越快</td></tr>
+          <tr><td>$-1<z<0$</td><td>交替变号的衰减振荡</td><td>每拍反号，频率为 $\omega_s/2$</td></tr>
+          <tr><td>共轭复极点，$|z|<1$</td><td>衰减振荡</td><td>$\angle z$ 决定每拍相位增量，$|z|$ 决定衰减</td></tr>
+          <tr><td>$z=0$</td><td>一拍到位（dead-beat）</td><td>最少拍设计的理想情形</td></tr>
+          <tr><td>$|z|>1$</td><td>发散</td><td>不稳定</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>与 s 平面的对应关系为 $z=\mathrm{e}^{sT}$，反解 $s=\dfrac{1}{T}\ln z$。因此 s 平面的等阻尼线（射线）映射为 z 平面的<b>对数螺旋线</b>，等 $\omega_n$ 圆映射为更复杂的曲线——这也是离散系统很难套用连续系统指标公式的原因。工程上通常直接仿真求 $\sigma\%$、$t_s$，或用经验修正公式。</p>
+
+    <h4>有纹波与无纹波最少拍</h4>
+    <p>例 7-4 设计的系统只在<b>采样时刻</b>无误差，采样点之间输出仍在波动，称为<b>有纹波</b>最少拍。若要求连续输出也平稳，须采用<b>无纹波</b>设计。</p>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th style="width:20%">比较项</th><th style="width:38%">有纹波最少拍</th><th>无纹波最少拍</th></tr></thead>
+        <tbody>
+          <tr><td>闭环传函</td><td>$\Phi(z)=z^{-1}$（阶跃输入）</td><td>$\Phi(z)$ 须包含 $G(z)$ 的全部零点</td></tr>
+          <tr><td>拍数</td><td>最少（阶跃 1 拍）</td><td>增加，通常为 $n+m$ 拍量级</td></tr>
+          <tr><td>采样点之间</td><td>有纹波</td><td>无纹波，控制量趋于常数</td></tr>
+          <tr><td>代价</td><td>控制量剧烈变化</td><td>响应变慢，$D(z)$ 阶次更高</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><b>无纹波条件：</b>零阶保持器使控制信号在采样间隔内保持不变，若 $D(z)G(z)$ 的零点全部被 $\Phi(z)$ 的零点抵消，则控制量在有限拍后为常数，输出自然无纹波。设计时令</p>
+    <p>$$\Phi(z)=z^{-d}\cdot\frac{B(z)}{B(1)}\quad(\text{阶跃输入})$$</p>
+    <p>其中 $B(z)$ 为 $G(z)$ 的零点多项式，$d$ 为对象延迟拍数；再由 $D(z)=\dfrac{\Phi(z)}{G(z)[1-\Phi(z)]}$ 反解。注意：<b>单位圆外或圆上的零点不能这样抵消</b>（会破坏内部稳定性），此时需改用其他设计方法。</p>
+
+    <h3>7.8 典型例题</h3>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 7-1</span><span class="ex-title">带零阶保持器的脉冲传递函数</span><span class="lv">必考题型</span></div>
+      <div class="q">
+        <p>系统 $G(s)=\dfrac{1}{s(s+1)}$，前置零阶保持器，采样周期 $T=1\ \mathrm{s}$。求开环脉冲传递函数 $G(z)$。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p>零阶保持器与对象串联：</p>
+          <p>$$G(z)=\mathscr{Z}\left[\frac{1-\mathrm{e}^{-Ts}}{s}\cdot\frac{1}{s(s+1)}\right]=(1-z^{-1})\,\mathscr{Z}\left[\frac{1}{s^2(s+1)}\right]$$</p>
+          <p>部分分式分解：$\dfrac{1}{s^2(s+1)}=\dfrac{1}{s^2}-\dfrac{1}{s}+\dfrac{1}{s+1}$，逐项查表：</p>
+          <p>$$\mathscr{Z}[\cdot]=\frac{Tz}{(z-1)^2}-\frac{z}{z-1}+\frac{z}{z-\mathrm{e}^{-T}}$$</p>
+          <p>代入 $T=1$、$\mathrm{e}^{-1}=0.368$，并乘以 $(1-z^{-1})=\dfrac{z-1}{z}$：</p>
+          <p>$$G(z)=\frac{z-1}{z}\left[\frac{z}{(z-1)^2}-\frac{z}{z-1}+\frac{z}{z-0.368}\right]
+          =\frac{0.368z+0.264}{(z-1)(z-0.368)}$$</p>
+          <p><b>校验：</b>极点 $z=1$（积分环节）、$z=0.368$（对应 $s=-1$ 的惯性环节，因 $\mathrm{e}^{-1}=0.368$），与连续系统极点一一对应，正确。</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 7-2</span><span class="ex-title">w 变换＋劳斯判据求增益范围</span><span class="lv">必考题型</span></div>
+      <div class="q">
+        <p>单位负反馈离散系统开环 $G(z)=\dfrac{K}{(z-1)(z-0.5)}$，求使闭环稳定的 $K$ 范围。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p>闭环特征方程：$(z-1)(z-0.5)+K=0$，即</p>
+          <p>$$D(z)=z^2-1.5z+0.5+K=0$$</p>
+          <p>令 $z=\dfrac{1+w}{1-w}$，代入并两边乘 $(1-w)^2$：</p>
+          <p>$$(1+w)^2-1.5(1+w)(1-w)+(0.5+K)(1-w)^2=0$$</p>
+          <p>展开整理得</p>
+          <p>$$(3+K)w^2+(1-2K)w+K=0$$</p>
+          <p>对 $w$ 用劳斯判据（二阶系统只需各项系数同号）：</p>
+          <p>$$3+K>0,\qquad 1-2K>0,\qquad K>0$$</p>
+          <p>联立得</p>
+          <p>$$0<K<0.5$$</p>
+          <p><b>校验：</b>$K=0.5$ 时 $D(z)=z^2-1.5z+1$，两根模为 1，系统临界稳定（等幅振荡）；$K\to0$ 时根趋于 1 与 0.5，恰好落在单位圆边界上。结论合理。</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 7-3</span><span class="ex-title">离散系统稳态误差</span><span class="lv">与连续系统对照</span></div>
+      <div class="q">
+        <p>续例 7-1，$G(z)=\dfrac{0.368z+0.264}{(z-1)(z-0.368)}$，$T=1\ \mathrm{s}$，单位负反馈。求单位阶跃与单位斜坡输入下的稳态误差。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p><b>阶跃输入</b>：$R(z)=\dfrac{z}{z-1}$，</p>
+          <p>$$e_{ss}=\lim_{z\to1}\frac{(z-1)R(z)}{1+G(z)}=\lim_{z\to1}\frac{z}{1+G(z)}$$
+          因 $G(z)$ 在 $z=1$ 处有一个极点（I 型），$G(1)\to\infty$，故 $e_{ss}=0$。</p>
+          <p><b>斜坡输入</b>：$R(z)=\dfrac{Tz}{(z-1)^2}$，</p>
+          <p>$$e_{ss}=\lim_{z\to1}\frac{(z-1)\cdot\frac{Tz}{(z-1)^2}}{1+G(z)}
+          =\lim_{z\to1}\frac{Tz}{(z-1)\left[1+G(z)\right]}=\frac{T}{\lim_{z\to1}(z-1)G(z)}$$</p>
+          <p>而</p>
+          <p>$$\lim_{z\to1}(z-1)G(z)=\frac{0.368\times1.718}{1-0.368}=1.000$$</p>
+          <p>故 $e_{ss}=T/1=1$（当 $T=1\ \mathrm{s}$）。若采样周期改为 $T=0.1\ \mathrm{s}$，则 $e_{ss}=0.1$——<b>误差与采样周期成正比</b>。</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 7-4</span><span class="ex-title">最少拍控制器设计</span><span class="lv">教材习题 7-? 类型</span></div>
+      <div class="q">
+        <p>系统同例 7-1，要求单位阶跃输入下在最少拍内无稳态误差，求数字控制器 $D(z)$。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p>阶跃输入下取 $\Phi_e(z)=1-z^{-1}$，则闭环脉冲传递函数</p>
+          <p>$$\Phi(z)=1-\Phi_e(z)=z^{-1}$$</p>
+          <p>由 $\Phi=\dfrac{DG}{1+DG}$ 反解：</p>
+          <p>$$D(z)=\frac{\Phi(z)}{G(z)\left[1-\Phi(z)\right]}=\frac{z^{-1}}{G(z)(1-z^{-1})}=\frac{1}{(z-1)G(z)}$$</p>
+          <p>代入 $G(z)$：</p>
+          <p>$$D(z)=\frac{(z-1)(z-0.368)}{(z-1)(0.368z+0.264)}=\frac{z-0.368}{0.368(z+0.718)}=2.717\cdot\frac{z-0.368}{z+0.718}$$</p>
+          <p><b>校验：</b>$D(z)$ 的极点数（1）不少于零点数（1），物理可实现；闭环极点即 $\Phi(z)=z^{-1}$ 的极点 $z=0$，在单位圆内，稳定。系统在 1 个采样周期后达到稳态。</p>
+        </div>
+      </details>
+    </div>
+
+    <h3>7.9 本章易错清单</h3>
+    <div class="box warn">
+      <div class="t">考前自检</div>
+      <p>① 不检查采样开关位置就写 $G(z)=G_1(z)G_2(z)$；<br>
+      ② 零阶保持器的 $(1-z^{-1})$ 漏乘；<br>
+      ③ z 变换超前定理漏掉初值项；<br>
+      ④ 终值定理用于单位圆外有极点的情形；<br>
+      ⑤ w 变换写成 $z=\dfrac{1-w}{1+w}$（方向反了）；<br>
+      ⑥ 离散系统稳态误差忘记 $T$ 的影响；<br>
+      ⑦ 最少拍设计不校验 $D(z)$ 的可实现性与稳定性。</p>
+    </div>
+  </div>
+</section>

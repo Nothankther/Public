@@ -1,0 +1,212 @@
+<section class="chapter" id="appC" data-num="C" data-title="附录 C　自测 40 题" data-short="附录 C · 自测 40 题">
+  <div class="wrap">
+    <div class="ch-head">
+      <div class="ch-no"><b>C</b> APPENDIX · SELF-TEST</div>
+      <h2>自测 40 题<span class="en">Self-test with answers</span></h2>
+      <p class="ch-desc">30 道单选 + 10 道判断，覆盖八章核心结论。先独立作答，再点“显示答案”。错题请回到对应章节复看。</p>
+    </div>
+
+    <h3>一、单项选择题</h3>
+    <div class="quiz">
+      <div class="qitem">
+        <p class="qtext">1. 二阶欠阻尼系统 $\zeta=0.5$ 时，单位阶跃响应的最大超调量约为（　）。</p>
+        <div class="opts"><span>A. 4.3%</span><span>B. 16.3%</span><span>C. 25.4%</span><span>D. 52.7%</span></div>
+        <div class="ans"><b>B。</b>$\sigma\%=\mathrm{e}^{-\pi\times0.5/\sqrt{1-0.25}}=16.3\%$。0.4 对应 25.4%，0.2 对应 52.7%。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">2. 一阶系统 $\Phi(s)=\dfrac{1}{Ts+1}$ 在 $\pm5\%$ 误差带下的调节时间为（　）。</p>
+        <div class="opts"><span>A. $2.2T$</span><span>B. $3T$</span><span>C. $4T$</span><span>D. $4.4T$</span></div>
+        <div class="ans"><b>B。</b>$t_s=3T$（5%）、$4T$（2%）；$2.2T$ 是上升时间（10%→90%）。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">3. 系统的“型别”由（　）决定。</p>
+        <div class="opts"><span>A. 开环极点的总数</span><span>B. 开环传递函数中原点处极点的个数</span><span>C. 闭环极点的个数</span><span>D. 开环零点的个数</span></div>
+        <div class="ans"><b>B。</b>型别 $\nu$ 是开环传递函数中 $s^\nu$ 的幂次，即原点处极点个数。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">4. 0 型系统在单位阶跃输入下的稳态误差为（　）。</p>
+        <div class="opts"><span>A. $0$</span><span>B. $1/(1+K)$</span><span>C. $1/K$</span><span>D. $\infty$</span></div>
+        <div class="ans"><b>B。</b>0 型系统 $K_p=K$，$e_{ss}=R/(1+K_p)=1/(1+K)$。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">5. 某特征方程的劳斯表第一列符号依次为 $+,-,-,+$，则右半平面根数为（　）。</p>
+        <div class="opts"><span>A. 1</span><span>B. 2</span><span>C. 3</span><span>D. 4</span></div>
+        <div class="ans"><b>B。</b>变号次数：$+ \to -$、$- \to +$，共 2 次。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">6. 根轨迹的起点是（　）。</p>
+        <div class="opts"><span>A. 开环零点</span><span>B. 开环极点</span><span>C. 闭环零点</span><span>D. 坐标原点</span></div>
+        <div class="ans"><b>B。</b>$K^*=0$ 时闭环特征根等于开环极点；$K^*\to\infty$ 时趋于开环零点。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">7. 开环传递函数有 4 个极点、1 个零点，则根轨迹的分支数与渐近线条数分别为（　）。</p>
+        <div class="opts"><span>A. 4，3</span><span>B. 4，4</span><span>C. 3，3</span><span>D. 1，3</span></div>
+        <div class="ans"><b>A。</b>分支数 $=n=4$；渐近线 $=n-m=3$。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">8. 实轴上某区段为根轨迹的条件是：该段右侧开环实极点与实零点总数为（　）。</p>
+        <div class="opts"><span>A. 偶数</span><span>B. 奇数</span><span>C. 大于零</span><span>D. 等于 $n-m$</span></div>
+        <div class="ans"><b>B。</b>“奇数为轨迹”。若是零度根轨迹则改为偶数。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">9. 最小相位系统是指（　）。</p>
+        <div class="opts"><span>A. 阶次最低的系统</span><span>B. 无右半平面零极点且无延迟的系统</span><span>C. 相位最小的系统</span><span>D. 只有极点的系统</span></div>
+        <div class="ans"><b>B。</b>最小相位系统的幅频与相频一一对应，是由 Bode 图反求传递函数的前提。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">10. 相位裕度的定义是（　）。</p>
+        <div class="opts"><span>A. $180°-\angle G(\mathrm{j}\omega_c)$</span><span>B. $180°+\angle G(\mathrm{j}\omega_c)$</span><span>C. $180°+\angle G(\mathrm{j}\omega_g)$</span><span>D. $\angle G(\mathrm{j}\omega_c)$</span></div>
+        <div class="ans"><b>B。</b>$\omega_c$ 为 $|G|=1$ 的频率；$\omega_g$ 是相位为 $-180°$ 的频率，对应幅值裕度。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">11. 幅值裕度的分贝表示为（　）。</p>
+        <div class="opts"><span>A. $20\lg|G(\mathrm{j}\omega_c)|$</span><span>B. $-20\lg|G(\mathrm{j}\omega_g)|$</span><span>C. $-20\lg|G(\mathrm{j}\omega_c)|$</span><span>D. $20\lg|G(\mathrm{j}\omega_g)|$</span></div>
+        <div class="ans"><b>B。</b>正值表示稳定储备；工程要求一般 $\geq6\ \mathrm{dB}$。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">12. 超前校正装置 $G_c=\dfrac{aTs+1}{Ts+1}\ (a>1)$ 的最大超前角为（　）。</p>
+        <div class="opts"><span>A. $\arcsin\dfrac{a-1}{a+1}$</span><span>B. $\arcsin\dfrac{a+1}{a-1}$</span><span>C. $\arctan\dfrac{a-1}{a+1}$</span><span>D. $\arccos\dfrac{a-1}{a+1}$</span></div>
+        <div class="ans"><b>A。</b>出现在 $\omega_m=1/(T\sqrt a)$，该点幅值抬升 $10\lg a$。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">13. 滞后校正装置高频段的衰减量为（　）。</p>
+        <div class="opts"><span>A. $10\lg\beta$</span><span>B. $20\lg\beta$</span><span>C. $20\lg(1/\beta)$ 且为增益</span><span>D. $0$</span></div>
+        <div class="ans"><b>B。</b>$\beta>1$，高频增益为 $1/\beta$，即衰减 $20\lg\beta\ \mathrm{dB}$。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">14. PID 控制中，积分环节的主要作用是（　）。</p>
+        <div class="opts"><span>A. 增大阻尼</span><span>B. 提高系统型别、消除稳态误差</span><span>C. 提高快速性</span><span>D. 抑制高频噪声</span></div>
+        <div class="ans"><b>B。</b>积分使型别加 1，但引入 $-90°$ 相位滞后，会降低稳定性。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">15. 采样定理要求采样角频率满足（　）。</p>
+        <div class="opts"><span>A. $\omega_s\geq\omega_{max}$</span><span>B. $\omega_s\geq2\omega_{max}$</span><span>C. $\omega_s\leq2\omega_{max}$</span><span>D. $\omega_s=\omega_{max}$</span></div>
+        <div class="ans"><b>B。</b>工程上常取 $5\sim10$ 倍，以减小重构误差。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">16. 离散系统稳定的充要条件是闭环特征根（　）。</p>
+        <div class="opts"><span>A. 实部为负</span><span>B. 模小于 1</span><span>C. 模大于 1</span><span>D. 位于虚轴左侧</span></div>
+        <div class="ans"><b>B。</b>$z=\mathrm{e}^{sT}$ 把 s 左半平面映射为单位圆内。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">17. 零阶保持器的传递函数为（　）。</p>
+        <div class="opts"><span>A. $\dfrac{1-\mathrm{e}^{-Ts}}{s}$</span><span>B. $\dfrac{\mathrm{e}^{-Ts}}{s}$</span><span>C. $1-\mathrm{e}^{-Ts}$</span><span>D. $\dfrac{1}{Ts+1}$</span></div>
+        <div class="ans"><b>A。</b>它等效为相位滞后约 $T/2$ 的环节，会降低稳定裕度。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">18. 离散系统作 w 变换时，正确的代换是（　）。</p>
+        <div class="opts"><span>A. $z=\dfrac{1-w}{1+w}$</span><span>B. $z=\dfrac{1+w}{1-w}$</span><span>C. $z=1+w$</span><span>D. $z=\dfrac{w-1}{w+1}$</span></div>
+        <div class="ans"><b>B。</b>该变换把单位圆内映射为 w 左半平面，之后可用劳斯判据。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">19. 描述函数法分析自振的条件是（　）。</p>
+        <div class="opts"><span>A. $G(\mathrm{j}\omega)=N(A)$</span><span>B. $G(\mathrm{j}\omega)=-1/N(A)$</span><span>C. $G(\mathrm{j}\omega)=1/N(A)$</span><span>D. $N(A)=0$</span></div>
+        <div class="ans"><b>B。</b>由 $1+N(A)G(\mathrm{j}\omega)=0$ 得到，交点同时给出振幅与频率。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">20. 饱和非线性的描述函数 $N(A)$ 随输入振幅 $A$ 增大而（　）。</p>
+        <div class="opts"><span>A. 增大</span><span>B. 减小</span><span>C. 不变</span><span>D. 先增后减</span></div>
+        <div class="ans"><b>B。</b>$A\to\infty$ 时 $N\to0$，这正是“限幅”导致等效增益下降的原因。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">21. 相平面上的中心点对应的特征根是（　）。</p>
+        <div class="opts"><span>A. 两个负实根</span><span>B. 一对纯虚根</span><span>C. 一正一负实根</span><span>D. 实部为正的共轭复根</span></div>
+        <div class="ans"><b>B。</b>相轨迹为闭合椭圆，属临界稳定。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">22. 单位负反馈系统的闭环传递函数为（　）。</p>
+        <div class="opts"><span>A. $G/(1-GH)$</span><span>B. $G/(1+GH)$</span><span>C. $GH/(1+GH)$</span><span>D. $1/(1+GH)$</span></div>
+        <div class="ans"><b>B。</b>负反馈取“$+$”，正反馈取“$-$”，这是符号约定的核心。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">23. 梅森公式中 $\Delta$ 表示（　）。</p>
+        <div class="opts"><span>A. 前向通路增益</span><span>B. 特征式 $1-\sum L_a+\sum L_bL_c-\cdots$</span><span>C. 余子式</span><span>D. 回路增益之和</span></div>
+        <div class="ans"><b>B。</b>$\Delta_k$ 才是余子式，注意区分。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">24. 传递函数只适用于（　）。</p>
+        <div class="opts"><span>A. 非线性系统</span><span>B. 线性定常系统，且零初始条件</span><span>C. 时变系统</span><span>D. 任意系统</span></div>
+        <div class="ans"><b>B。</b>非零初始条件必须回到微分方程的拉氏变换。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">25. 二阶系统 $\omega_n$ 不变，$\zeta$ 由 0.3 增大到 0.7，则（　）。</p>
+        <div class="opts"><span>A. $\sigma\%$ 减小，$t_p$ 增大</span><span>B. $\sigma\%$ 减小，$t_p$ 减小</span><span>C. 二者都增大</span><span>D. 二者都不变</span></div>
+        <div class="ans"><b>A。</b>$\sigma\%$ 只由 $\zeta$ 决定，$\zeta$ 增大则超调减小（37.2%→4.3%）；$t_p=\pi/(\omega_n\sqrt{1-\zeta^2})$ 随 $\zeta$ 增大而增大。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">26. 高阶系统可降阶为二阶近似的条件是（　）。</p>
+        <div class="opts"><span>A. 存在闭环零点</span><span>B. 非主导极点实部绝对值为主导极点的 5 倍以上</span><span>C. 所有极点实部相同</span><span>D. 系统为 0 型</span></div>
+        <div class="ans"><b>B。</b>同时要求主导极点附近无闭环零点（否则零点会显著改变响应）。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">27. 频域三频段中，决定稳态精度的是（　）。</p>
+        <div class="opts"><span>A. 低频段</span><span>B. 中频段</span><span>C. 高频段</span><span>D. 全频段</span></div>
+        <div class="ans"><b>A。</b>中频段决定稳定性与快速性，高频段决定抗干扰能力。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">28. 反馈校正的主要优点是（　）。</p>
+        <div class="opts"><span>A. 提高开环增益</span><span>B. 削弱被包围环节的参数变化与非线性影响</span><span>C. 消除稳态误差</span><span>D. 增大带宽</span></div>
+        <div class="ans"><b>B。</b>当 $|G_2H|\gg1$ 时等效为 $1/H$，几乎与 $G_2$ 无关。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">29. 离散系统稳态误差与采样周期 $T$ 的关系是（　）。</p>
+        <div class="opts"><span>A. 无关</span><span>B. $T$ 越大误差越大</span><span>C. $T$ 越大误差越小</span><span>D. 不确定</span></div>
+        <div class="ans"><b>B。</b>斜坡输入下 $e_{ss}=T/K_v$，与 $T$ 成正比。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">30. 增加开环零点对根轨迹的影响一般是（　）。</p>
+        <div class="opts"><span>A. 使轨迹右移，稳定性变差</span><span>B. 使轨迹左移，稳定性改善</span><span>C. 不改变轨迹</span><span>D. 只改变增益</span></div>
+        <div class="ans"><b>B。</b>零点“吸引”根轨迹，通常使系统更稳定；反之增加极点会使轨迹右移。</div>
+      </div>
+    </div>
+
+    <h3>二、判断题</h3>
+    <div class="quiz">
+      <div class="qitem">
+        <p class="qtext">31. 传递函数只由系统的结构与参数决定，与输入形式和初始条件无关。</p>
+        <div class="ans"><b>对。</b>但前提是线性定常、零初始条件。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">32. 稳定的系统，其稳态误差一定为零。</p>
+        <div class="ans"><b>错。</b>稳态误差取决于型别、增益与输入形式；0 型系统阶跃输入下稳态误差为 $1/(1+K)$。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">33. 根轨迹上的任意一点都对应稳定的闭环系统。</p>
+        <div class="ans"><b>错。</b>只有位于左半平面的那一段才稳定，进入右半平面后不稳定。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">34. 相位裕度越大，系统的响应速度一定越快。</p>
+        <div class="ans"><b>错。</b>$\gamma$ 过大意味着系统过于迟钝，快速性反而下降；$\gamma$ 与 $\omega_c$ 是两个不同维度。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">35. 离散系统的采样周期越大，稳态误差越小。</p>
+        <div class="ans"><b>错。</b>恰恰相反，$T$ 越大，离散化带来的误差越大。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">36. 描述函数法要求线性部分具有低通滤波特性。</p>
+        <div class="ans"><b>对。</b>否则高次谐波不可忽略，基波近似失效。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">37. 非线性系统不满足叠加原理，因此没有传递函数。</p>
+        <div class="ans"><b>对。</b>只能用描述函数、相平面等近似或图解方法。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">38. 劳斯判据是线性定常系统稳定的充要条件。</p>
+        <div class="ans"><b>对。</b>但它只适用于线性定常系统，且要求特征多项式已知。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">39. PD 控制可以消除阶跃输入下的稳态误差。</p>
+        <div class="ans"><b>错。</b>微分只改善动态阻尼，不改变常值稳态误差；消除稳态误差需要积分环节。</div>
+      </div>
+      <div class="qitem">
+        <p class="qtext">40. 系统稳定的必要条件是特征方程各项系数同号且不缺项。</p>
+        <div class="ans"><b>对。</b>这是必要条件而非充分条件，满足后仍须用劳斯判据判定。</div>
+      </div>
+    </div>
+
+    <div class="box tip">
+      <div class="t">评分参考</div>
+      <p>答对 36 题以上：基础扎实，重点练计算速度；30–35 题：概念有漏洞，回看错题所属章节；30 题以下：建议按“知识地图 → 各章框架 → 例题”重新过一遍。</p>
+    </div>
+  </div>
+</section>

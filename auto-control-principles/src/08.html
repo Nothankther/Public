@@ -1,0 +1,294 @@
+<section class="chapter" id="c8" data-num="8" data-title="第八章 非线性控制系统" data-short="⑧ 非线性系统">
+  <div class="wrap">
+    <div class="ch-head">
+      <div class="ch-no"><b>08</b> CHAPTER EIGHT</div>
+      <h2>非线性控制系统<span class="en">Nonlinear control systems</span></h2>
+      <p class="ch-desc">非线性系统不能叠加、没有传递函数，稳定性还与初始条件有关。考试只考两个工具：描述函数法（找自振）与相平面法（看轨迹）。</p>
+    </div>
+
+    <details class="prereq" open>
+      <summary>预备知识 · 傅里叶级数的基波<span class="who">描述函数法“只取基波”的理论前提，8.2 推导直接引用</span></summary>
+      <div class="bd">
+        <p>描述函数法的合法性建立在一件事上：任何周期信号都能展开成傅里叶级数，而描述函数只保留基波。下面是所需的最小知识包。</p>
+        <h5>① 周期信号的傅里叶展开</h5>
+        <p>周期 $T=2\pi/\omega$ 的函数可展开为直流 + 基波 + 各次谐波：</p>
+        <p>$$x(t)=A_0+\sum_{n=1}^{\infty}\big(a_n\cos n\omega t+b_n\sin n\omega t\big),\qquad b_1=\frac{2}{T}\int_0^{T}x(t)\sin\omega t\,\dd t,\quad a_1=\frac{2}{T}\int_0^{T}x(t)\cos\omega t\,\dd t$$</p>
+        <p>基波 = 频率与原周期相同（$n=1$）的那一对正弦分量；描述函数法里的“取基波”，就是只算 $a_1,b_1$ 这两个积分（由正弦、余弦的正交性，其他分量在积分中自动消去）。</p>
+        <h5>② 对称性速查（算 $N(X)$ 时省一半力气）</h5>
+        <ul>
+          <li><b>奇函数</b>（$x(-t)=-x(t)$）：无余弦项，展开只有 $\sin$；</li>
+          <li><b>奇谐函数</b>（$x(t\pm T/2)=-x(t)$，如理想继电、死区、饱和的输出）：无偶次谐波，只剩 $1,3,5,\dots$ 次；</li>
+          <li>正弦输入 $x=X\sin\omega t$ 过定常非线性环节 $y=f(x)$：输出 $y(t)$ 与输入同周期，展开只需对 $b_1,a_1$ 各积半周期。</li>
+        </ul>
+        <h5>③ 谐波线性化：描述函数的定义逻辑</h5>
+        <p>非线性环节对正弦输入的稳态输出 $y(t)$ 一般是<b>非正弦</b>周期波。把它截取基波 $y_1(t)=Y_1\sin(\omega t+\varphi_1)$，定义描述函数</p>
+        <p>$$N(X)=\frac{Y_1}{X}\,\mathrm{e}^{\j\varphi_1}\quad\Longleftrightarrow\quad \text{“基波等效增益”}$$</p>
+        <p><b>为什么允许扔掉高次谐波？</b>闭环里 $y(t)$ 的高次谐波要经过线性部分 $G(\j\omega)$ 才回到输入端，而 $G$ 通常是低通特性（$|G(\j n\omega)|$ 随 $n$ 迅速衰减），高次谐波被滤掉，环路里近似只剩基波在流通。这个<b>低通滤波假设</b>是描述函数法成立的条件——若 $G$ 对三次、五次谐波不衰减（如放大器本身带宽很高），负倒特性 $-1/N$ 的交点就不可信。这正是 8.2 节使用前提与误差讨论的来源。</p>
+      </div>
+    </details>
+
+    <h3>8.1 非线性系统的特点</h3>
+    <div class="grid g3">
+      <div class="card">
+        <div class="h">不满足叠加原理</div>
+        <p>不能把输入分解后分别求响应再相加，因此<b>没有传递函数</b>，频域方法不能直接使用。</p>
+      </div>
+      <div class="card">
+        <div class="h">稳定性与幅值有关</div>
+        <p>同一系统，小扰动下稳定、大扰动下可能失稳；稳定性不再是系统本身的全局属性。</p>
+      </div>
+      <div class="card">
+        <div class="h">可能出现自振</div>
+        <p>无外输入时产生持续等幅振荡（<b>极限环</b>），还可能发生跳跃谐振、频率捕捉等现象。</p>
+      </div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <caption>表 8-1　常见非线性特性及其对系统的影响</caption>
+        <thead><tr><th style="width:16%">非线性</th><th style="width:36%">物理来源</th><th>主要影响</th></tr></thead>
+        <tbody>
+          <tr><td>死区</td><td>电机死区、齿轮间隙、阀的不灵敏区</td><td>小信号时无响应，稳态误差增大</td></tr>
+          <tr><td>饱和</td><td>放大器输出限幅、磁饱和</td><td>大信号时增益下降，可能引起自振</td></tr>
+          <tr><td>间隙</td><td>齿轮传动回差</td><td>相位滞后，稳定性下降</td></tr>
+          <tr><td>继电特性</td><td>继电器、开关型控制器</td><td>易产生自振（开关控制固有）</td></tr>
+          <tr><td>干摩擦</td><td>导轨、轴承</td><td>低速爬行，稳态存在死区式误差</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>8.2 描述函数法</h3>
+    <div class="box def">
+      <div class="t">定义</div>
+      <p>设非线性环节输入为 $x(t)=A\sin\omega t$，输出为非正弦周期信号。取其<b>基波分量</b>与输入之比（复数），即描述函数</p>
+      <p>$$N(A)=\frac{Y_1}{A}\mathrm{e}^{\mathrm{j}\varphi_1}$$</p>
+      <p>它相当于非线性环节的“幅值相关的增益”。若非线性是<b>奇对称且单值</b>的，则 $\varphi_1=0$，$N(A)$ 为实数。</p>
+    </div>
+
+    <div class="box key">
+      <div class="t">两个前提假设</div>
+      <p>① 非线性环节输入近似为正弦（线性部分具有<b>低通滤波</b>特性，高次谐波被大幅衰减）；<br>
+      ② 非线性特性不随时间变化。满足这两条时，可把非线性环节等效为增益 $N(A)$，整个系统按线性系统处理。</p>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <caption>表 8-2　典型非线性的描述函数（$A$ 为输入振幅）</caption>
+        <thead><tr><th style="width:26%">非线性</th><th style="width:34%">$N(A)$</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>理想继电（输出 $\pm M$）</td><td>$\dfrac{4M}{\pi A}$</td><td>与 $A$ 成反比，$A\to0$ 时趋于无穷</td></tr>
+          <tr><td>带死区继电（死区 $2a$）</td><td>$\dfrac{4M}{\pi A}\sqrt{1-\left(\dfrac{a}{A}\right)^2}$</td><td>$A\leq a$ 时输出为零，$N=0$</td></tr>
+          <tr><td>饱和（线性区斜率 $K$，饱和值 $Ka$）</td><td>$\dfrac{2K}{\pi}\left[\arcsin\dfrac{a}{A}+\dfrac{a}{A}\sqrt{1-\left(\dfrac{a}{A}\right)^2}\right]$</td><td>$A\leq a$ 时 $N=K$；$A\to\infty$ 时 $N\to0$</td></tr>
+          <tr><td>死区（斜率 $K$，死区 $2a$）</td><td>$\dfrac{2K}{\pi}\left[\dfrac{\pi}{2}-\arcsin\dfrac{a}{A}-\dfrac{a}{A}\sqrt{1-\left(\dfrac{a}{A}\right)^2}\right]$</td><td>$A\to\infty$ 时 $N\to K$</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>自振条件与稳定性判据</h4>
+    <p>闭环特征方程 $1+N(A)G(\mathrm{j}\omega)=0$，即</p>
+    <p>$$G(\mathrm{j}\omega)=-\frac{1}{N(A)}$$</p>
+    <p>在复平面上同时画出 $G(\mathrm{j}\omega)$（$\omega:0\to\infty$）与 $-1/N(A)$（$A:0\to\infty$），则：</p>
+    <ul>
+      <li>两曲线<b>不相交</b>且 $G$ 不包围 $-1/N$ 曲线 → 系统稳定；被包围 → 不稳定。</li>
+      <li>两曲线<b>相交</b> → 存在自振（极限环），交点同时给出振幅 $A$ 与频率 $\omega$。</li>
+    </ul>
+
+    <figure>
+      <!--FIG:describing-->
+      <figcaption><b>图 8-1</b>　$G(s)=\dfrac{10}{s(s+1)(s+2)}$ 与理想继电特性。$G(\mathrm{j}\omega)$ 在 $\omega=\sqrt2$ 处与负实轴交于 $-1.667$；令 $-1/N(A)=-1.667$ 得 $A=2.12$，即自振振幅。</figcaption>
+    </figure>
+
+    <div class="box tip">
+      <div class="t">自振稳定性的直观判断</div>
+      <p>交点处若 $A$ 略增，$N(A)$ 减小、回路增益 $N|G|<1$，振荡衰减使 $A$ 回落；$A$ 略减则回路增益 $>1$，振荡增强使 $A$ 回升——这种“自动回到交点”的即为<b>稳定自振</b>，工程上最常考。</p>
+    </div>
+
+    <h3>8.3 相平面法</h3>
+    <p>对二阶系统 $\ddot x=f(x,\dot x)$，以 $x$ 为横轴、$\dot x$ 为纵轴构成的平面称为<b>相平面</b>，系统的运动对应平面上的一条<b>相轨迹</b>。相轨迹的斜率满足</p>
+    <p>$$\frac{\dd\dot x}{\dd x}=\frac{f(x,\dot x)}{\dot x}$$</p>
+    <h4>等倾线法</h4>
+    <p>不求解微分方程、直接作图的方法。令相轨迹斜率为常数 $\alpha$：</p>
+    <p>$$\frac{\dd\dot x}{\dd x}=\frac{f(x,\dot x)}{\dot x}=\alpha$$</p>
+    <p>该方程在相平面上给出一条曲线，称为<b>等倾线</b>；在等倾线上各点画斜率为 $\alpha$ 的短线段（带箭头），得到切线方向场，再从初始点出发光滑连接即得相轨迹。</p>
+    <p><b>例：</b>$\ddot x+x=0$ 中 $f=-x$，等倾线为 $\dot x=-x/\alpha$，是一族过原点的直线。取 $\alpha=0,\pm1,\infty$ 等若干值画出方向场，即可勾出椭圆轨迹——与解析解一致。</p>
+
+    <p>满足 $f=0$ 且 $\dot x=0$ 的点称为<b>奇点</b>（平衡点），所有相轨迹在此处斜率为不定值。</p>
+
+    <figure>
+      <!--FIG:phase-->
+      <figcaption><b>图 8-2</b>　线性二阶系统的三类奇点。中心点对应 $\zeta=0$（等幅振荡）；稳定焦点对应 $0<\zeta<1$（衰减振荡）；鞍点对应特征根一正一负（不稳定）。</figcaption>
+    </figure>
+
+    <div class="figx">
+      <div class="figx-head">
+        <span class="figx-badge">点一下</span>
+        <span class="figx-title">相平面射击场：点哪里，就从哪里出发画轨迹</span>
+        <span class="figx-hint">点击平面设置初始状态 (x₀, ẋ₀)</span>
+      </div>
+      <div class="figx-body one">
+        <div class="figx-pane" style="max-width:560px;margin:0 auto;width:100%">
+          <svg id="phaseSvg" viewBox="0 0 560 500" role="img" aria-label="相平面与相轨迹"></svg>
+        </div>
+      </div>
+      <div class="figx-ctl">
+        <label>阻尼比 ζ
+          <input type="range" id="phaseZ" min="-0.6" max="1.5" step="0.02" value="0.2">
+          <output id="phaseZOut">0.20</output>
+        </label>
+        <button type="button" class="figx-pill" id="phaseClear">清除轨迹</button>
+      </div>
+      <div class="figx-read" id="phaseRead"></div>
+      <div class="figx-verdict" id="phaseVerdict"></div>
+      <div class="figx-note">系统为 $\ddot x+2\zeta\omega_n\dot x+\omega_n^2x=0$（取 $\omega_n=1$）。背景小箭头是相轨迹的方向场。把 ζ 从 0.2 调到 0，螺旋会闭合成椭圆；调到 −0.3，轨迹会向外发散——这正是“特征根实部符号决定稳定性”的几何版本。</div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <caption>表 8-3　线性二阶系统 $\ddot x+2\zeta\omega_n\dot x+\omega_n^2x=0$ 的奇点类型</caption>
+        <thead><tr><th style="width:20%">特征根</th><th style="width:20%">奇点类型</th><th>相轨迹形态</th></tr></thead>
+        <tbody>
+          <tr><td>一对纯虚根 $\pm\mathrm{j}\omega_n$</td><td>中心点</td><td>一族闭合椭圆，临界稳定</td></tr>
+          <tr><td>共轭复根，实部为负</td><td>稳定焦点</td><td>向奇点收敛的螺旋线</td></tr>
+          <tr><td>共轭复根，实部为正</td><td>不稳定焦点</td><td>向外发散的螺旋线</td></tr>
+          <tr><td>两个负实根</td><td>稳定节点</td><td>直接汇入奇点的曲线族</td></tr>
+          <tr><td>一正一负实根</td><td>鞍点</td><td>四条分界线，其余轨迹绕行远离</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p><b>极限环</b>是相平面上的孤立闭合曲线，对应系统的自振。极限环内侧轨迹向外、外侧轨迹向内 → <b>稳定极限环</b>；反之 → 不稳定极限环；一侧向内一侧向外 → 半稳定极限环。</p>
+
+    <h3>8.4 非线性系统的分析步骤与改善措施</h3>
+    <p>非线性题看起来“没有统一公式”，但实际操作是固定流程：先判断非线性类型，再选工具，最后校验。下面这张表决定了“拿到题先做什么”。</p>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <caption>表 8-4　三种分析工具的适用边界</caption>
+        <thead><tr><th style="width:20%">方法</th><th style="width:30%">适用对象</th><th style="width:26%">能回答什么</th><th>局限</th></tr></thead>
+        <tbody>
+          <tr><td>描述函数法</td><td>任意阶线性部分 + 单个（或可分离的）非线性环节</td><td>是否存在自振、自振振幅 $A$ 与频率 $\omega$</td><td>只取基波，要求线性部分低通；不能给瞬态过程</td></tr>
+          <tr><td>相平面法</td><td>二阶系统（或可化为二阶）</td><td>任意初值下的轨迹、奇点类型、极限环</td><td>高阶不适用；分段求解计算量大</td></tr>
+          <tr><td>小信号线性化</td><td>平衡点附近的弱非线性</td><td>平衡点的局部稳定性</td><td>大信号或远离平衡点时失效</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>分析五步</h4>
+    <ol class="steps">
+      <li><b>定类型与参数。</b>先判断是死区、饱和、继电、间隙还是干摩擦，写出分段表达式或 $N(A)$。若题目只给“非线性环节”，先画输入—输出特性。</li>
+      <li><b>选方法。</b>问“自振” → 描述函数；问“初值/轨迹/奇点” → 相平面；只问“平衡点稳不稳” → 小信号线性化。三者不要混用。</li>
+      <li><b>画图或列方程。</b>描述函数：画 $G(\mathrm{j}\omega)$ 与 $-1/N(A)$；相平面：分区列 $\ddot x=f(x,\dot x)$，画等倾线或分段积分。</li>
+      <li><b>读结论。</b>描述函数交点给 $(A,\omega)$，再用“$A$ 略增时回路增益小于 1 则稳定”判断自振稳定性；相平面看奇点类型与极限环的内外方向。</li>
+      <li><b>校验。</b>用平衡点处的小信号线性化复核局部稳定性；若两种方法结论矛盾，优先检查“线性部分是否满足低通条件”和“相平面是否误用于高阶”。</li>
+    </ol>
+
+    <h4>改善非线性系统性能的五种手段</h4>
+    <div class="grid g2">
+      <div class="card">
+        <div class="h">从“非线性本身”下手</div>
+        <p><b>① 减小死区、间隙</b>：提高加工精度、预紧、消除回差。<br>
+        <b>② 改变非线性形状</b>：给继电器加死区或滞环，把自振点移到允许的幅值/频率；或在死区前加高频抖动（dither），使等效增益线性化。</p>
+      </div>
+      <div class="card">
+        <div class="h">从“线性部分”下手</div>
+        <p><b>③ 增大阻尼</b>：测速反馈、速度负反馈，把相轨迹从“焦点外扩”拉回“收敛螺旋”。<br>
+        <b>④ 串联校正</b>：用超前/滞后改变 $G(\mathrm{j}\omega)$，使 $-1/N(A)$ 曲线不进入其包围区。<br>
+        <b>⑤ 限制工作区间</b>：减小输入幅值或加限幅，避免进入饱和段。</p>
+      </div>
+    </div>
+
+    <div class="box warn">
+      <div class="t">两个最常见的误用</div>
+      <p>① <b>把描述函数当传递函数</b>：$N(A)$ 只对正弦输入、只取基波，不能用来算阶跃响应；<br>
+      ② <b>把相平面用于三阶以上</b>：相平面是二维的，高阶系统必须降阶或直接仿真，不能硬画。</p>
+    </div>
+
+    <h3>8.5 典型例题</h3>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 8-1</span><span class="ex-title">继电系统的自振分析</span><span class="lv">必考题型</span></div>
+      <div class="q">
+        <p>非线性系统由理想继电环节（输出 $\pm M$，$M=1$）与线性部分 $G(s)=\dfrac{10}{s(s+1)(s+2)}$ 串联构成单位负反馈。判断是否存在自振，若存在求振幅与频率。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <ol class="steps">
+            <li><b>写出描述函数。</b>理想继电特性：$N(A)=\dfrac{4M}{\pi A}=\dfrac{4}{\pi A}$，故
+            $$-\frac{1}{N(A)}=-\frac{\pi A}{4}$$
+            它位于负实轴上，随 $A$ 增大向左侧移动。</li>
+            <li><b>求 $G(\mathrm{j}\omega)$ 与负实轴的交点。</b>由例 5-3 的结果，交点频率满足 $2-\omega^2=0$，即 $\omega=\sqrt2\ \mathrm{rad/s}$，交点值为
+            $$\mathrm{Re}\,G(\mathrm{j}\sqrt2)=-\frac{K}{6}=-\frac{10}{6}=-1.667$$</li>
+            <li><b>令两式相等求振幅。</b>
+            $$-\frac{\pi A}{4}=-1.667\Rightarrow A=\frac{4\times1.667}{\pi}=2.12$$</li>
+            <li><b>判断稳定性。</b>$N(A)$ 随 $A$ 增大而减小：若 $A>2.12$，则 $|{-1/N}|>1.667$，对应回路增益 $N|G|<1$，振荡衰减；若 $A<2.12$，回路增益 $>1$，振荡增强。故该交点为<b>稳定自振点</b>。</li>
+          </ol>
+          <p><b>结论：</b>系统存在稳定自振，振幅 $A=2.12$，频率 $\omega=\sqrt2\approx1.41\ \mathrm{rad/s}$。工程上应通过减小线性部分增益、加入校正或改用连续控制来消除自振。</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 8-2</span><span class="ex-title">饱和非线性的描述函数计算</span><span class="lv">公式应用题</span></div>
+      <div class="q">
+        <p>饱和非线性：线性区斜率 $K=2$，饱和值对应输入 $a=1$。求输入振幅 $A=2$ 时的描述函数值，并说明 $A\to\infty$ 时的极限。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p>$$N(A)=\frac{2K}{\pi}\left[\arcsin\frac{a}{A}+\frac{a}{A}\sqrt{1-\left(\frac{a}{A}\right)^2}\right]$$</p>
+          <p>代入 $K=2$、$a=1$、$A=2$，得 $a/A=0.5$，$\arcsin0.5=\pi/6=0.5236$，$\sqrt{1-0.25}=0.866$：</p>
+          <p>$$N(2)=\frac{4}{\pi}\left[0.5236+0.5\times0.866\right]=\frac{4}{\pi}\times0.9566=1.218$$</p>
+          <p>当 $A\to\infty$ 时，$a/A\to0$，$\arcsin(a/A)\approx a/A$，方括号内两项均为 $2a/A\to0$，故 $N\to0$——输入越大，等效增益越小，这正是饱和“限幅”的本质。</p>
+          <p>校验：$A\leq a$ 时 $N=K=2$；本例 $A=2>a=1$，$N=1.218<K$，符合“进入饱和后等效增益下降”的规律。</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 8-3</span><span class="ex-title">由相轨迹判断奇点类型</span><span class="lv">概念题</span></div>
+      <div class="q">
+        <p>判断下列系统的奇点类型，并说明其稳定性：① $\ddot x+\dot x+x=0$；② $\ddot x-x=0$；③ $\ddot x+x=0$。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <ul>
+            <li>① 特征方程 $s^2+s+1=0$，$\zeta=0.5<1$，共轭复根且实部为负 → <b>稳定焦点</b>，相轨迹为向内收敛的螺旋线。</li>
+            <li>② 特征方程 $s^2-1=0$，根为 $\pm1$（一正一负）→ <b>鞍点</b>，不稳定；只有沿特征向量方向的轨迹能到达奇点，其余发散。</li>
+            <li>③ 特征方程 $s^2+1=0$，纯虚根 $\pm\mathrm{j}$ → <b>中心点</b>，相轨迹为闭合椭圆，属临界稳定（等幅振荡），工程上视为不稳定。</li>
+          </ul>
+          <p><b>方法总结：</b>写出特征方程 → 看根的实部与类型 → 对照表 8-3。实部全负则收敛，有正实部则发散，纯虚则闭合。</p>
+        </div>
+      </details>
+    </div>
+
+    <h3>8.6 逆系统方法（了解）</h3>
+    <p>教材 8-5 节介绍的逆系统方法，是“用模型抵消非线性”的思路：既然非线性环节难以分析，就用它的<b>逆</b>串在前面，使复合系统变成线性系统。</p>
+    <p>设单输入单输出仿射非线性系统</p>
+    <p>$$\dot{\mathbf{x}}=\mathbf{f}(\mathbf{x})+\mathbf{g}(\mathbf{x})u,\qquad y=h(\mathbf{x})$$</p>
+    <p>对输出反复求导，直到 $u$ 显式出现：</p>
+    <p>$$y^{(r)}=a(\mathbf{x})+b(\mathbf{x})u$$</p>
+    <p>若 $b(\mathbf{x})\neq0$（相对阶存在），取控制律</p>
+    <p>$$u=\frac{v-a(\mathbf{x})}{b(\mathbf{x})}$$</p>
+    <p>则 $y^{(r)}=v$，即从 $v$ 到 $y$ 是 $r$ 个积分器的线性系统（伪线性系统），可再用线性理论设计 $v$。</p>
+    <div class="box warn">
+      <div class="t">三个限制</div>
+      <p>① 要求 $b(\mathbf{x})\neq0$，即系统在整个工作区间内可控且相对阶不变；<br>
+      ② 需要<b>精确的模型</b>，参数摄动会使“抵消”不彻底，鲁棒性差；<br>
+      ③ 逆模型可能含微分，工程实现需加滤波或采用积分型逆。</p>
+    </div>
+    <p>它与“反馈线性化”本质相同，区别只在实现形式：逆系统是<b>串联</b>补偿，反馈线性化是<b>状态反馈</b>补偿。考试中若出现“伪线性系统”“求逆模型结构”，按上面的求导法作答即可。</p>
+
+    <h3>8.7 本章易错清单</h3>
+    <div class="box warn">
+      <div class="t">考前自检</div>
+      <p>① 自振条件写成 $G(\mathrm{j}\omega)=1/N(A)$（应为 $-1/N(A)$）；<br>
+      ② 描述函数用错对象（只对<b>非线性环节</b>求 $N(A)$，线性部分仍用 $G(\mathrm{j}\omega)$）；<br>
+      ③ 忘记校验 $A>a$（饱和/死区的分段条件）；<br>
+      ④ 把中心点判为稳定（临界稳定，工程上不算稳定）；<br>
+      ⑤ 相平面纵轴写成 $\ddot x$（应为 $\dot x$）；<br>
+      ⑥ 认为非线性系统的稳定性是全局属性。</p>
+    </div>
+  </div>
+</section>

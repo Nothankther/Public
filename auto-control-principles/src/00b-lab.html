@@ -1,0 +1,85 @@
+<section class="chapter" id="lab" data-num="L" data-title="交互实验室" data-short="交互实验室 · 计算器">
+  <div class="wrap">
+    <div class="ch-head">
+      <div class="ch-no"><b>Lab</b> INTERACTIVE</div>
+      <h2>交互实验室<span class="en">Interactive calculators</span></h2>
+      <p class="ch-desc">四个即开即用的计算器：调参数、看指标、对答案。全部在本地浏览器里算，不联网、不上传。适合用来验算作业，或考前快速感受“参数一变，指标怎么动”。</p>
+    </div>
+
+    <h3>二阶系统指标计算器</h3>
+    <p>拖动滑块改变 $\zeta$ 与 $\omega_n$，下方的 $\sigma\%$、$t_r$、$t_p$、$t_s$ 与阶跃响应曲线会实时更新。曲线中的绿色带为 $\pm5\%$ 误差带。</p>
+    <div class="lab-ui">
+      <div class="lab" id="lab-second">
+        <div class="lab-controls">
+          <label>阻尼比 $\zeta$
+            <input type="range" id="zRange" min="0.05" max="2" step="0.01" value="0.5">
+            <output id="zOut">0.50</output>
+          </label>
+          <label>自然频率 $\omega_n$（rad/s）
+            <input type="range" id="wnRange" min="0.5" max="20" step="0.1" value="10">
+            <output id="wnOut">10.0</output>
+          </label>
+        </div>
+        <div class="lab-grid" id="secondOut"></div>
+        <svg id="secondPlot" viewBox="0 0 640 300" role="img" aria-label="二阶系统阶跃响应"></svg>
+      </div>
+    </div>
+
+    <h3>一阶系统计算器</h3>
+    <p>一阶系统 $\Phi(s)=\dfrac{1}{Ts+1}$ 只有一个可调参数 $T$：$t_r=2.2T$，$t_s=3T$（$\pm5\%$）或 $4T$（$\pm2\%$），$t=T$ 时到达终值的 $63.2\%$。</p>
+    <div class="lab-ui">
+      <div class="lab" id="lab-first">
+        <div class="lab-controls">
+          <label>时间常数 $T$（s）
+            <input type="range" id="tRange" min="0.1" max="10" step="0.1" value="1">
+            <output id="tOut">1.0</output>
+          </label>
+        </div>
+        <div class="lab-grid" id="firstOut"></div>
+        <svg id="firstPlot" viewBox="0 0 640 300" role="img" aria-label="一阶系统阶跃响应"></svg>
+      </div>
+    </div>
+
+    <h3>开环频域指标计算器</h3>
+    <p>针对考试最常见的三阶结构 $G(s)=\dfrac{K}{s(T_1s+1)(T_2s+1)}$，计算剪切频率 $\omega_c$、相位裕度 $\gamma$、相位交界频率 $\omega_g$ 与幅值裕度 $K_g$，并直接给出稳定性结论。</p>
+    <div class="lab-ui">
+      <div class="lab" id="lab-freq">
+        <div class="lab-controls">
+          <label>开环增益 $K$
+            <input type="range" id="kRange" min="0.2" max="50" step="0.2" value="10">
+            <output id="kOut">10.0</output>
+          </label>
+          <label>惯性时间 $T_1$（s）
+            <input type="range" id="t1Range" min="0.01" max="2" step="0.01" value="0.1">
+            <output id="t1Out">0.10</output>
+          </label>
+          <label>惯性时间 $T_2$（s）
+            <input type="range" id="t2Range" min="0.001" max="1" step="0.001" value="0.01">
+            <output id="t2Out">0.010</output>
+          </label>
+        </div>
+        <div class="lab-grid" id="freqOut"></div>
+        <div class="lab-verdict" id="freqVerdict"></div>
+      </div>
+    </div>
+
+    <h3>劳斯判据计算器</h3>
+    <p>按<b>降幂</b>输入特征方程的各项系数，用逗号或空格分隔。例如 $s^4+2s^3+3s^2+4s+5=0$ 输入 <code>1,2,3,4,5</code>。程序会自动处理“首列为 0”与“全零行”两种特殊情况，并给出右半平面根数。</p>
+    <div class="lab-ui">
+      <div class="lab" id="lab-routh">
+        <div class="lab-controls">
+          <label style="flex:1 1 320px">系数（降幂）
+            <input type="text" id="routhInput" value="1,2,3,4,5" spellcheck="false">
+          </label>
+          <button type="button" class="lab-btn" id="routhBtn">计算</button>
+        </div>
+        <div id="routhOut"></div>
+      </div>
+    </div>
+
+    <div class="box tip">
+      <div class="t">使用提示</div>
+      <p>计算器只是验算工具，<b>大题的过程分仍要靠手写</b>：先按章节里的步骤写出特征方程、劳斯表或幅相条件，再用这里对数。若结果对不上，先查单位（度/弧度、dB/倍数），再查公式适用条件（如 $\sigma\%$ 公式只适用于欠阻尼二阶系统）。</p>
+    </div>
+  </div>
+</section>

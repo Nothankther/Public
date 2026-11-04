@@ -1,0 +1,103 @@
+<section class="chapter" id="c10" data-num="10" data-title="第十章 动态系统的最优控制方法（选学）" data-short="⑩ 最优控制（选学）">
+  <div class="wrap">
+    <div class="ch-head">
+      <div class="ch-no"><b>10</b> CHAPTER TEN · 选学</div>
+      <h2>动态系统的最优控制方法<span class="en">Optimal control · 选学</span></h2>
+      <p class="ch-desc">本章在多数本科课程中不作要求，但教材与习题册均有完整内容（26 道题），考研专业课常考“变分法求极值曲线”“极小值原理”“LQR”。这里给出可直接套用的三类方法。</p>
+    </div>
+
+    <details class="prereq" open>
+      <summary>预备知识 · 泛函与变分四概念<span class="who">10.2 欧拉方程、10.4 LQR 推导的全部数学背景</span></summary>
+      <div class="bd">
+        <p>最优控制的语言是“变分法”。它长得很像微分学，只有四个新概念。</p>
+        <h5>① 泛函：以函数为自变量的“函数”</h5>
+        <p>普通函数 $f(x)$：输入一个<b>数</b>，输出一个数。泛函 $J[x]$：输入一条<b>曲线</b>（一个函数），输出一个数：</p>
+        <p>$$J[x]=\int_{t_0}^{t_f}L\big(x(t),\dot x(t),t\big)\,\dd t$$</p>
+        <p>性能指标就是这个东西：一条状态轨迹 $x(t)$ 进去，一个标量（误差 + 能量 + 末态代价）出来。“最优”= 在所有容许曲线里找使 $J$ 最小的那条。</p>
+        <h5>② 变分：曲线的微小改变</h5>
+        <p>微分的 $\dd x$ 是点的位移；变分的 $\delta x(t)$ 是<b>整条曲线的位移</b>——在每一点都挪一点 $\varepsilon\eta(t)$。约定端点固定：$\delta x(t_0)=\delta x(t_f)=0$。泛函的改变量（保留一阶小量）记为 $\delta J$，地位等同于一阶微分 $\dd f$。</p>
+        <h5>③ 极值条件 $\delta J=0$ → 欧拉方程</h5>
+        <p>与“$\dd f=0$ 给出驻点”完全平行：对 $J[x+\varepsilon\eta]$ 按 $\varepsilon$ 求导并令其在一切 $\eta$ 下为零，分部积分一次（把 $\dot\eta$ 换到 $L_{\dot x}$ 上，边界项因端点固定而消失），得</p>
+        <p>$$\frac{\partial L}{\partial x}-\frac{\dd}{\dd t}\frac{\partial L}{\partial \dot x}=0$$</p>
+        <p>这就是 10.2 的欧拉方程。推导逻辑链只有三步：嵌入曲线族 → 对 $\varepsilon$ 求导 → 分部积分。末端自由时边界项不消失，补上横截条件 $L_{\dot x}\big|_{t_f}=0$（或带代价项的修正版本）。</p>
+        <h5>④ 复合求导与二次型（LQR 要用）</h5>
+        <p>标量对向量 / 矩阵求导按分量定义即可：$\dfrac{\partial}{\partial \mathbf{x}}(\mathbf{x}^{\mathrm{T}}Q\mathbf{x})=2Q\mathbf{x}$（$Q$ 对称时）。Riccati 方程就是“对增益 $K$ 令 $\partial J/\partial K=0$”后化出来的代数关系——识别它的来源即可，不必背推导。</p>
+      </div>
+    </details>
+
+    <h3>10.1 最优控制问题的三要素</h3>
+    <p>一个最优控制问题由三部分组成：<b>状态方程</b>（受控对象的数学模型）、<b>约束条件</b>（控制与状态的取值范围、边界条件）、<b>性能指标</b>（优化的目标）。</p>
+    <p>$$J=\varphi\left[\mathbf{x}(t_f),t_f\right]+\int_{t_0}^{t_f}L\left[\mathbf{x}(t),\mathbf{u}(t),t\right]\dd t$$</p>
+    <p>第一项称<b>终端指标</b>（如终端误差），第二项称<b>过程指标</b>（如能量消耗、时间）。求使 $J$ 取极值的 $\mathbf{u}^*(t)$，即最优控制。</p>
+
+    <h3>10.2 变分法：无约束泛函极值</h3>
+    <p>当控制不受约束时，最优问题化为泛函极值问题。对 $J=\int_{t_0}^{t_f}L(x,\dot x,t)\dd t$，极值曲线满足<b>欧拉—拉格朗日方程</b>：</p>
+    <p>$$\frac{\partial L}{\partial x}-\frac{\dd}{\dd t}\left(\frac{\partial L}{\partial\dot x}\right)=0$$</p>
+    <p>若 $L$ 不显含 $t$，有首次积分 $L-\dot x\dfrac{\partial L}{\partial\dot x}=C$；若 $L$ 不显含 $x$，则 $\dfrac{\partial L}{\partial\dot x}=C$（动量守恒形式）。</p>
+    <p><b>横截条件</b>（终端自由时）：$\left.\dfrac{\partial L}{\partial\dot x}\right|_{t_f}=0$；若终端固定，则直接用边界条件 $x(t_0)=x_0,\ x(t_f)=x_f$。</p>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 10-1</span><span class="ex-title">用欧拉方程求极值曲线</span><span class="lv">教材习题 10-2 类型</span></div>
+      <div class="q">
+        <p>求使 $J=\displaystyle\int_0^1\left(1+\dot x^2\right)\dd t$ 取极值的曲线，边界条件 $x(0)=0$、$x(1)=1$。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p>$L=1+\dot x^2$ 不显含 $x$，故 $\dfrac{\partial L}{\partial\dot x}=2\dot x=C_1$，即 $\dot x=C_2$（常数）。</p>
+          <p>积分得 $x(t)=C_2t+C_3$，代入边界条件：$C_3=0$，$C_2=1$。</p>
+          <p>$$x^*(t)=t$$</p>
+          <p><b>几何意义：</b>两点间直线段最短——被积函数只与斜率有关时，极值曲线必为直线。</p>
+        </div>
+      </details>
+    </div>
+
+    <h3>10.3 极小值原理</h3>
+    <p>当控制受约束（如 $|u|\le1$）时，变分法失效，改用庞特里亚金的极小值原理。构造哈密顿函数</p>
+    <p>$$H=L(\mathbf{x},\mathbf{u},t)+\mathbf\lambda^{\mathrm T}\mathbf{f}(\mathbf{x},\mathbf{u},t)$$</p>
+    <p>最优控制的必要条件为</p>
+    <p>$$\dot{\mathbf{x}}=\frac{\partial H}{\partial\mathbf\lambda},\qquad
+    \dot{\mathbf\lambda}=-\frac{\partial H}{\partial\mathbf{x}},\qquad
+    H(\mathbf{x}^*,\mathbf{u}^*,\mathbf\lambda)=\min_{\mathbf{u}\in U}H(\mathbf{x}^*,\mathbf{u},\mathbf\lambda)$$</p>
+    <p>若 $H$ 对 $\mathbf{u}$ 可导且约束不起作用，极小值条件退化为 $\dfrac{\partial H}{\partial\mathbf{u}}=0$——这正是变分法的结果。</p>
+    <div class="box tip">
+      <div class="t">协态变量的物理意义</div>
+      <p>$\mathbf\lambda(t)$ 称为协态（伴随）变量，可理解为“状态的影子价格”：它衡量状态偏离对性能指标的边际影响。终端条件由横截条件给出，例如终端自由时 $\mathbf\lambda(t_f)=\dfrac{\partial\varphi}{\partial\mathbf{x}(t_f)}$。</p>
+    </div>
+
+    <h3>10.4 线性二次型最优控制（LQR）</h3>
+    <p>若系统线性、指标二次，则最优控制有解析解——这是工程上唯一“能算出来”的最优控制。</p>
+    <p>$$J=\frac{1}{2}\mathbf{x}^{\mathrm T}(t_f)F\mathbf{x}(t_f)+\frac{1}{2}\int_{t_0}^{t_f}\left(\mathbf{x}^{\mathrm T}Q\mathbf{x}+\mathbf{u}^{\mathrm T}R\mathbf{u}\right)\dd t$$</p>
+    <p>其中 $Q\geq0$（状态加权）、$R>0$（控制加权）。最优控制为状态反馈</p>
+    <p>$$\mathbf{u}^*(t)=-R^{-1}B^{\mathrm T}P(t)\mathbf{x}(t)$$</p>
+    <p>$P(t)$ 满足<b>黎卡提矩阵微分方程</b></p>
+    <p>$$-\dot P=A^{\mathrm T}P+PA-PBR^{-1}B^{\mathrm T}P+Q,\qquad P(t_f)=F$$</p>
+    <p>当 $t_f\to\infty$（无限时间问题）且系统可控可观时，$P$ 趋于常阵，满足<b>代数黎卡提方程</b></p>
+    <p>$$A^{\mathrm T}P+PA-PBR^{-1}B^{\mathrm T}P+Q=0$$</p>
+    <p>此时 $\mathbf{u}^*=-K\mathbf{x}$，$K=R^{-1}B^{\mathrm T}P$ 为常增益，闭环 $A-BK$ 必稳定。</p>
+
+    <div class="example">
+      <div class="ex-head"><span class="ex-no">例 10-2</span><span class="ex-title">一阶系统的无限时间 LQR</span><span class="lv">教材习题 10-20 类型</span></div>
+      <div class="q">
+        <p>系统 $\dot x=u$，$x(0)=1$，性能指标 $J=\dfrac{1}{2}\displaystyle\int_0^\infty\left(x^2+u^2\right)\dd t$。求最优控制 $u^*(t)$ 与最小指标值。</p>
+      </div>
+      <details>
+        <summary>展开解答</summary>
+        <div class="sol">
+          <p>对照标准形式：$A=0$、$B=1$、$Q=1$、$R=1$。代数黎卡提方程化为</p>
+          <p>$$0+0-P\cdot1\cdot1\cdot P+1=0\Rightarrow P^2=1\Rightarrow P=1\ (\text{取正})$$</p>
+          <p>故最优控制</p>
+          <p>$$u^*=-R^{-1}B^{\mathrm T}Px=-x$$</p>
+          <p>闭环 $\dot x=-x$，$x(t)=\mathrm{e}^{-t}$，于是</p>
+          <p>$$J^*=\frac{1}{2}\int_0^\infty\left(\mathrm{e}^{-2t}+\mathrm{e}^{-2t}\right)\dd t=\int_0^\infty\mathrm{e}^{-2t}\dd t=\frac{1}{2}$$</p>
+          <p>也可由 $J^*=\dfrac{1}{2}Px^2(0)=\dfrac{1}{2}\times1\times1=\dfrac{1}{2}$ 直接得到——这是 LQR 的一个常用结论。</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="box warn">
+      <div class="t">本章复习建议</div>
+      <p>若课程未讲授本章，只需记住三件事：① 变分法用欧拉方程＋横截条件；② 有约束时用极小值原理，$H$ 对 $u$ 取极小；③ LQR 归结为解黎卡提方程，$u=-R^{-1}B^{\mathrm T}Px$。若考研专业课涉及，再回头精读教材 10-2～10-4 节的推导。</p>
+    </div>
+  </div>
+</section>
